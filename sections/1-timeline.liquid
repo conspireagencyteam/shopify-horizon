@@ -729,7 +729,7 @@
           "type": "_1-timeline-item",
           "static": true,
           "settings": {
-            "timeline": "{{ closest.metaobject.timeline }}",
+            "timeline": "",
             "link": "",
             "open_in_new_tab": false,
             "content_direction": "column",
@@ -886,7 +886,7 @@
                       "type": "1-image",
                       "name": "t:names.1_image",
                       "settings": {
-                        "image": "{{ closest.metaobject.timeline.image.value }}",
+                        "image": "",
                         "link": "",
                         "image_ratio": "adapt",
                         "width": "fill",
@@ -976,7 +976,7 @@
                       "type": "1-text",
                       "name": "t:names.1_heading",
                       "settings": {
-                        "text": "<h3>{{ closest.metaobject.timeline.time.value }}</h3>",
+                        "text": "<h3>Timeline Time</h3>",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
@@ -1060,7 +1060,7 @@
                           "type": "1-text",
                           "name": "t:names.1_heading",
                           "settings": {
-                            "text": "{{ closest.metaobject.timeline.title | metafield_tag }}",
+                            "text": "<p>Timeline Title</p>",
                             "width": "fit-content",
                             "max_width": "none",
                             "alignment": "left",
@@ -1085,7 +1085,7 @@
                         "1_text_DAN3zB": {
                           "type": "1-text",
                           "settings": {
-                            "text": "{{ closest.metaobject.timeline.text | metafield_tag }}",
+                            "text": "<p>Timeline Text</p>",
                             "width": "fit-content",
                             "max_width": "none",
                             "alignment": "left",

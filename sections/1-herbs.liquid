@@ -424,7 +424,7 @@
           "type": "_1-herb-item",
           "static": true,
           "settings": {
-            "herb": "{{ closest.metaobject.herb }}",
+            "herb": "",
             "link": "",
             "open_in_new_tab": false,
             "content_direction": "column",
@@ -465,7 +465,7 @@
               "type": "1-image",
               "name": "t:names.1_image",
               "settings": {
-                "image": "{{ closest.metaobject.herb.image.value }}",
+                "image": "",
                 "link": "",
                 "image_ratio": "adapt",
                 "width": "fill",
@@ -532,7 +532,7 @@
                   "type": "1-text",
                   "name": "Heading",
                   "settings": {
-                    "text": "<h3>{{ closest.metaobject.herb.title.value }}</h3>",
+                    "text": "<h3>Herb Title</h3>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
@@ -558,7 +558,7 @@
                   "type": "1-text",
                   "name": "t:names.1_text",
                   "settings": {
-                    "text": "{{ closest.metaobject.herb.subheading | metafield_tag }}",
+                    "text": "<p>Herb Subheading</p>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
