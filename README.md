@@ -1,6 +1,7 @@
 # Conspire Agency Base Theme
 
 [Getting started](#getting-started) |
+[Agency Workflow](#agency-workflow) |
 [Staying up to date with Horizon changes](#staying-up-to-date-with-horizon-changes) |
 [Developer tools](#developer-tools)
 
@@ -16,6 +17,15 @@ This is Conspire Agency's base Shopify theme, forked from [Shopify Horizon](http
 ## Getting started
 
 Install the [Shopify CLI](https://shopify.dev/docs/storefronts/themes/tools/cli) to connect your local project to a Shopify store. Learn about the [theme developer tools](https://shopify.dev/docs/storefronts/themes/tools) available, and the suggested [developer tools](#developer-tools) below.
+
+## Agency Workflow
+
+This theme follows a rolling base theme workflow that maintains upstream Horizon connection while accumulating reusable customizations across client projects. See **[AGENCY-WORKFLOW.md](AGENCY-WORKFLOW.md)** for detailed documentation on:
+
+- Setting up new client projects from this base
+- Syncing customizations back to the base theme
+- Handling presets and locale files
+- Claude Code prompts for common tasks
 
 ## Staying up to date with Horizon changes
 
