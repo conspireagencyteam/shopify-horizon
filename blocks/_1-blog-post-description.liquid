@@ -1,0 +1,52 @@
+<div class="1-blog-post-content blog-post-content rte">
+  <rte-formatter>
+    {{ article.content }}
+  </rte-formatter>
+</div>
+
+{% stylesheet %}
+  .\31-blog-post-content.blog-post-content {
+    max-width: 100%;
+  }
+  .\31-blog-post-content.blog-post-content :where(h1, h2, h3, h4, h5, h6) {
+    --color: var(--color-foreground-heading);
+  }
+  .\31-blog-post-content.blog-post-content ul {
+    --list-marker-size: 12px;
+    --list-marker-offset: 22px;
+    list-style: none;
+    padding-left: var(--list-marker-offset);
+  }
+  .\31-blog-post-content.blog-post-content ul li {
+    position: relative;
+  }
+  .\31-blog-post-content.blog-post-content ul li::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--list-marker-offset) * -1);
+    top: 7px;
+    width: var(--list-marker-size);
+    height: var(--list-marker-size);
+    background-color: var(--color-foreground-heading);
+    mask-image: var(--icon-leaf-url);
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    -webkit-mask-image: var(--icon-leaf-url);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.1_blog_post_description",
+  "tag": null,
+  "settings": [],
+  "presets": [
+    {
+      "name": "t:names.1_blog_post_description",
+      "category": "t:categories.1_blog_post"
+    }
+  ]
+}
+{% endschema %}

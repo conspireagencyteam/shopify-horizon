@@ -35,6 +35,7 @@ upstream → https://github.com/Shopify/horizon.git
 |-------------|---------------|
 | `sections/1-*` | Copy + **merge presets** (keeps base presets, adds new) |
 | `blocks/1-*` | Copy + **merge presets** (keeps base presets, adds new) |
+| `blocks/_1-*` | Copy + **merge presets** (child blocks with underscore prefix) |
 | `snippets/1-*` | Copy to base (overwrites) |
 | `assets/1-*` | **NEW files only** (won't overwrite existing) |
 | `.cursor/rules/` | **NOT synced** (project manages own rules) |

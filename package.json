@@ -1,0 +1,44 @@
+{
+  "name": "conspire-horizon-theme",
+  "version": "1.0.0",
+  "description": "Conspire Horizon - Modern Shopify Online Store 2.0 Theme",
+  "private": true,
+  "scripts": {
+    "dev": "shopify theme dev --store [STORE] --open",
+    "dev:host": "shopify theme dev --store [STORE] --host",
+    "push": "shopify theme push --store [STORE]",
+    "push:dev": "shopify theme push --store [STORE] --development",
+    "push:unpublished": "shopify theme push --store [STORE] --unpublished",
+    "push:live": "shopify theme push --store [STORE] --live --allow-live",
+    "pull": "shopify theme pull --store [STORE]",
+    "pull:dev": "shopify theme pull --store [STORE] --development",
+    "pull:live": "shopify theme pull --store [STORE] --live",
+    "check": "shopify theme check",
+    "check:auto": "shopify theme check --auto-correct",
+    "open": "shopify theme open --store [STORE]",
+    "open:dev": "shopify theme open --store [STORE] --development",
+    "open:editor": "shopify theme open --store [STORE] --editor",
+    "list": "shopify theme list --store [STORE]",
+    "info": "shopify theme info --store [STORE]",
+    "share": "shopify theme share --store [STORE]",
+    "package": "shopify theme package",
+    "publish": "shopify theme publish --store [STORE]",
+    "delete": "shopify theme delete --store [STORE]",
+    "console": "shopify theme console --store [STORE]",
+    "auth:logout": "shopify auth logout"
+  },
+  "devDependencies": {
+    "@shopify/cli": "latest",
+    "@shopify/theme": "latest"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "shopify",
+    "theme",
+    "shopify-theme",
+    "online-store-2.0"
+  ]
+}

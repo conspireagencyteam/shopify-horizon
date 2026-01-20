@@ -9,6 +9,7 @@
 # What gets synced:
 #   - sections/1-*     → Copy to base (merges presets - adds new, keeps existing)
 #   - blocks/1-*       → Copy to base (merges presets - adds new, keeps existing)
+#   - blocks/_1-*      → Copy to base (child blocks with underscore prefix)
 #   - snippets/1-*     → Copy to base
 #   - assets/1-*       → NEW files only (won't overwrite existing)
 #   - .cursor/rules/   → NOT synced (project manages own rules)
@@ -18,7 +19,8 @@
 #   - config/          → Project-specific
 #   - locales/         → Manual merge (see instructions below)
 
-set -e
+# Don't exit on errors - we want to continue syncing even if individual files fail
+# set -e
 
 # Colors for output
 RED='\033[0;31m'
@@ -77,30 +79,50 @@ extract_schema() {
     sed -n '/{% schema %}/,/{% endschema %}/p' "$file" | sed '1d;$d'
 }
 
-# Function to merge presets from two schema JSONs
-# Returns the source schema with merged presets (base presets + new source presets)
+# Function to check if preset merge is needed and return merged schema
+# Returns "NO_MERGE_NEEDED" if source presets are same/subset of base (just copy file as-is)
+# Returns merged schema JSON if there are NEW presets to add
+# Returns empty string if merge fails (caller should fall back to simple copy)
 merge_presets() {
     local source_schema=$1
     local base_schema=$2
 
-    # Get preset names from base
-    local base_preset_names=$(echo "$base_schema" | jq -r '.presets[]?.name // empty' 2>/dev/null | sort -u)
+    # Validate JSON first (return empty on invalid JSON - caller will fall back to simple copy)
+    echo "$source_schema" | jq '.' >/dev/null 2>&1 || { echo ""; return; }
+    echo "$base_schema" | jq '.' >/dev/null 2>&1 || { echo ""; return; }
 
-    # Get presets from both
-    local base_presets=$(echo "$base_schema" | jq '.presets // []' 2>/dev/null)
+    # Check if source schema has presets key at all
+    local source_has_presets=$(echo "$source_schema" | jq 'has("presets")' 2>/dev/null)
+    if [ "$source_has_presets" != "true" ]; then
+        # Source doesn't have presets - no merge needed, just copy
+        echo "NO_MERGE_NEEDED"
+        return
+    fi
+
+    # Get preset names from base and source
+    local base_preset_names=$(echo "$base_schema" | jq -r '.presets[]?.name // empty' 2>/dev/null | sort -u)
     local source_presets=$(echo "$source_schema" | jq '.presets // []' 2>/dev/null)
 
     # Find new presets in source (not in base by name)
+    local has_new_presets=false
     local new_presets="[]"
     while IFS= read -r preset; do
         [ -z "$preset" ] && continue
         local preset_name=$(echo "$preset" | jq -r '.name // empty')
         if [ -n "$preset_name" ] && ! echo "$base_preset_names" | grep -qxF "$preset_name"; then
             new_presets=$(echo "$new_presets" | jq --argjson p "$preset" '. + [$p]')
+            has_new_presets=true
         fi
     done < <(echo "$source_presets" | jq -c '.[]' 2>/dev/null)
 
-    # Merge: base presets + new presets
+    # If no new presets to add, just copy the file as-is (preserves original formatting)
+    if [ "$has_new_presets" = false ]; then
+        echo "NO_MERGE_NEEDED"
+        return
+    fi
+
+    # Get base presets and merge with new ones
+    local base_presets=$(echo "$base_schema" | jq '.presets // []' 2>/dev/null)
     local merged_presets=$(echo "$base_presets" | jq --argjson new "$new_presets" '. + $new')
 
     # Return source schema with merged presets
@@ -108,8 +130,11 @@ merge_presets() {
 }
 
 # Function to sync with preset merging (for sections/blocks)
+# Usage: sync_folder_with_preset_merge <folder> [pattern]
+# Default pattern is "1-*"
 sync_folder_with_preset_merge() {
     local folder=$1
+    local pattern=${2:-"1-*"}
     local count=0
     local merged_count=0
 
@@ -127,17 +152,20 @@ sync_folder_with_preset_merge() {
 
                 # Check if both have valid schemas
                 if [ -n "$source_schema" ] && [ -n "$base_schema" ]; then
-                    # Merge presets
+                    # Check if merge is needed
                     local merged_schema=$(merge_presets "$source_schema" "$base_schema")
 
-                    if [ -n "$merged_schema" ] && [ "$merged_schema" != "null" ]; then
-                        # Copy file first
+                    if [ "$merged_schema" = "NO_MERGE_NEEDED" ]; then
+                        # No new presets to add - just copy file as-is (preserves formatting)
+                        cp "$file" "$target"
+                    elif [ -n "$merged_schema" ] && [ "$merged_schema" != "null" ]; then
+                        # New presets found - need to merge and reconstruct file
                         cp "$file" "$target"
 
                         # Replace schema in target with merged schema
-                        # Create temp file with merged content
                         local temp_file=$(mktemp)
-                        local before_schema=$(sed -n '1,/{% schema %}/p' "$file" | head -n -1)
+                        # Use sed '$d' instead of head -n -1 for macOS compatibility
+                        local before_schema=$(sed -n '1,/{% schema %}/p' "$file" | sed '$d')
                         local after_schema=$(sed -n '/{% endschema %}/,$p' "$file" | tail -n +2)
 
                         {
@@ -165,16 +193,16 @@ sync_folder_with_preset_merge() {
 
             ((count++))
             ((SYNCED_COUNT++))
-        done < <(find "$PROJECT_DIR/$folder" -maxdepth 1 -name "1-*" -print0 2>/dev/null)
+        done < <(find "$PROJECT_DIR/$folder" -maxdepth 1 -name "$pattern" -print0 2>/dev/null)
 
         if [ $count -gt 0 ]; then
             if [ $merged_count -gt 0 ]; then
-                echo -e "${GREEN}✓${NC} Synced $folder/ (${count} files, ${merged_count} with preset merge)"
+                echo -e "${GREEN}✓${NC} Synced $folder/$pattern (${count} files, ${merged_count} with preset merge)"
             else
-                echo -e "${GREEN}✓${NC} Synced $folder/ (${count} files)"
+                echo -e "${GREEN}✓${NC} Synced $folder/$pattern (${count} files)"
             fi
         else
-            echo -e "${YELLOW}○${NC} No 1- files in $folder/"
+            echo -e "${YELLOW}○${NC} No $pattern files in $folder/"
         fi
     else
         echo -e "${YELLOW}○${NC} Folder $folder/ not found"
@@ -245,10 +273,11 @@ sync_folder_new_only() {
 # Sync all 1- prefixed folders
 echo -e "${BLUE}Syncing 1- prefixed files...${NC}"
 echo ""
-sync_folder_with_preset_merge "sections"  # Merge presets (keep base + add new)
-sync_folder_with_preset_merge "blocks"    # Merge presets (keep base + add new)
+sync_folder_with_preset_merge "sections"        # Merge presets (keep base + add new)
+sync_folder_with_preset_merge "blocks"          # Merge presets (keep base + add new)
+sync_folder_with_preset_merge "blocks" "_1-*"   # Child blocks with underscore prefix
 sync_folder "snippets"
-sync_folder_new_only "assets"             # Only add NEW assets, don't overwrite existing
+sync_folder_new_only "assets"                   # Only add NEW assets, don't overwrite existing
 
 # Note: .cursor/rules/ is NOT synced - each project manages its own rules
 

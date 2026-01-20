@@ -1,0 +1,28 @@
+<div class="1-blog-post-exerpt blog-post-exerpt rte">
+  <rte-formatter>
+    {{ article.excerpt }}
+  </rte-formatter>
+</div>
+
+{% stylesheet %}
+  .\31-blog-post-exerpt.blog-post-exerpt {
+    max-width: 100%;
+  }
+  .\31-blog-post-exerpt.blog-post-exerpt :where(h1, h2, h3, h4, h5, h6) {
+    --color: var(--color-foreground-heading);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.1_blog_post_exerpt",
+  "tag": null,
+  "settings": [],
+  "presets": [
+    {
+      "name": "t:names.1_blog_post_exerpt",
+      "category": "t:categories.1_blog_post"
+    }
+  ]
+}
+{% endschema %}

@@ -57,11 +57,11 @@
     "view_pricing_info": "View pricing information"
   },
   "actions": {
+    "1_add_subscription_to_cart": "Add subscription to cart",
     "1_login": "Login",
     // Quick add button on product cards, shortened version of add to cart
     "add": "Add",
     "add_to_cart": "Add to cart",
-    "add_subscription_to_cart": "Add subscription to cart",
     // Success message shown after adding item to cart
     "added": "Added",
     // Button to apply discount code to cart
