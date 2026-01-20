@@ -12,7 +12,7 @@
   "name": "t:names.footer",
   "sections": {
     "footer": {
-      "type": "footer",
+      "type": "1-footer",
       "blocks": {
         "group_wErUQf": {
           "type": "group",

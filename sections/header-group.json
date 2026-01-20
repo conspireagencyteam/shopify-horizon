@@ -42,7 +42,7 @@
       }
     },
     "header_section": {
-      "type": "header",
+      "type": "1-header",
       "blocks": {
         "header-logo": {
           "type": "_header-logo",
@@ -57,7 +57,7 @@
           "blocks": {}
         },
         "header-menu": {
-          "type": "_header-menu",
+          "type": "_1-header-menu",
           "static": true,
           "settings": {
             "menu": "main-menu",
