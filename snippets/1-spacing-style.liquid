@@ -1,0 +1,63 @@
+{%- comment -%}
+  Extended version of spacing-style.liquid that supports mobile-specific padding settings.
+  Intended for blocks and sections that provide values for all the referenced settings.
+
+  <div class="spacing-style" style="{%  render '1-spacing-style', settings: section.settings %}">
+
+   Accepts:
+      settings: {block.settings || section.settings}
+      suffix: {string}
+      scale_min {number}: Value above which spacing scaling will be applied. Default: 20
+      disable_scaling {boolean}: Disable scaling. Default: false
+{%- endcomment -%}
+{%- liquid
+  assign properties = 'padding,margin' | split: ','
+  assign directions = 'block,inline' | split: ','
+  assign edges = ',start,end' | split: ','
+  assign min = scale_min | default: 20
+-%}
+{%- capture variables -%}
+  {%- for property in properties -%}
+    {%- for direction in directions -%}
+      {%- for edge in edges -%}
+        {%-liquid
+          assign name = property | append: '-' | append: direction
+
+          if edge != blank
+            assign name = name | append: '-' | append: edge
+          endif
+
+          assign setting_id = name
+
+          if suffix != blank
+            assign setting_id = setting_id | append: '-' | append: suffix
+          endif
+
+          assign value = settings[setting_id]
+         -%}
+
+        {%- if value != blank -%}
+          {%- if disable_scaling != true and value > min -%}
+            --{{ name }}: max({{ min }}px, calc(var(--spacing-scale) * {{ value }}px));
+          {%- else -%}
+            --{{ name }}: {{ value }}px;
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endfor -%}
+
+  {%- comment -%} Mobile-specific padding variables {%- endcomment -%}
+  {%- if settings.use_mobile_padding -%}
+    --mobile-padding-block-start: {{ settings.padding-block-start-mobile | default: 0 }}px;
+    --mobile-padding-block-end: {{ settings.padding-block-end-mobile | default: 0 }}px;
+    --mobile-padding-inline-start: {{ settings.padding-inline-start-mobile | default: 0 }}px;
+    --mobile-padding-inline-end: {{ settings.padding-inline-end-mobile | default: 0 }}px;
+  {%- else -%}
+    --mobile-padding-block-start: {{ settings.padding-block-start | default: 0 }}px;
+    --mobile-padding-block-end: {{ settings.padding-block-end | default: 0 }}px;
+    --mobile-padding-inline-start: {{ settings.padding-inline-start | default: 0 }}px;
+    --mobile-padding-inline-end: {{ settings.padding-inline-end | default: 0 }}px;
+  {%- endif -%}
+{%- endcapture -%}
+{{- variables | strip | strip_newlines -}}

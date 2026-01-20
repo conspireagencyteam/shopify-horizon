@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" class="icon-checkmark">
+  <path
+    d="M5 11.355L6.33833 12.79C7.07667 13.5816 7.44583 13.9766 7.85917 14.1016C8.2225 14.2108 8.60917 14.1816 8.955 14.0183C9.34917 13.8316 9.665 13.3841 10.2983 12.4883L15 5.83331"
+    stroke="currentColor" stroke-width="var(--icon-stroke-width)" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

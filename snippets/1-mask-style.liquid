@@ -1,0 +1,16 @@
+{%- comment -%}
+  Intended for blocks and sections that provide values for all the referenced settings.
+  Accepts:
+     settings: {block.settings || section.settings}
+{%- endcomment -%}
+
+{% if settings.mask_enabled %}
+  --mask-style-size: contain;
+  --mask-style-position: {{ settings.mask_position }};
+  --mask-style-repeat: {{ settings.mask_repeat }};
+
+  {% if settings.mask_image != blank %}
+    --mask-image: url({{ settings.mask_image | image_url: width: 1600 }});
+  {% endif %}
+
+{% endif %}

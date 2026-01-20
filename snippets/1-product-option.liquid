@@ -1,0 +1,30 @@
+{%- doc -%}
+  Renders a swatch
+
+  @param {object} product_option_value - a product option value object
+  @param {string} [mode] - one of 'unscaled' or 'filter'
+
+  @example
+  {% render '1-product-option' mode: 'unscaled' %}
+{%- enddoc -%}
+
+{% liquid
+  assign classes =
+  case mode
+    when 'unscaled'
+      assign extra_classes = ' swatch--unscaled'
+    when 'filter'
+      assign extra_classes = ' swatch--filter'
+    when 'pill'
+      assign extra_classes = ' swatch--pill'
+    else
+      assign extra_classes = ''
+  endcase
+%}
+<span class="variant-option__button-label__pill">
+</span>
+<span
+  class="1-size{{ extra_classes }} variant-option__button-label__text{% if product_option_value.available == false %} size--unavailable{% endif %}"
+>
+  {{ product_option_value.name }}
+</span>

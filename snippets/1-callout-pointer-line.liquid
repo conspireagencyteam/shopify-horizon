@@ -1,0 +1,163 @@
+{%- doc -%}
+  Renders a pointer line with a circle at the end.
+
+  @param {string} mobile_side - The side the pointer originates from: 'topLeft', 'topRight', 'bottomLeft', or 'bottomRight' or 'TOP' or 'BOTTOM' or 'LEFT' or 'RIGHT'
+  @param {string} desktop_side - The side the pointer originates from: 'top', 'right', 'bottom', or 'left'
+  @param {string} style - The line style: 'dashed' or 'solid'
+  @param {number} pointer_length - The length of the pointer in pixels
+  @param {number} pointer_length_mobile - The length of the pointer in pixels for mobile
+
+  @example
+  {% render '1-callout-pointer-line', side: 'left', style: 'dashed', pointer_length: 100, pointer_length_mobile: 100, class: '1-callout-pointer__line--desktop' %}
+{%- enddoc -%}
+
+{%- liquid
+  assign stroke_width = 1
+  assign circle_radius = 3
+  assign dash_length = 6
+  assign dash_gap = 6
+  assign stroke_color = 'currentColor'
+  assign fill_color = 'currentColor'
+  assign perpendicular_size = 10
+
+  if style == 'dashed'
+    assign dash_array = dash_length | append: ',' | append: dash_gap
+  else
+    assign dash_array = ''
+  endif
+
+  case desktop_side
+    when 'top'
+      assign viewbox_width = perpendicular_size
+      assign viewbox_height = pointer_length
+      assign line_x1 = perpendicular_size | divided_by: 2
+      assign line_y1 = pointer_length
+      assign line_x2 = perpendicular_size | divided_by: 2
+      assign line_y2 = 0
+      assign circle_cx = perpendicular_size | divided_by: 2
+      assign circle_cy = circle_radius
+    when 'right'
+      assign viewbox_width = pointer_length
+      assign viewbox_height = perpendicular_size
+      assign line_x1 = 0
+      assign line_y1 = perpendicular_size | divided_by: 2
+      assign line_x2 = pointer_length
+      assign line_y2 = perpendicular_size | divided_by: 2
+      assign circle_cx = pointer_length | minus: circle_radius
+      assign circle_cy = perpendicular_size | divided_by: 2
+    when 'bottom'
+      assign viewbox_width = perpendicular_size
+      assign viewbox_height = pointer_length
+      assign line_x1 = perpendicular_size | divided_by: 2
+      assign line_y1 = 0
+      assign line_x2 = perpendicular_size | divided_by: 2
+      assign line_y2 = pointer_length
+      assign circle_cx = perpendicular_size | divided_by: 2
+      assign circle_cy = pointer_length | minus: circle_radius
+    when 'left'
+      assign viewbox_width = pointer_length
+      assign viewbox_height = perpendicular_size
+      assign line_x1 = 0
+      assign line_y1 = perpendicular_size | divided_by: 2
+      assign line_x2 = pointer_length
+      assign line_y2 = perpendicular_size | divided_by: 2
+      assign circle_cx = circle_radius
+      assign circle_cy = perpendicular_size | divided_by: 2
+  endcase
+-%}
+
+<svg
+  class="1-callout-pointer__line hidden--mobile"
+  viewBox="0 0 {{ viewbox_width }} {{ viewbox_height }}"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+  width="{{ viewbox_width }}"
+  height="{{ viewbox_height }}"
+>
+  <line
+    x1="{{ line_x1 }}"
+    y1="{{ line_y1 }}"
+    x2="{{ line_x2 }}"
+    y2="{{ line_y2 }}"
+    stroke="{{ stroke_color }}"
+    stroke-width="{{ stroke_width }}"
+    {% if dash_array != blank %}stroke-dasharray="{{ dash_array }}"{% endif %}
+  />
+  <circle
+    cx="{{ circle_cx }}"
+    cy="{{ circle_cy }}"
+    r="{{ circle_radius }}"
+    fill="{{ fill_color }}"
+  />
+</svg>
+{% if 'topLeft, topRight, bottomLeft, bottomRight' contains mobile_side %}
+  <div class="1-callout-pointer__l-shape 1-callout-pointer__l-shape--{{ mobile_side }} hidden--desktop"></div>
+{% else %}
+  {% liquid  
+    unless 'topLeft, topRight, bottomLeft, bottomRight' contains mobile_side  
+      case mobile_side
+        when 'TOP'
+          assign viewbox_width = perpendicular_size
+          assign viewbox_height = pointer_length_mobile
+          assign line_x1 = perpendicular_size | divided_by: 2
+          assign line_y1 = pointer_length_mobile
+          assign line_x2 = perpendicular_size | divided_by: 2
+          assign line_y2 = 0
+          assign circle_cx = perpendicular_size | divided_by: 2
+          assign circle_cy = circle_radius
+        when 'RIGHT'
+          assign viewbox_width = pointer_length_mobile
+          assign viewbox_height = perpendicular_size
+          assign line_x1 = 0
+          assign line_y1 = perpendicular_size | divided_by: 2
+          assign line_x2 = pointer_length_mobile
+          assign line_y2 = perpendicular_size | divided_by: 2
+          assign circle_cx = pointer_length_mobile | minus: circle_radius
+          assign circle_cy = perpendicular_size | divided_by: 2
+        when 'BOTTOM'
+          assign viewbox_width = perpendicular_size
+          assign viewbox_height = pointer_length_mobile
+          assign line_x1 = perpendicular_size | divided_by: 2
+          assign line_y1 = 0
+          assign line_x2 = perpendicular_size | divided_by: 2
+          assign line_y2 = pointer_length_mobile
+          assign circle_cx = perpendicular_size | divided_by: 2
+          assign circle_cy = pointer_length_mobile | minus: circle_radius
+        when 'LEFT'
+          assign viewbox_width = pointer_length_mobile
+          assign viewbox_height = perpendicular_size
+          assign line_x1 = 0
+          assign line_y1 = perpendicular_size | divided_by: 2
+          assign line_x2 = pointer_length_mobile
+          assign line_y2 = perpendicular_size | divided_by: 2
+          assign circle_cx = circle_radius
+          assign circle_cy = perpendicular_size | divided_by: 2
+      endcase
+    endunless
+  %}
+  <svg
+    class="1-callout-pointer__line hidden--desktop"
+    viewBox="0 0 {{ viewbox_width }} {{ viewbox_height }}"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+    width="{{ viewbox_width }}"
+    height="{{ viewbox_height }}"
+  >
+    <line
+      x1="{{ line_x1 }}"
+      y1="{{ line_y1 }}"
+      x2="{{ line_x2 }}"
+      y2="{{ line_y2 }}"
+      stroke="{{ stroke_color }}"
+      stroke-width="{{ stroke_width }}"
+      {% if dash_array != blank %}stroke-dasharray="{{ dash_array }}"{% endif %}
+    />
+    <circle
+      cx="{{ circle_cx }}"
+      cy="{{ circle_cy }}"
+      r="{{ circle_radius }}"
+      fill="{{ fill_color }}"
+    />
+  </svg>
+{% endif %}
+

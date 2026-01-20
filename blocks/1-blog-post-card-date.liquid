@@ -1,0 +1,131 @@
+{% liquid
+  assign article = closest.article
+  assign format = block.settings.date_format | default: '%b %d'
+-%}
+
+<div class="1-blog-post-date spacing-style {% if block.settings.inherit_color_scheme %}inherit-colors{% else %}color-{{ block.settings.color_scheme }}{% endif %}"
+     style="{% render 'spacing-style', settings: block.settings %}"
+     {{ block.shopify_attributes }}>
+  
+  {% if block.settings.layout == 'stacked' %}
+    {% assign date_parts = article.published_at | date: format | split: ' ' %}
+    <div class="1-blog-post-card-date-month h5" style="color: var(--color-foreground-heading);">{{ date_parts[0] }}</div>
+    <div class="1-blog-post-card-date-day h2" style="color: var(--color-foreground-heading);">{{ date_parts[1] }}</div>
+  {% else %}
+    <div class="1-blog-post-card-date-inline h6">
+      {{ article.published_at | date: format }}
+    </div>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+.\31-blog-post-card-date-month {
+  &:after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background-color: var(--color-border);
+    margin-block: 16px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.1_blog_post_date",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Date layout",
+      "options": [
+        {
+          "value": "stacked",
+          "label": "Stacked (Month/Day)"
+        },
+        {
+          "value": "inline",
+          "label": "Inline"
+        }
+      ],
+      "default": "stacked"
+    },
+    {
+      "type": "text",
+      "id": "date_format",
+      "label": "Date format",
+      "default": "%b %d",
+      "info": "Use Liquid date format. Examples: %b %d = Jun 24, %B %Y = June 2024"
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "checkbox",
+      "id": "inherit_color_scheme",
+      "label": "t:settings.inherit_color_scheme",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.1_blog_post_date",
+      "category": "t:categories.blog_post"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,631 @@
+{% capture children %}
+  {%- content_for 'block', type: '_content', id: 'static-header' -%}
+{% endcapture %}
+
+{% capture footer %}
+  {%- content_for 'block', type: '_content', id: 'static-footer' -%}
+{% endcapture %}
+
+{% capture list_items %}
+  {% for herb_item in section.settings.herbs %}
+    {% content_for 'block', type: '_1-herb-item', id: 'static-herb-item', closest.metaobject.herb: herb_item %}
+  {% endfor %}
+{% endcapture %}
+
+{% render '1-herbs', children: children, list_items: list_items, settings: section.settings, slide_count: section.settings.herbs.size, footer: footer %}
+
+{% schema %}
+{
+  "name": "t:names.1_herbs",
+  "class": "herbs-section-wrapper",
+  "blocks": [
+    {
+      "type": "_1-herb-item"
+    }
+  ],
+  "settings": [
+    {
+      "type": "metaobject_list",
+      "id": "herbs",
+      "label": "t:settings.1_herbs",
+      "metaobject_type": "herb"
+    },
+    {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "select",
+      "id": "layout_type",
+      "label": "t:settings.layout_type",
+      "options": [
+        {
+          "value": "grid",
+          "label": "t:options.grid"
+        },
+        {
+          "value": "carousel",
+          "label": "t:options.carousel"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "select",
+      "id": "layout_type_mobile",
+      "label": "t:settings.1_layout_type_mobile",
+      "options": [
+        {
+          "value": "grid",
+          "label": "t:options.grid"
+        },
+        {
+          "value": "carousel",
+          "label": "t:options.carousel"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:settings.columns",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "t:settings.mobile_columns",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:options.one_number"
+        },
+        {
+          "value": "2",
+          "label": "t:options.two_number"
+        }
+      ],
+      "default": "2",
+      "visible_if": "{{ section.settings.layout_type_mobile == 'grid' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width_on_mobile",
+      "label": "t:settings.full_width_on_mobile",
+      "default": false,
+      "visible_if": "{{ section.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "range",
+      "id": "columns_gap",
+      "label": "t:settings.horizontal_gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "rows_gap",
+      "label": "t:settings.vertical_gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8,
+      "visible_if": "{{ section.settings.layout_type == 'grid'}}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.carousel_navigation",
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "t:settings.auto_rotate_slides",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "t:settings.speed",
+      "min": 3,
+      "max": 7,
+      "step": 1,
+      "unit": "s",
+      "default": 4,
+      "visible_if": "{{ section.settings.autoplay }}"
+    },
+    {
+      "type": "select",
+      "id": "icons_style",
+      "label": "t:settings.icon",
+      "options": [
+        {
+          "value": "arrow",
+          "label": "t:options.arrows"
+        },
+        {
+          "value": "chevron",
+          "label": "t:options.chevrons"
+        },
+        {
+          "value": "arrows_large",
+          "label": "t:options.arrows_large"
+        },
+        {
+          "value": "chevron_large",
+          "label": "t:options.chevron_large"
+        },
+        {
+          "value": "none",
+          "label": "t:options.none"
+        }
+      ],
+      "default": "arrow",
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "select",
+      "id": "slideshow_controls_position",
+      "label": "t:settings.position",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:options.left"
+        },
+        {
+          "value": "center",
+          "label": "t:options.center"
+        },
+        {
+          "value": "right",
+          "label": "t:options.right"
+        },
+        {
+          "value": "bottom",
+          "label": "t:options.bottom"
+        },
+        {
+          "value": "below-slideshow",
+          "label": "t:options.1_below_slideshow"
+        }
+      ],
+      "default": "center",
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "select",
+      "id": "icons_shape",
+      "label": "t:settings.icon_background",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:options.none"
+        },
+        {
+          "value": "circle",
+          "label": "t:options.circle"
+        },
+        {
+          "value": "square",
+          "label": "t:options.square"
+        }
+      ],
+      "default": "none",
+      "visible_if": "{{ section.settings.icons_style != 'none' and section.settings.layout_type == 'carousel' or section.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "select",
+      "id": "slideshow_controls_style",
+      "label": "t:settings.pagination",
+      "options": [
+        {
+          "value": "dots",
+          "label": "t:options.dots"
+        },
+        {
+          "value": "counter",
+          "label": "t:options.counter"
+        },
+        {
+          "value": "none",
+          "label": "t:options.none"
+        }
+      ],
+      "default": "none",
+      "visible_if": "{{ section.settings.layout_type == 'carousel' }}"
+    },
+    {
+      "type": "select",
+      "id": "slideshow_mobile_controls_style",
+      "label": "t:settings.mobile_pagination",
+      "options": [
+        {
+          "value": "dots",
+          "label": "t:options.dots"
+        },
+        {
+          "value": "counter",
+          "label": "t:options.counter"
+        },
+        {
+          "value": "none",
+          "label": "t:options.none"
+        }
+      ],
+      "default": "none",
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "t:settings.gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "t:content.size"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.1_herbs",
+      "category": "t:categories.storytelling",
+      "blocks": {
+        "static-header": {
+          "type": "_content",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 10,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "1_text_cXVMWX": {
+              "type": "1-text",
+              "name": "t:names.1_heading",
+              "settings": {
+                "text": "<h2>Herbs with purpose</h2>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "h1",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground-heading)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "1_text_4rL7PT": {
+              "type": "1-text",
+              "name": "t:names.1_subheading",
+              "settings": {
+                "text": "<p>Each herb in the Mullein-X formulas was carefully selected to provide a specific structure function.</p>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "1_text_cXVMWX",
+            "1_text_4rL7PT"
+          ]
+        },
+        "static-footer": {
+          "type": "_content",
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 0,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "static-herb-item": {
+          "type": "_1-herb-item",
+          "static": true,
+          "settings": {
+            "herb": "{{ closest.metaobject.herb }}",
+            "link": "",
+            "open_in_new_tab": false,
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "flex-start",
+            "gap": 0,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fill",
+            "custom_height": 100,
+            "inherit_color_scheme": false,
+            "color_scheme": "scheme-12",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "shadow": "none",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 24,
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "padding-block-start": 24,
+            "padding-block-end": 24,
+            "padding-inline-start": 24,
+            "padding-inline-end": 24
+          },
+          "blocks": {
+            "1_image_bnPWTr": {
+              "type": "1-image",
+              "name": "t:names.1_image",
+              "settings": {
+                "image": "{{ closest.metaobject.herb.image.value }}",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "move_vertically": 0,
+                "mask_enabled": false,
+                "mask_position": "center",
+                "mask_repeat": "no-repeat",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "group_KjWPjL": {
+              "type": "group",
+              "name": "t:names.group",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "center",
+                "vertical_alignment_flex_direction_column": "flex-start",
+                "gap": 12,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "inherit_color_scheme": true,
+                "color_scheme": "",
+                "background_media": "none",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "1_text_ct4rrm": {
+                  "type": "1-text",
+                  "name": "Heading",
+                  "settings": {
+                    "text": "<h3>{{ closest.metaobject.herb.title.value }}</h3>",
+                    "width": "fit-content",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "h3",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground-heading)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "1_text_dz47Fb": {
+                  "type": "1-text",
+                  "name": "t:names.1_text",
+                  "settings": {
+                    "text": "{{ closest.metaobject.herb.subheading | metafield_tag }}",
+                    "width": "fit-content",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "1_text_ct4rrm",
+                "1_text_dz47Fb"
+              ]
+            }
+          },
+          "block_order": [
+            "1_image_bnPWTr",
+            "group_KjWPjL"
+          ]
+        }
+      },
+      "settings": {
+        "herbs": [
+          "chamomile-passionflower-and-holy-basil",
+          "english-ivy-leaf",
+          "grapefruit-seed-olive-leaf-and-ginger-root",
+          "zinc-and-sambucus-black-elderberries",
+          "mullein-leaf-and-nettle-leaf",
+          "licorice-root-slippery-elm-bark-and-sage-leaf",
+          "honey",
+          "horehound-herb-and-marshmallow-root",
+          "plantain-leaf-and-elecampane-root"
+        ],
+        "layout_type": "grid",
+        "layout_type_mobile": "carousel",
+        "columns": 3,
+        "mobile_columns": "2",
+        "full_width_on_mobile": true,
+        "columns_gap": 24,
+        "rows_gap": 24,
+        "autoplay": false,
+        "autoplay_speed": 4,
+        "icons_style": "arrow",
+        "slideshow_controls_position": "center",
+        "icons_shape": "none",
+        "slideshow_controls_style": "none",
+        "slideshow_mobile_controls_style": "dots",
+        "gap": 32,
+        "section_width": "page-width",
+        "color_scheme": "scheme-5",
+        "padding-block-start": 80,
+        "padding-block-end": 64
+      }
+    }
+  ]
+}
+{% endschema %}

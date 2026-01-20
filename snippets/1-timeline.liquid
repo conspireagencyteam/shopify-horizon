@@ -1,0 +1,151 @@
+{%- doc -%}
+  Renders section content for all sections that extend the list section.
+  Custom version that supports individual border widths for top, bottom, left, and right.
+
+  @param {string} children - The DOM content of the list section.
+  @param {object} list_items - An array of HTML for the list items to display in the carousel
+  @param {object} settings - The settings of the list section.
+  @param {number} slide_count - The number of slides to display in the carousel
+
+  @example
+  {% render '1-list-section', children: children, list_items: list_items, settings: section.settings, slide_count: slide_count %}
+{%- enddoc -%}
+
+{% liquid
+  case settings.layout_type
+    when 'grid'
+      assign classes = 'resource-list--grid'
+    when 'carousel'
+      assign classes = 'resource-list__carousel'
+  endcase
+
+  capture styles
+    echo '--resource-list-column-gap-desktop: ' | append: settings.columns_gap | append: 'px;'
+    
+    if settings.layout_type == 'grid'
+      echo '--resource-list-row-gap-desktop: ' | append: settings.rows_gap | append: 'px;'
+      echo '--resource-list-columns: repeat(' | append: settings.columns | append: ', 1fr);'
+    endif
+    
+    if settings.layout_type == 'carousel'
+      echo '--column-count: ' | append: settings.columns | append: ';'
+    endif
+    
+    if settings.layout_type_mobile == 'grid'
+      echo '--resource-list-columns-mobile: repeat(' | append: settings.mobile_columns | append: ', 1fr);'
+    endif
+  endcapture
+%}
+
+<div class="section-background color-{{ settings.color_scheme }}"></div>
+<div
+  class="
+    section
+    section--{{ settings.section_width }}
+    color-{{ settings.color_scheme }}
+    section-resource-list
+    spacing-style
+    gap-style
+  "
+  style="
+    --column-count-mobile: {{ settings.mobile_columns }};
+    {% render 'spacing-style', settings: settings %}
+    {% render 'gap-style', value: settings.gap %}
+    {{ styles }}
+  "
+>
+  <div class="section-resource-list__header">
+    {{ children }}
+  </div>
+
+  {% liquid
+    # Create an array from the list items to be used for different layout types
+    assign list_items_array = list_items | strip | split: '<!--@timeline/split-->'
+    assign list_times_raw_array = list_items | strip | split: '<!--@timeline/split-time-->'
+    assign list_times_array = ''
+    for list_time_raw in list_times_raw_array
+      assign is_even = forloop.index | modulo: 2
+      if is_even == 0
+        assign list_time = list_time_raw | strip | remove: '<!--' | remove: '-->' | truncate: 4, ""
+        assign list_times_array = list_times_array | append: list_time | append: '|---|'
+      endif
+    endfor
+    assign list_times_array = list_times_array | strip | split: '|---|'
+  %}
+  <div
+    class="
+      resource-list
+      1-resource-list--timeline
+      {% if settings.layout_type == 'carousel' %}
+        force-full-width
+      {% endif %}
+      {% if settings.layout_type_mobile != settings.layout_type %}
+        hidden--mobile
+      {% endif %}
+      {{ classes }}
+    "
+    style="
+      {{ styles }}
+    "
+    {% if settings.layout_type == 'grid' %}
+      data-testid="resource-list-grid"
+    {% endif %}
+  >
+    {% case settings.layout_type %}
+      {% when 'grid' %}
+        {{ list_items }}
+      {% when 'carousel' %}
+        {% render '1-list-carousel',
+          ref: 'resourceListCarousel',
+          slides: list_items_array,
+          slide_count: slide_count,
+          settings: settings,
+          timeline_times: list_times_array
+        %}
+    {% endcase %}
+  </div>
+
+  {% if settings.layout_type_mobile != settings.layout_type %}
+    {% case settings.layout_type_mobile %}
+      {% when 'carousel' %}
+        {% liquid
+          assign mobile_carousel_gap = settings.columns_gap
+        %}
+        <div
+          class="
+            resource-list
+            hidden--desktop
+            force-full-width
+          "
+          style="
+            --resource-list-column-gap-desktop: {{ mobile_carousel_gap }}px;
+            --column-count: {{ settings.columns }};
+          "
+        >
+          {% render '1-list-carousel',
+            ref: 'resourceListCarouselMobile',
+            slides: list_items_array,
+            slide_count: slide_count,
+            settings: settings,
+            timeline_times: list_times_array
+          %}
+        </div>
+      {% when 'grid' %}
+        <div
+          class="
+            resource-list
+            hidden--desktop
+            resource-list--grid
+          "
+          style="
+            --resource-list-column-gap-desktop: {{ settings.columns_gap }}px;
+            --resource-list-row-gap-desktop: {{ settings.rows_gap }}px;
+            --resource-list-columns: repeat({{ settings.columns }}, 1fr);
+            --resource-list-columns-mobile: repeat({{ settings.mobile_columns }}, 1fr);
+          "
+        >
+          {{ list_items }}
+        </div>
+    {% endcase %}
+  {% endif %}
+</div>

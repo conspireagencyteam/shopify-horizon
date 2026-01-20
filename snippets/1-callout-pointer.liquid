@@ -1,0 +1,222 @@
+{%- doc -%}
+  Renders a callout pointer line that connects from the group block to a target element.
+
+  @param {object} settings - The settings object containing pointer configuration.
+
+  @example
+  {% render '1-callout-pointer', settings: block.settings %}
+{%- enddoc -%}
+
+{%- liquid
+  unless settings.enable_callout_pointer
+    break
+  endunless
+
+  assign pointer_side_desktop = settings.pointer_side_desktop | default: 'left'
+  assign pointer_side_mobile = settings.pointer_side_mobile | default: 'bottomRight'
+  assign pointer_length = settings.pointer_length | default: 100
+  assign pointer_style = settings.pointer_style | default: 'dashed'
+  assign pointer_color = settings.pointer_color | default: '#ffffff'
+  assign pointer_opacity = settings.pointer_opacity | default: 100
+  assign opacity_value = pointer_opacity | divided_by: 100.0
+  assign color_rgb = pointer_color.rgb | default: '255, 255, 255'
+  if 'topLeft, topRight, bottomLeft, bottomRight' contains pointer_side_mobile
+    assign pointer_length_mobile = settings.pointer_length_mobile | default: pointer_length | divided_by: 2
+    assign pointer_width_mobile = settings.pointer_width_mobile | default: pointer_length | divided_by: 2
+  else
+    assign pointer_length_mobile = settings.pointer_length_mobile | default: pointer_length
+    assign pointer_width_mobile = settings.pointer_width_mobile | default: pointer_length
+  endif
+-%}
+
+<div
+  class="1-callout-pointer 1-callout-pointer--desktop-{{ pointer_side_desktop }} 1-callout-pointer--mobile-{{ pointer_side_mobile }} 1-callout-pointer--{{ pointer_style }}"
+  style="
+    --pointer-style: {{ pointer_style }};
+    --pointer-length: {{ pointer_length }}px;
+    --pointer-color-rgb: {{ color_rgb }};
+    --pointer-opacity: {{ opacity_value }};
+    --pointer-length-mobile: {{ pointer_length_mobile }}px;
+    --pointer-width-mobile: {{ pointer_width_mobile }}px;
+  "
+  aria-hidden="true"
+>
+  {% render '1-callout-pointer-line', desktop_side: pointer_side_desktop, mobile_side: pointer_side_mobile, style: pointer_style, pointer_length: pointer_length, pointer_length_mobile: pointer_length_mobile %}
+</div>
+
+{% stylesheet %}
+  .\31-callout-pointer {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    color: rgb(var(--pointer-color-rgb) / var(--pointer-opacity));
+  }
+
+  @media screen and (min-width: 750px) {
+    .\31-callout-pointer--desktop-top {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: var(--pointer-length);
+      margin-top: calc(-1 * var(--pointer-length));
+    }
+
+    /* Right pointer - horizontal line pointing right */
+    .\31-callout-pointer--desktop-right {
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: var(--pointer-length);
+      margin-right: calc(-1 * var(--pointer-length));
+    }
+
+    /* Bottom pointer - vertical line pointing down */
+    .\31-callout-pointer--desktop-bottom {
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: var(--pointer-length);
+      margin-bottom: calc(-1 * var(--pointer-length));
+    }
+
+    /* Left pointer - horizontal line pointing left */
+    .\31-callout-pointer--desktop-left {
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: var(--pointer-length);
+      margin-left: calc(-1 * var(--pointer-length));
+    }
+  }
+  
+
+  @media screen and (max-width: 749px) {
+    .\31-callout-pointer--mobile-topLeft {
+      right: auto;
+      bottom: auto;
+      left: 50%;
+      bottom: 100%;
+      transform: translateX(-50%);
+    }
+    .\31-callout-pointer--mobile-topRight {
+      left: auto;
+      bottom: auto;
+      left: 50%;
+      bottom: 100%;
+      transform: translateX(-50%);
+    }
+    .\31-callout-pointer--mobile-bottomLeft {
+      right: auto;
+      bottom: auto;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+    }
+    .\31-callout-pointer--mobile-bottomRight {
+      left: auto;
+      bottom: auto;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+    }
+
+    .\31-callout-pointer--mobile-TOP {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: var(--pointer-length-mobile);
+      margin-top: calc(-1 * var(--pointer-length-mobile));
+    }
+
+    /* Right pointer - horizontal line pointing right */
+    .\31-callout-pointer--mobile-RIGHT {
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: var(--pointer-length-mobile);
+      margin-right: calc(-1 * var(--pointer-length-mobile));
+    }
+
+    /* Bottom pointer - vertical line pointing down */
+    .\31-callout-pointer--mobile-BOTTOM {
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: var(--pointer-length-mobile);
+      margin-bottom: calc(-1 * var(--pointer-length-mobile));
+    }
+
+    /* Left pointer - horizontal line pointing left */
+    .\31-callout-pointer--mobile-LEFT {
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: var(--pointer-length-mobile);
+      margin-left: calc(-1 * var(--pointer-length-mobile));
+    }
+  }
+
+  .\31-callout-pointer__l-shape {
+    --l-shape-radius: 24px;
+    position: relative;
+    width: var(--pointer-width-mobile);
+    height: var(--pointer-length-mobile);
+    border-style: var(--pointer-style);
+    border-color: rgb(var(--pointer-color-rgb) / var(--pointer-opacity));
+  }
+  
+  .\31-callout-pointer__l-shape:after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: rgb(var(--pointer-color-rgb) / var(--pointer-opacity));
+  }
+
+  .\31-callout-pointer__l-shape--topLeft {
+    border-width: 1px 1px 0 0;
+    border-top-right-radius: var(--l-shape-radius);    
+    margin-left: calc(-1 * var(--pointer-width-mobile));
+  }
+  .\31-callout-pointer__l-shape--topLeft:after {
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  .\31-callout-pointer__l-shape--topRight {
+    border-width: 1px 0 0 1px;
+    border-top-left-radius: var(--l-shape-radius);
+    margin-left: calc(1 * var(--pointer-width-mobile));
+  }
+  .\31-callout-pointer__l-shape--topRight:after {
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+  }
+
+  .\31-callout-pointer__l-shape--bottomLeft {
+    border-width: 0 1px 1px 0;
+    border-bottom-right-radius: var(--l-shape-radius);
+    margin-right: calc(1 * var(--pointer-width-mobile));
+  }
+  .\31-callout-pointer__l-shape--bottomLeft:after {
+    bottom: 0;
+    left: 0;
+    transform: translate(-50%, 50%);
+  }
+
+  .\31-callout-pointer__l-shape--bottomRight {
+    border-width: 0 0 1px 1px;
+    border-bottom-left-radius: var(--l-shape-radius);
+    margin-right: calc(-1 * var(--pointer-width-mobile));
+  }
+  .\31-callout-pointer__l-shape--bottomRight:after {
+    bottom: 0;
+    right: 0;
+    transform: translate(50%, 50%);
+  }
+
+{% endstylesheet %}
+

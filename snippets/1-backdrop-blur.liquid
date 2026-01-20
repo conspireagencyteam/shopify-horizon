@@ -1,0 +1,6 @@
+{%- comment -%}
+  Renders backdrop blur css
+{%- endcomment -%}
+{% if settings.enable_backdrop_blur %}
+  --backdrop-blur: {{ settings.backdrop_blur_amount }}px;
+{% endif %}

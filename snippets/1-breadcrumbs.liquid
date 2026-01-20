@@ -1,0 +1,74 @@
+{%- doc -%}
+  Renders breadcrumb navigation for products
+
+  Displays a breadcrumb trail showing the navigation path from home to the current product.
+  Follows WCAG 2.2 and WAI-ARIA Breadcrumb Pattern specifications.
+
+  @example
+    {%- render '1-breadcrumbs' -%}
+{%- enddoc -%}
+
+{%- liquid
+  # Parameter validation and defaults
+  assign product = product | default: empty
+  assign collection = collection | default: empty
+  assign page = page | default: empty
+-%}
+
+{%- if product != empty or collection != empty or page != empty -%}
+  <nav aria-label="Breadcrumb Navigation">
+    <ul class="1-breadcrumbs">
+      {%- comment -%} Home link {%- endcomment -%}
+      <li class="1-breadcrumbs__item">
+        <a href="{{ routes.root_url }}" class="1-breadcrumbs__link">
+          Home
+        </a>
+      </li>
+
+      {%- if product != empty -%}
+        <li class="1-breadcrumbs__item">
+          <span class="1-breadcrumbs__separator" aria-hidden="true">/</span>
+          <a href="{{ routes.all_products_collection_url }}" class="1-breadcrumbs__link">
+            Product Line
+          </a>
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} Collection link (if available) {%- endcomment -%}
+      {%- if collection != empty -%}
+        <li class="1-breadcrumbs__item"{% if product == empty %} aria-current="page"{% endif %}>
+          <span class="1-breadcrumbs__separator" aria-hidden="true">/</span>
+          {%- if product == empty -%}
+            <span class="1-breadcrumbs__current">
+              {{ collection.title }}
+            </span>
+          {%- else -%}
+            <a href="{{ collection.url }}" class="1-breadcrumbs__link">
+              {{ collection.title }}
+            </a>
+          {%- endif -%}
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} Current product (last item) {%- endcomment -%}
+      {%- if product != empty -%}
+        <li class="1-breadcrumbs__item" aria-current="page">
+          <span class="1-breadcrumbs__separator" aria-hidden="true">/</span>
+          <span class="1-breadcrumbs__current">
+            {{ product.title }}
+          </span>
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} Page link (if available) {%- endcomment -%}
+      {%- if page != empty -%}
+        <li class="1-breadcrumbs__item" aria-current="page">
+          <span class="1-breadcrumbs__separator" aria-hidden="true">/</span>
+          <span class="1-breadcrumbs__current">
+            {{ page.title }}
+          </span>
+        </li>
+      {%- endif -%}
+    </ul>
+  </nav>
+{%- endif -%}

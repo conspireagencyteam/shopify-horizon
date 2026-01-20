@@ -1,0 +1,149 @@
+{%- doc -%}
+  Renders block content for all blocks that extend the group block.
+  Custom version that supports individual border widths for top, bottom, left, and right.
+
+  @param {string} children - The DOM content of the group block.
+  @param {object} settings - The settings of the group block.
+  @param {string} shopify_attributes - String with Shopify attributes for the editor.
+  @param {string} [class] - Custom classes for the group block.
+  @param {string} [style] - Custom inline styles for the group block.
+
+  @example
+  {% render '1-group', children: children, settings: block.settings, shopify_attributes: block.shopify_attributes %}
+{%- enddoc -%}
+{%  capture class %}
+  1-group-block
+  group-block
+  group-block--height-{{ settings.height }}
+  group-block--width-{{ settings.width }}
+  {% if settings.use_individual_borders %}border-style--individual{% else %}border-style{% endif %}
+  spacing-style
+  1-spacing-style
+  size-style
+  {% if settings.position != 'static' %}position-{{ settings.position }}{% endif %}
+  {% if settings.enable_parallax %}parallax-container parallax-{{ settings.parallax_speed }} parallax-{{ settings.parallax_direction }}{% unless settings.parallax_on_mobile %} parallax-desktop-only{% endunless %}{% endif %}
+  {% if settings.inherit_color_scheme == false %} color-{{ settings.color_scheme }}{% endif %}
+  {% if settings.enable_backdrop_blur %} 1-backdrop-blur-style{% endif %}
+  {% if settings.visibility == 'hide_mobile' %}hidden--mobile{% endif %}
+  {% if settings.visibility == 'hide_desktop' %}hidden--desktop{% endif %}
+  {{ class }}
+{% endcapture %}
+{% capture style %}
+  {% if settings.use_individual_borders %}
+    {% render '1-border-override', settings: settings %}
+  {% else %}
+    {% render 'border-override', settings: settings %}
+  {% endif %}
+  {% render '1-spacing-style', settings: settings %}
+  {% render 'size-style', settings: settings %}
+  {% if settings.position != 'static' %}
+    position: {{ settings.position }};
+    {% if settings.z_index != 0 %}z-index: {{ settings.z_index }};{% endif %}
+    {% if settings.position == 'absolute' %}
+      {% if settings.position_top != 0 %}top: {{ settings.position_top }}%;{% endif %}
+      {% if settings.position_bottom != 0 %}bottom: {{ settings.position_bottom }}%;{% endif %}
+      {% if settings.position_left != 0 %}left: {{ settings.position_left }}%;{% endif %}
+      {% if settings.position_right != 0 %}right: {{ settings.position_right }}%;{% endif %}
+    {% endif %}
+  {% endif %}
+  {% render '1-backdrop-blur', settings: settings %}
+  {% if settings.enable_callout_pointer %}
+    overflow: visible;
+    position: relative;
+  {% endif %}
+  {{ style }}
+{% endcapture %}
+{% capture content %}
+  {%- if settings.link != blank -%}
+    <a
+      href="{{ settings.link }}"
+      class="group-block__link"
+      {% if settings.open_in_new_tab %}
+        target="_blank" rel="noopener"
+      {% endif %}
+    ></a>
+  {%- endif -%}
+
+  <div class="group-block__media-wrapper">
+    {% render 'background-media',
+      background_media: settings.background_media,
+      background_video: settings.video,
+      background_video_position: settings.video_position,
+      background_image: settings.background_image,
+      background_image_position: settings.background_image_position
+    %}
+    {% if settings.toggle_overlay %}
+      {% render 'overlay', settings: settings, layer: '0' %}
+    {% endif %}
+  </div>
+
+  <div
+    class="
+      group-block-content
+      {% if request.design_mode %}group-block-content--design-mode{% endif %}
+      layout-panel-flex
+      1-layout-panel-flex
+      layout-panel-flex--{{ settings.content_direction | default: 'column' }}
+      1-layout-panel-flex--{{ settings.content_direction | default: 'column' }}
+      {% if settings.content_direction == 'row' and settings.vertical_on_mobile %} 1-mobile-column mobile-column{% endif %}
+      {% if settings.content_direction == 'column' and settings.horizontal_on_mobile %} 1-mobile-row mobile-row{% endif %}
+    "
+    style="    
+      {% render '1-layout-panel-style', settings: settings %}
+    "
+  >
+    {{- children -}}
+  </div>
+
+  {% if settings.enable_callout_pointer %}
+    {% render '1-callout-pointer', settings: settings %}
+  {% endif %}
+{% endcapture %}
+{% if settings.enable_parallax %}
+<parallax-group
+  class="{{ class }}"
+  style="{{ style }}"
+  data-parallax="true"
+  data-parallax-speed="{{ settings.parallax_speed }}"
+  data-parallax-direction="{{ settings.parallax_direction }}"
+  {{ shopify_attributes }}
+  data-testid="group-block"
+>
+  {{- content -}}
+</parallax-group>
+{% else %}
+<div
+  class="{{ class }}"
+  style="{{ style }}"
+  {{ shopify_attributes }}
+  data-testid="group-block"
+>
+  {{- content -}}
+</div>
+{% endif %}
+
+{% stylesheet %}
+  .group-block__link {
+    position: absolute;
+    inset: 0;
+  }
+
+  .group-block__link ~ :is(.group-block-content, .group-block__media-wrapper) {
+    pointer-events: none;
+
+    :is(a, button, input, textarea, select) {
+      pointer-events: auto;
+    }
+  }
+
+  /* Needs the .group-block__link ~ to be specific enough to take effect. */
+  .group-block__link ~ .group-block-content--design-mode {
+    pointer-events: auto;
+  }
+{% endstylesheet %}
+
+{% if settings.enable_parallax %}
+  <script type="module">
+    import '@theme/1-parallax';
+  </script>
+{% endif %}

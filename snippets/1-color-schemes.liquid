@@ -1,0 +1,16 @@
+{% style %}
+  {% for scheme in settings.color_schemes -%}
+    {% assign scheme_classes = scheme_classes | append: ', .color-' | append: scheme.id %}
+    {% if forloop.index == 1 %}
+      :root,
+    {% endif %}
+    .color-{{ scheme.id }} {
+      --color-background-gradient: {{ scheme.settings.background_gradient }};
+      }
+  {% endfor %}
+
+  {{ scheme_classes | prepend: 'body' }} {
+    background-image: var(--color-background-gradient);
+    background-color: var(--color-background);
+  }
+{% endstyle %}

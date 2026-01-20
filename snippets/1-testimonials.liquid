@@ -1,0 +1,130 @@
+{%- doc -%}
+  Renders block content for all blocks that extend the group block.
+  Custom version that supports individual border widths for top, bottom, left, and right.
+
+  @param {string} header_content - The DOM content of the header block.
+  @param {string} list_items - An array of HTML for the tetimonials to display
+  @param {string} content_blocks - The DOM content of the content blocks.
+  @param {number} testimonials_count - The number of testimonials to display.
+  @param {object} settings - The settings of the group block.
+  @param {string} shopify_attributes - String with Shopify attributes for the editor.
+
+  @example
+  {% render '1-testimonials', header_content: header_content, list_items: list_items, content_blocks: content_blocks, settings: settings, shopify_attributes: shopify_attributes %}
+{%- enddoc -%}
+
+{% liquid
+  case settings.layout_type
+    when 'grid'
+      assign classes = 'resource-list--grid'
+      capture styles
+        echo '--resource-list-column-gap-desktop: ' | append: settings.columns_gap | append: 'px;'
+        echo '--resource-list-row-gap-desktop: ' | append: settings.rows_gap | append: 'px;'
+        echo '--resource-list-columns: repeat(' | append: settings.columns | append: ', 1fr);'
+        echo '--resource-list-columns-mobile: repeat(' | append: settings.mobile_columns | append: ', 1fr);'
+      endcapture
+    when 'carousel'
+      assign classes = 'resource-list__carousel'
+      capture styles
+        echo '--resource-list-column-gap-desktop: ' | append: settings.columns_gap | append: 'px;'
+        echo '--column-count: ' | append: settings.columns | append: ';'
+        echo '--column-count-mobile: ' | append: settings.mobile_columns | append: ';'
+      endcapture
+  endcase
+
+%}
+<div class="section-background color-{{ settings.color_scheme }}"></div>
+<div
+  class="
+    section
+    section--{{ settings.section_width }}
+    color-{{ settings.color_scheme }}
+    section-resource-list
+    spacing-style
+    gap-style
+  "
+  style="
+    --column-count-mobile: {{ settings.mobile_columns }};
+    --peek-next-slide-size: 0rem;
+    {% render 'spacing-style', settings: settings %}
+    {% render 'gap-style', value: settings.gap %}
+    {{ styles }}
+  "
+  {{ shopify_attributes }}
+>
+  <div class="section-resource-list__header">
+    {{ header_content }}
+  </div>
+
+  {% liquid
+    # Create an array from the list items to be used for different layout types
+    assign list_items_array = list_items | strip | split: '<!--@list/split-->'
+  %}
+  
+  <div
+    class="
+      resource-list
+      {% if settings.layout_type == 'carousel' %}
+        force-full-width
+      {% endif %}
+      {% if settings.carousel_on_mobile and settings.layout_type != 'carousel' %}
+        hidden--mobile
+      {% endif %}
+      {{ classes }}
+    "
+    style="
+      {{ styles }}
+    "
+    {% if settings.layout_type == 'grid' %}
+      data-testid="resource-list-grid"
+    {% endif %}
+  >
+    {% case settings.layout_type %}
+      {% when 'grid' %}
+        {{ list_items }}
+      {% when 'carousel' %}
+        {% render '1-list-carousel',
+          ref: 'resourceListCarousel',
+          slides: list_items_array,
+          slide_count: testimonials_count,
+          settings: settings
+        %}
+    {% endcase %}
+  </div>
+
+  {% if settings.carousel_on_mobile and settings.layout_type != 'carousel' %}
+    {% liquid
+      assign mobile_carousel_gap = settings.columns_gap
+    %}
+    <div
+      class="
+        resource-list
+        hidden--desktop
+        force-full-width
+      "
+      style="
+        --resource-list-column-gap-desktop: {{ mobile_carousel_gap }}px;
+        --column-count: {{ settings.columns }};
+      "
+    >
+      {% render '1-list-carousel',
+        ref: 'resourceListCarouselMobile',
+        slides: list_items_array,
+        slide_count: testimonials_count,
+        settings: settings
+      %}
+    </div>
+  {% endif %}
+
+  <div
+    class="section-resource-list__content"
+  >
+    {{ content_blocks }}
+  </div>
+</div>
+
+{% stylesheet %}
+  .resource-list__carousel .resource-list__slide {
+    max-width: 100%;
+  }
+{% endstylesheet %}

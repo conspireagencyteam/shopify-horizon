@@ -1,0 +1,71 @@
+{%- doc -%}
+  Renders the cart icon, which displays the number of items in the cart via a bubble.
+{%- enddoc -%}
+<cart-icon
+  class="
+    header-actions__cart-icon
+    {% unless cart == empty %} header-actions__cart-icon--has-cart{% endunless %}
+  "
+  data-testid="cart-icon"
+>
+  <span class="hidden--mobile">
+    {{ 'accessibility.cart' | t }}
+  </span>
+  <span
+    class="svg-wrapper hidden--desktop"
+    aria-hidden="true"
+  >
+    {{ '1-icon-cart.svg' | inline_asset_content }}
+  </span>
+
+  {% render 'cart-bubble', limit: 100, live_region: true, test_id: test_id %}
+</cart-icon>
+
+{% stylesheet %}
+  cart-icon:has(.cart-bubble__text-count:empty) {
+    --cart-bubble-size: 10px;
+    --cart-bubble-top: 9px;
+    --cart-bubble-right: 9px;
+
+    .svg-wrapper {
+      --cart-bubble-top: 4px;
+      --cart-bubble-right: 4px;
+    }
+  }
+  cart-icon {
+    @media screen and (min-width: 750px) {
+      --text-align: center;
+      display: grid;
+      align-content: center;
+      text-decoration: none;
+      text-align: var(--text-align);
+      color: var(--color-primary-button-text);
+      appearance: none;
+      background-color: var(--color-primary-button-background);
+      border: none;
+      font-family: var(--font-paragraph--family);
+      font-style: var(--font-paragraph--style);
+      font-size: var(--font-paragraph--size);
+      line-height: var(--font-paragraph--line-height);
+      margin-block: 0;
+      transition: color var(--animation-speed) var(--animation-easing),
+        box-shadow var(--animation-speed) var(--animation-easing),
+        background-color var(--animation-speed) var(--animation-easing);
+      cursor: pointer;
+      width: fit-content;
+      box-shadow: inset 0 0 0 var(--button-border-width) var(--color-primary-button-border);
+      padding-block: var(--padding-xs);
+      padding-inline: var(--padding-lg);
+      font-family: var(--button-font-family-primary);
+      text-transform: var(--button-text-case-primary);
+      border-radius: var(--style-border-radius-buttons-primary);
+      
+    }
+  }
+  cart-icon.header-actions__cart-icon {
+    @media screen and (min-width: 750px) {
+      --cart-bubble-top: -4.5px;
+      --cart-bubble-right: -2.5px;
+    }
+  }
+{% endstylesheet %}

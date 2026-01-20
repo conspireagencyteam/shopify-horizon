@@ -1,0 +1,82 @@
+{%- liquid
+  assign product = closest.product
+  if product == blank and block.settings.product != blank
+    assign product = all_products[block.settings.product]
+  endif
+  
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+
+  assign product_handle = product.handle
+-%}
+
+<script src="{{ '1-recharge-subscription-widget.js' | asset_url }}" defer></script>
+<recharge-subscription-widget-custom
+  product-id="{{ product.id }}"
+  default-variant-id="{{ product.selected_or_first_available_variant.id }}"
+  style="{% render 'spacing-style', settings: block.settings %}"
+  data-product-handle="{{ product_handle }}"
+  {{ block.shopify_attributes }}
+  data-product-information-section-id="{{ block.settings.product_information_section_id }}"
+>
+  <div class="shopify-block shopify-app-block recharge-subscription-widget">
+    <recharge-subscription-widget
+      class="recharge-subscription-widget-block shopify-block recharge-subscription-widget spacing-style"
+      product-id="{{ product.id }}"
+      default-variant-id="{{ product.selected_or_first_available_variant.id }}"
+    >
+      <div ref="widgetContainer" class="recharge-widget-container"></div>
+    </recharge-subscription-widget>
+  </div>
+</recharge-subscription-widget-custom>
+
+{% schema %}
+{
+  "name": "t:names.1_recharge_subscription",
+  "tag": null,
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:settings.product"
+    },
+    {
+      "type": "text",
+      "id": "product_information_section_id",
+      "label": "t:settings.1_product_information_section_id",
+      "default": "template--25766547194131__main"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.1_recharge_subscription",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

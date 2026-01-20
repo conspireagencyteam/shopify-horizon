@@ -57,9 +57,11 @@
     "view_pricing_info": "View pricing information"
   },
   "actions": {
+    "1_login": "Login",
     // Quick add button on product cards, shortened version of add to cart
     "add": "Add",
     "add_to_cart": "Add to cart",
+    "add_subscription_to_cart": "Add subscription to cart",
     // Success message shown after adding item to cart
     "added": "Added",
     // Button to apply discount code to cart
@@ -149,6 +151,12 @@
     }
   },
   "content": {
+    "1_sharing": {
+      "1_share_on": "Share on {{ platform }}",
+      "1_email_subject": "Check out {{ title }}",
+      "1_email_body": "I thought you might be interested in: {{ title }}\n\n{{ url }}"
+    },
+    "1_showing_results": "Showing {{ start }}-{{ end }} of {{ count }} results",
     "cancel": "Cancel",
     "discount": "Discount",
     "account_title": "Account",
@@ -197,6 +205,10 @@
       "other": "{{ count }} items"
     },
     "item_count_cutoff": "More than {{ count }} items",
+    "products_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
     "language": "Language",
     "localization_region_and_language": "Region and language",
     "no_products_found": "No products found.",

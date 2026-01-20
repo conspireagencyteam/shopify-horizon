@@ -1,0 +1,40 @@
+{%- doc -%}
+  This snippet is used to render a blog post card.
+  It is used in the blog post block, featured blog post block, and the blog post card block.
+  The blog post object is null or when placeholders are rendered.
+
+  @param {object} children - The children of the blog post card
+  @param {object} [block] - The block object
+  @param {number} [blog_post_card_gap] - The gap between the blog post card children (overrides block settings)
+{%- enddoc -%}
+{%- liquid
+  assign blog_post_card_gap_value = blog_post_card_gap | default: block.settings.blog_post_card_gap
+-%}
+<article
+  class="1-blog-post-card group-block-content"
+  {{ block.shopify_attributes }}>
+  <div
+    class="
+      1-blog-post-card__content
+      layout-panel-flex
+      layout-panel-flex--column
+      1-blog-post-grid__card
+      spacing-style
+      {% if block.settings.use_individual_borders %}border-style--individual{% else %}border-style{% endif %}
+      gap-style
+      {% if block.settings.inherit_color_scheme == false %} color-{{ block.settings.color_scheme }}{% endif %}
+    "
+    style="
+      {% if block.settings.use_individual_borders %}
+        {% render '1-border-override', settings: block.settings %}
+      {% else %}
+        {% render 'border-override', settings: block.settings %}
+      {% endif %}
+      {% render 'layout-panel-style', settings: block.settings %}
+      {% render 'spacing-style', settings: block.settings %}
+      {% render 'gap-style', value: blog_post_card_gap_value, name: 'blog-post-card-gap' %}
+    "
+  >
+    {{ children }}
+  </div>
+</article>

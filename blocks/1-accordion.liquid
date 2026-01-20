@@ -1,0 +1,660 @@
+
+
+<div
+  class="1-accordion accordion accordion--{{ block.id }} accordion--{{ block.settings.icon }} layout-panel-flex layout-panel-flex--column border-style spacing-style{% if block.settings.inherit_color_scheme == false %} color-{{ block.settings.color_scheme }}{% endif %}{% if block.settings.dividers %} accordion--dividers{% endif %}"
+  style="
+    {% if block.settings.type_preset != 'custom' %}
+      --summary-font-family: var(--font-{{ block.settings.type_preset }}--family);
+      --summary-font-style: var(--font-{{ block.settings.type_preset }}--style);
+      --summary-font-weight: var(--font-{{ block.settings.type_preset }}--weight);
+      --summary-font-size: var(--font-{{ block.settings.type_preset }}--size);
+      --summary-font-line-height: var(--font-{{ block.settings.type_preset }}--line-height);
+      --summary-font-case: var(--font-{{ block.settings.type_preset }}--case);
+    {% else %}
+      --summary-font-family: {{ block.settings.font }};
+      {% if block.settings.font_size != blank %}--summary-font-size: {{ block.settings.font_size }};{% endif %}
+      --summary-font-line-height: var(--line-height-{{ block.settings.line_height }});
+      --summary-font-letter-spacing: var(--letter-spacing-{{ block.settings.letter_spacing }});
+      --summary-font-case: {{ block.settings.case }};
+      --summary-font-wrap: {{ block.settings.wrap }};
+    {% endif %}
+    {% if block.settings.type_preset != 'rte' %}--summary-color: {{ block.settings.color }};{% endif %}
+    --summary-padding-top: {{ block.settings.heading_padding_top }}px;
+    --summary-padding-bottom: {{ block.settings.heading_padding_bottom }}px;
+    --summary-padding-left: {{ block.settings.heading_padding_left }}px;
+    --summary-padding-right: {{ block.settings.heading_padding_right }}px;
+    {% render 'spacing-style', settings: block.settings %}
+    {% render 'border-override', settings: block.settings %}
+    {% render 'gap-style', value: block.settings.gap %}
+  "
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+</div>
+
+{% stylesheet %}
+  .accordion {
+    flex: 1;
+    width: 100%;
+  }
+
+  .accordion--dividers accordion-custom:not(:first-child) .details {
+    border-block-start: var(--style-border-width) solid var(--color-border);
+  }
+
+  /* When accordion borders are not set, show fallback borders */
+  .accordion--dividers {
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list */
+    --show-fallback-borders: 0;
+  }
+
+  .accordion--dividers:not([class*='color-'])[style*='--border-width: 0'],
+  .accordion--dividers:not([class*='color-'])[style*='--border-style: none'] {
+    --show-fallback-borders: 1;
+  }
+
+  .accordion--dividers accordion-custom:first-child .details {
+    border-block-start: calc(var(--style-border-width) * var(--show-fallback-borders)) solid var(--color-border);
+  }
+
+  .accordion--dividers {
+    border-block-end: calc(var(--style-border-width) * var(--show-fallback-borders)) solid var(--color-border);
+  }
+  
+  .\31-accordion.accordion--dividers accordion-custom:last-child .details {
+    border-block-end: 0;
+  }
+
+  .accordion--dividers .details-content {
+    padding-block-end: var(--padding-sm);
+  }
+
+  .accordion--caret .icon-plus,
+  .accordion--plus .icon-caret {
+    display: none;
+  }
+
+  /* because we can't pass apply a specific class on a block based on its parent block setting */
+  .accordion .details__header {
+    font-family: var(--summary-font-family);
+    font-style: var(--summary-font-style);
+    font-weight: var(--summary-font-weight);
+    font-size: var(--summary-font-size);
+    line-height: var(--summary-font-line-height);
+    letter-spacing: var(--summary-font-letter-spacing);
+    text-transform: var(--summary-font-case);
+    text-wrap: var(--summary-font-wrap);
+    color: var(--summary-color);
+    padding-top: var(--summary-padding-top);
+    padding-bottom: var(--summary-padding-bottom);
+    padding-left: var(--summary-padding-left);
+    padding-right: var(--summary-padding-right);
+    min-height: var(--minimum-touch-target);
+  }
+
+  accordion-custom:has(.details-content):not(:has(.details-content > *)) {
+    display: none;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.1_accordion",
+  "tag": null,
+  "class": "accordion",
+  "blocks": [
+    {
+      "type": "_1-accordion-row"
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "t:settings.icon",
+      "options": [
+        {
+          "value": "caret",
+          "label": "t:options.caret"
+        },
+        {
+          "value": "plus",
+          "label": "t:options.plus"
+        }
+      ],
+      "default": "caret"
+    },
+    {
+      "type": "checkbox",
+      "id": "dividers",
+      "label": "t:settings.dividers",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "t:settings.gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.typography"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "t:settings.preset",
+      "options": [
+        {
+          "value": "rte",
+          "label": "t:options.default"
+        },
+        {
+          "value": "paragraph",
+          "label": "t:options.paragraph"
+        },
+        {
+          "value": "h1",
+          "label": "t:options.h1"
+        },
+        {
+          "value": "h2",
+          "label": "t:options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:options.h3"
+        },
+        {
+          "value": "h4",
+          "label": "t:options.h4"
+        },
+        {
+          "value": "h5",
+          "label": "t:options.h5"
+        },
+        {
+          "value": "h6",
+          "label": "t:options.h6"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "h6",
+      "info": "t:info.edit_presets_in_theme_settings"
+    },
+    {
+      "type": "select",
+      "id": "font",
+      "label": "t:settings.font",
+      "options": [
+        {
+          "value": "var(--font-body--family)",
+          "label": "t:options.body"
+        },
+        {
+          "value": "var(--font-subheading--family)",
+          "label": "t:options.subheading"
+        },
+        {
+          "value": "var(--font-heading--family)",
+          "label": "t:options.heading"
+        },
+        {
+          "value": "var(--font-accent--family)",
+          "label": "t:options.accent"
+        }
+      ],
+      "default": "var(--font-body--family)",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "font_size",
+      "label": "t:settings.size",
+      "options": [
+        {
+          "value": "",
+          "label": "t:options.default"
+        },
+        {
+          "value": "0.625rem",
+          "label": "10px"
+        },
+        {
+          "value": "0.75rem",
+          "label": "12px"
+        },
+        {
+          "value": "0.875rem",
+          "label": "14px"
+        },
+        {
+          "value": "1rem",
+          "label": "16px"
+        },
+        {
+          "value": "1.125rem",
+          "label": "18px"
+        },
+        {
+          "value": "1.25rem",
+          "label": "20px"
+        },
+        {
+          "value": "1.5rem",
+          "label": "24px"
+        },
+        {
+          "value": "2rem",
+          "label": "32px"
+        },
+        {
+          "value": "2.5rem",
+          "label": "40px"
+        },
+        {
+          "value": "3rem",
+          "label": "48px"
+        }
+      ],
+      "default": "1rem",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "line_height",
+      "label": "t:settings.line_height",
+      "options": [
+        {
+          "value": "tight",
+          "label": "t:options.tight"
+        },
+        {
+          "value": "normal",
+          "label": "t:options.normal"
+        },
+        {
+          "value": "loose",
+          "label": "t:options.loose"
+        }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "letter_spacing",
+      "label": "t:settings.letter_spacing",
+      "options": [
+        {
+          "value": "tight",
+          "label": "t:options.tight"
+        },
+        {
+          "value": "normal",
+          "label": "t:options.normal"
+        },
+        {
+          "value": "loose",
+          "label": "t:options.loose"
+        }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "case",
+      "label": "t:settings.case",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:options.default"
+        },
+        {
+          "value": "uppercase",
+          "label": "t:options.uppercase"
+        }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "wrap",
+      "label": "t:settings.wrap",
+      "options": [
+        {
+          "value": "pretty",
+          "label": "t:options.pretty"
+        },
+        {
+          "value": "balance",
+          "label": "t:options.balance"
+        },
+        {
+          "value": "nowrap",
+          "label": "t:options.none"
+        }
+      ],
+      "default": "pretty",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "color",
+      "label": "t:settings.color",
+      "options": [
+        {
+          "value": "var(--color-foreground)",
+          "label": "t:options.text"
+        },
+        {
+          "value": "var(--color-foreground-heading)",
+          "label": "t:options.heading"
+        },
+        {
+          "value": "var(--color-primary)",
+          "label": "t:options.link"
+        }
+      ],
+      "default": "var(--color-foreground)",
+      "visible_if": "{{ block.settings.type_preset != 'rte' }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.1_heading_spacing"
+    },
+    {
+      "type": "range",
+      "id": "heading_padding_top",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "heading_padding_bottom",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "heading_padding_left",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "heading_padding_right",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "inherit_color_scheme",
+      "label": "t:settings.inherit_color_scheme",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.borders"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "t:settings.style",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:options.none"
+        },
+        {
+          "value": "solid",
+          "label": "t:options.solid"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:settings.thickness",
+      "default": 1,
+      "visible_if": "{{ block.settings.border != \"none\" }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "t:settings.opacity",
+      "default": 100,
+      "visible_if": "{{ block.settings.border != \"none\" }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "t:settings.border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.1_accordion",
+      "category": "t:categories.layout",
+      "blocks": {
+        "row-1": {
+          "type": "_1-accordion-row",
+          "settings": {
+            "open_by_default": true,
+            "heading": "Return policy"
+          },
+          "blocks": {
+            "text-1": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Our goal is for every customer to be totally satisfied with their purchase. If this isn't the case, let us know and we'll do our best to work with you to make it right.</p>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "custom",
+                "font": "var(--font-body--family)",
+                "font_size": "0.875rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              }
+            }
+          },
+          "block_order": ["text-1"]
+        },
+        "row-2": {
+          "type": "_1-accordion-row",
+          "settings": {
+            "heading": "Shipping"
+          },
+          "blocks": {
+            "text-1": {
+              "type": "text",
+              "settings": {
+                "text": "<p>We will work quickly to ship your order as soon as possible. Once your order has shipped, you will receive an email with further information. Delivery times vary depending on your location.</p>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "custom",
+                "font": "var(--font-body--family)",
+                "font_size": "0.875rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              }
+            }
+          },
+          "block_order": ["text-1"]
+        },
+        "row-3": {
+          "type": "_1-accordion-row",
+          "settings": {
+            "heading": "Manufacturing"
+          },
+          "blocks": {
+            "text-1": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Our products are manufactured both locally and globally. We carefully select our manufacturing partners to ensure our products are high quality and a fair value.</p>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "custom",
+                "font": "var(--font-body--family)",
+                "font_size": "0.875rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              }
+            }
+          },
+          "block_order": ["text-1"]
+        }
+      },
+      "block_order": ["row-1", "row-2", "row-3"],
+      "settings": {
+        "icon": "plus",
+        "dividers": true,
+        "type_preset": "custom",
+        "font": "var(--font-subheading--family)",
+        "font_size": "0.875rem",
+        "line_height": "normal",
+        "letter_spacing": "normal",
+        "case": "none",
+        "wrap": "pretty",
+        "color": "var(--color-foreground-heading)",
+        "heading_padding_top": 16,
+        "heading_padding_bottom": 16,
+        "heading_padding_left": 0,
+        "heading_padding_right": 0,
+        "inherit_color_scheme": true,
+        "color_scheme": "",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 0,
+        "padding-inline-start": 0,
+        "padding-inline-end": 0
+      },
+    }
+  ]
+}
+{% endschema %}

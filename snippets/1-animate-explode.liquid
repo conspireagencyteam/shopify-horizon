@@ -1,0 +1,316 @@
+{%- comment -%}
+  GSAP Exploding Flavor Notes Animation
+  This snippet creates an exploding effect with flavor note images on hover
+  Usage: {% render '1-animate-explode', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign animation_id = 'explode-' | append: product.id | default: 'default'
+-%}
+
+<div class="explode-animation-wrapper" data-animation-id="{{ animation_id }}">
+  <div class="explode-container">
+    {%- comment -%} Product visual with explosion {%- endcomment -%}
+    <div class="explode-visual">
+      <div class="explode-product-image">
+        <img src="{{ '1-explode-packet.png' | asset_url }}" alt="Product" width="300" height="400" loading="lazy">
+      </div>
+      
+      {%- comment -%} Flavor note explosion elements {%- endcomment -%}
+      <div class="explode-elements">
+        {%- for i in (1..9) -%}
+          <div class="explode-item explode-item-{{ i }}" data-index="{{ i }}">
+            <img src="{{ '1-explode-' | append: i | append: '.png' | asset_url }}" alt="Flavor note {{ i }}" width="80" height="80" loading="lazy">
+          </div>
+        {%- endfor -%}
+      </div>
+      
+      {%- comment -%} Orange splash effects {%- endcomment -%}
+      <div class="explode-splash explode-splash-1"></div>
+      <div class="explode-splash explode-splash-2"></div>
+      <div class="explode-splash explode-splash-3"></div>
+    </div>
+    
+    {%- comment -%} Product information {%- endcomment -%}
+    <div class="explode-product-info">
+      <h3 class="explode-product-title">12OZ PURE RESERVA</h3>
+      <p class="explode-product-description">Single origin: Nicaragua, notes of caramel, citrus & cocoa.</p>
+      <p class="explode-product-price">$28.99</p>
+    </div>
+  </div>
+</div>
+
+{%- comment -%}
+  Width calculations moved to CSS percentages
+  Packet width: 427px (1281/3)
+  Item widths calculated as percentage of packet
+{%- endcomment -%}
+<style>
+  .explode-animation-wrapper {
+    position: relative;
+    width: 33.333333%;    
+    background-color: #F5F5F5;
+    overflow: visible;
+    padding: 32px;
+    border-radius: 8px;
+    z-index: 1;
+  }
+  
+  .explode-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  
+  .explode-visual {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+  
+  .explode-product-image {
+    position: relative;
+    z-index: 2;
+  }
+  
+  .explode-product-image img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  
+  .explode-elements {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  
+  .explode-item {
+    position: absolute;
+    opacity: 0;
+    transform-origin: center;
+    pointer-events: none;
+  }
+  
+  .explode-item img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  
+  /* Individual explode item widths as percentage of packet width (427px = 100%) */
+  .explode-item-1 { width: 83.94%; } /* 358.33px / 427px * 100 */
+  .explode-item-2 { width: 40.75%; } /* 174px / 427px * 100 */
+  .explode-item-3 { width: 49.26%; } /* 210.33px / 427px * 100 */
+  .explode-item-4 { width: 61.12%; } /* 261px / 427px * 100 */
+  .explode-item-5 { width: 29.35%; } /* 125.33px / 427px * 100 */
+  .explode-item-6 { width: 13.20%; } /* 56.33px / 427px * 100 */
+  .explode-item-7 { width: 13.20%; } /* 56.33px / 427px * 100 */
+  .explode-item-8 { width: 13.11%; } /* 56px / 427px * 100 */
+  .explode-item-9 { width: 14.45%; } /* 61.67px / 427px * 100 */
+  
+  /* Final positions for each flavor element */
+  .explode-item-1 { top: 5%; left: 14%; }
+  .explode-item-2 { top: 50%; left: 3%; }
+  .explode-item-3 { top: 45%; left: 40%; z-index: -1; }
+  .explode-item-4 { top: -5%; left: 6%; z-index: -1; }
+  .explode-item-5 { top: 29%; left: 12%; }
+  .explode-item-6 { display: none; }
+  .explode-item-7 { top: 10%; left: 63%; }
+  .explode-item-8 { top: 70%; left: 65%; }
+  .explode-item-9 { top: 10%; left: 17%; }
+  
+  .explode-splash {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+  }
+  
+  .splash-svg {
+    width: 100%;
+    height: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    /* Scale down explode items on mobile - 70% of desktop size */
+    .explode-item-1 { width: 58.76%; }
+    .explode-item-2 { width: 28.53%; }
+    .explode-item-3 { width: 34.48%; }
+    .explode-item-4 { width: 42.78%; }
+    .explode-item-5 { width: 20.55%; }
+    .explode-item-6 { width: 9.24%; }
+    .explode-item-7 { width: 9.24%; }
+    .explode-item-8 { width: 9.18%; }
+    .explode-item-9 { width: 10.12%; }
+  }
+</style>
+
+<script>
+  (function() {
+    const animationId = '{{ animation_id }}';
+    const wrapper = document.querySelector(`[data-animation-id="${animationId}"]`);
+    
+    if (!wrapper) return;
+    
+    const loadGSAP = () => {
+      if (typeof gsap === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
+        script.onload = initAnimation;
+        document.head.appendChild(script);
+      } else {
+        initAnimation();
+      }
+    };
+    
+    const initAnimation = () => {
+      const container = wrapper.querySelector('.explode-container');
+      const items = wrapper.querySelectorAll('.explode-item');
+      const splash = wrapper.querySelector('.explode-splash');
+      const productImage = wrapper.querySelector('.explode-product-image');
+      
+      // Set initial states - items start at center with transform
+      items.forEach((item) => {
+        // Get final position from CSS
+        const computed = window.getComputedStyle(item);
+        const finalTop = parseFloat(computed.top);
+        const finalLeft = parseFloat(computed.left);
+        const containerRect = wrapper.querySelector('.explode-visual').getBoundingClientRect();
+        
+        // Calculate center position
+        const centerX = containerRect.width / 2;
+        const centerY = containerRect.height / 2;
+        
+        // Calculate transform needed to move item to center
+        const itemRect = item.getBoundingClientRect();
+        const currentX = itemRect.left - containerRect.left + itemRect.width / 2;
+        const currentY = itemRect.top - containerRect.top + itemRect.height / 2;
+        const translateX = centerX - currentX;
+        const translateY = centerY - currentY;
+        
+        // Start at center with transform
+        gsap.set(item, {
+          x: translateX,
+          y: translateY,
+          opacity: 0,
+          scale: 0.3,
+          rotation: gsap.utils.random(-45, 45)
+        });
+      });
+      
+      gsap.set(splash, {
+        opacity: 0,
+        scale: 0
+      });
+      
+      // Create main timeline for explosion
+      const tl = gsap.timeline({ paused: true });
+      
+      // Create separate timeline for floating animation
+      const floatingTl = gsap.timeline({ paused: true });
+      
+      // Animate splash effect
+      tl.to(splash, {
+        opacity: 0.3,
+        scale: 1.2,
+        duration: 0.4,
+        ease: "power2.out"
+      }, 0);
+      
+      // Animate flavor elements exploding outward to their final positions
+      items.forEach((item, index) => {
+        // Skip item 6 since it's hidden
+        if (item.classList.contains('explode-item-6')) return;
+        
+        tl.to(item, {
+          opacity: 1,
+          scale: 1,
+          x: 0, // Animate back to 0 (final position set by CSS)
+          y: 0, // Animate back to 0 (final position set by CSS)
+          rotation: 0,
+          duration: gsap.utils.random(0.8, 1.1),
+          ease: "power3.out",
+          delay: index * 0.05 // Stagger the explosions
+        }, 0.1);
+        
+        // Add floating to separate timeline
+        floatingTl.to(item, {
+          y: gsap.utils.random(-3, 3),
+          x: gsap.utils.random(-2, 2),
+          rotation: gsap.utils.random(-5, 5),
+          duration: 3,
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true
+        }, 0);
+      });
+      
+      // Add subtle pulse to product image
+      tl.to(productImage, {
+        scale: 1.05,
+        duration: 0.3,
+        ease: "power2.inOut",
+        yoyo: true,
+        repeat: 1
+      }, 0);
+      
+      // Fade out splash
+      tl.to(splash, {
+        opacity: 0,
+        scale: 1.5,
+        duration: 0.6,
+        ease: "power2.in"
+      }, 0.5);
+      
+      // Hover interactions
+      const parentCard = wrapper.closest('.product-card, .card-wrapper, [data-hoverable]');
+      const hoverTarget = parentCard || container;
+      
+      hoverTarget.addEventListener('mouseenter', () => {
+        tl.restart();
+        // Start floating after explosion completes
+        tl.eventCallback('onComplete', () => {
+          floatingTl.play();
+        });
+      });
+      
+      hoverTarget.addEventListener('mouseleave', () => {
+        // Kill floating animation immediately
+        floatingTl.pause();
+        floatingTl.seek(0);
+        // Reverse main timeline immediately
+        tl.reverse();
+      });
+      
+      // Touch support for mobile
+      let touchTimeout;
+      hoverTarget.addEventListener('touchstart', () => {
+        tl.restart();
+        tl.eventCallback('onComplete', () => {
+          floatingTl.play();
+        });
+        clearTimeout(touchTimeout);
+        touchTimeout = setTimeout(() => {
+          floatingTl.pause();
+          floatingTl.seek(0);
+          tl.reverse();
+        }, 3000);
+      });
+    };
+    
+    // Load GSAP and initialize
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadGSAP);
+    } else {
+      loadGSAP();
+    }
+  })();
+</script>

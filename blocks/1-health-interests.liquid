@@ -1,0 +1,699 @@
+{% capture list_items %}
+  {% for health_interest in block.settings.health_interests %}
+    <div class="resource-list__item group-block resource-card">
+      <a
+        href="{{ routes.all_products_collection_url }}?filter.p.m.product_details.primary_health_interest=gid%3A%2F%2Fshopify%2FMetaobject%2F{{ health_interest.system.id }}"
+        class="group-block__link"
+        {% if settings.open_in_new_tab %}
+          target="_blank" rel="noopener"
+        {% endif %}
+      ></a>
+      <div class="group-block-content">
+        {% content_for 'block', type: '_1-health-interest', id: 'static-health-interest', closest.metaobject.health_interests: health_interest %}
+      </div>
+    </div>
+    <!--@list/split-->
+  {% endfor %}
+{% endcapture %}
+
+
+{% liquid
+  assign settings = block.settings
+  case settings.layout_type
+    when 'grid'
+      assign classes = 'resource-list--grid'
+    when 'carousel'
+      assign classes = 'resource-list__carousel'
+  endcase
+
+  if settings.columns > 2
+    assign columns_tablet = settings.columns | divided_by: 2.0 | ceil
+  endif
+  if settings.columns > 3
+    assign columns_tablet = settings.columns | divided_by: 2.0 | ceil
+    assign columns_laptop = settings.columns | divided_by: 1.5 | ceil
+  endif
+
+  capture styles
+    echo '--column-count-mobile: ' | append: settings.mobile_columns | append: ';'
+    echo '--resource-list-column-gap-desktop: ' | append: settings.columns_gap | append: 'px;'
+    echo '--resource-list-row-gap-desktop: ' | append: settings.rows_gap | append: 'px;'
+    echo '--resource-list-columns: repeat(' | append: settings.columns | append: ', 1fr);'
+    if settings.columns > 2
+      echo '--resource-list-columns-tablet: repeat(' | append: columns_tablet | append: ', 1fr);'
+    endif
+    if settings.columns > 3
+      echo '--resource-list-columns-laptop: repeat(' | append: columns_laptop | append: ', 1fr);'
+    endif
+    echo '--resource-list-columns-mobile: repeat(' | append: settings.mobile_columns | append: ', 1fr);'
+    echo '--resource-list-column-gap-desktop: ' | append: settings.columns_gap | append: 'px;'
+    echo '--column-count: ' | append: settings.columns | append: ';'
+    if settings.columns > 2
+      echo '--column-count-tablet: ' | append: columns_tablet | append: ';'
+    endif
+    if settings.columns > 3
+      echo '--column-count-laptop: ' | append: columns_laptop | append: ';'
+    endif
+    echo '--column-count-mobile: ' | append: settings.mobile_columns | append: ';'
+    if settings.layout_type == 'carousel' or settings.carousel_on_mobile == true
+      echo '--mobile-card-size: ' | append: settings.mobile_card_size | append: ';'
+    endif
+  endcapture
+%}
+
+<div
+  class="
+      color-{{ settings.color_scheme }}
+      block-resource-list
+      spacing-style
+      gap-style
+  "
+  style="
+    --column-count-mobile: {{ settings.mobile_columns }};
+    {% render 'spacing-style', settings: settings %}
+    {% render 'gap-style', value: settings.gap %}
+    {{ styles }}
+  "
+>
+
+  {% liquid
+    # Create an array from the list items to be used for different layout types
+    assign list_items_array = list_items | strip | split: '<!--@list/split-->'
+  %}
+  
+
+  <div
+    class="
+      resource-list
+      {% if settings.layout_type == 'carousel' %}
+        force-full-width
+      {% endif %}
+      {% if settings.layout_type_mobile != settings.layout_type or settings.layout_type != 'grid' and settings.layout_type_mobile != 'grid' and settings.columns != settings.mobile_columns %}
+        hidden--mobile
+      {% endif %}
+      {{ classes }}
+    "
+    style="
+      {{ styles }}
+    "
+    {% if settings.layout_type == 'grid' %}
+      data-testid="resource-list-grid"
+    {% endif %}
+  >
+    {% case settings.layout_type %}
+      {% when 'grid' %}
+        {{ list_items }}
+      {% when 'carousel' %}
+        {% liquid
+          assign slide_count = list_items_array.size | plus: 1 | minus: settings.columns
+        %}
+        {% render '1-list-carousel',
+          ref: 'resourceListCarousel',
+          slides: list_items_array,
+          slide_count: slide_count,
+          settings: settings
+        %}
+    {% endcase %}
+  </div>
+
+  {% if settings.layout_type_mobile != settings.layout_type or settings.layout_type != 'grid' and settings.layout_type_mobile != 'grid' and settings.columns != settings.mobile_columns %}
+    {% case settings.layout_type_mobile %}
+      {% when 'carousel' %}
+        {% liquid
+          assign mobile_carousel_gap = settings.columns_gap
+        %}
+        <div
+          class="
+            resource-list
+            hidden--desktop
+            force-full-width
+          "
+          style="
+            --resource-list-column-gap-desktop: {{ mobile_carousel_gap }}px;
+            --column-count: {{ settings.columns }};
+          "
+        >
+          {% liquid
+            assign slide_count = list_items_array.size | plus: 1 | minus: settings.mobile_columns
+          %}
+          {% render '1-list-carousel',
+            ref: 'resourceListCarouselMobile',
+            slides: list_items_array,
+            slide_count: slide_count,
+            settings: settings
+          %}
+        </div>
+      {% when 'grid' %}
+        <div
+          class="
+            resource-list
+            hidden--desktop
+            resource-list--grid
+          "
+          style="
+            --resource-list-column-gap-desktop: {{ settings.columns_gap }}px;
+            --resource-list-row-gap-desktop: {{ settings.rows_gap }}px;
+            --resource-list-columns: repeat({{ settings.columns }}, 1fr);
+            --resource-list-columns-mobile: repeat({{ settings.mobile_columns }}, 1fr);
+          "
+        >
+          {{ list_items }}
+        </div>
+    {% endcase %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "t:names.1_health_interests",
+  "blocks": [
+    {
+      "type": "_1-list-item"
+    }
+  ],
+  "settings": [
+    {
+      "type": "metaobject_list",
+      "metaobject_type": "health_interests",
+      "id": "health_interests",
+      "label": "t:settings.1_health_interests"
+    },
+    {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "select",
+      "id": "layout_type",
+      "label": "t:settings.layout_type",
+      "options": [
+        {
+          "value": "grid",
+          "label": "t:options.grid"
+        },
+        {
+          "value": "carousel",
+          "label": "t:options.carousel"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "select",
+      "id": "layout_type_mobile",
+      "label": "t:settings.1_layout_type_mobile",
+      "options": [
+        {
+          "value": "grid",
+          "label": "t:options.grid"
+        },
+        {
+          "value": "carousel",
+          "label": "t:options.carousel"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:settings.columns",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "t:settings.mobile_columns",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:options.one_number"
+        },
+        {
+          "value": "2",
+          "label": "t:options.two_number"
+        }
+      ],
+      "default": "2",
+      "visible_if": "{{ block.settings.layout_type_mobile == 'grid' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width_on_mobile",
+      "label": "t:settings.full_width_on_mobile",
+      "default": false,
+      "visible_if": "{{ block.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "range",
+      "id": "columns_gap",
+      "label": "t:settings.horizontal_gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "rows_gap",
+      "label": "t:settings.vertical_gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8,
+      "visible_if": "{{ block.settings.layout_type == 'grid'}}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.carousel_navigation",
+      "visible_if": "{{ block.settings.layout_type == 'carousel' or block.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "t:settings.auto_rotate_slides",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "t:settings.speed",
+      "min": 3,
+      "max": 7,
+      "step": 1,
+      "unit": "s",
+      "default": 4,
+      "visible_if": "{{ block.settings.autoplay }}"
+    },
+    {
+      "type": "select",
+      "id": "icons_style",
+      "label": "t:settings.icon",
+      "options": [
+        {
+          "value": "arrow",
+          "label": "t:options.arrows"
+        },
+        {
+          "value": "chevron",
+          "label": "t:options.chevrons"
+        },
+        {
+          "value": "arrows_large",
+          "label": "t:options.arrows_large"
+        },
+        {
+          "value": "chevron_large",
+          "label": "t:options.chevron_large"
+        },
+        {
+          "value": "none",
+          "label": "t:options.none"
+        }
+      ],
+      "default": "arrow",
+      "visible_if": "{{ block.settings.layout_type == 'carousel' or block.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "select",
+      "id": "slideshow_controls_position",
+      "label": "t:settings.position",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:options.left"
+        },
+        {
+          "value": "center",
+          "label": "t:options.center"
+        },
+        {
+          "value": "right",
+          "label": "t:options.right"
+        },
+        {
+          "value": "bottom",
+          "label": "t:options.bottom"
+        }
+      ],
+      "default": "center",
+      "visible_if": "{{ block.settings.layout_type == 'carousel' or block.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "select",
+      "id": "icons_shape",
+      "label": "t:settings.icon_background",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:options.none"
+        },
+        {
+          "value": "circle",
+          "label": "t:options.circle"
+        },
+        {
+          "value": "square",
+          "label": "t:options.square"
+        }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.icons_style != 'none' and block.settings.layout_type == 'carousel' or block.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "select",
+      "id": "slideshow_controls_style",
+      "label": "t:settings.pagination",
+      "options": [
+        {
+          "value": "dots",
+          "label": "t:options.dots"
+        },
+        {
+          "value": "counter",
+          "label": "t:options.counter"
+        },
+        {
+          "value": "none",
+          "label": "t:options.none"
+        }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.layout_type == 'carousel' }}"
+    },
+    {
+      "type": "select",
+      "id": "slideshow_mobile_controls_style",
+      "label": "t:settings.mobile_pagination",
+      "options": [
+        {
+          "value": "dots",
+          "label": "t:options.dots"
+        },
+        {
+          "value": "counter",
+          "label": "t:options.counter"
+        },
+        {
+          "value": "none",
+          "label": "t:options.none"
+        }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.layout_type == 'carousel' or block.settings.layout_type_mobile == 'carousel' }}"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "t:settings.gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "t:content.size"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.1_health_interests",
+      "category": "t:categories.storytelling",
+      "settings": {
+        "health_interests": [
+          "blood-sugar",
+          "bone-joint-support",
+          "cardiovascular-support",
+          "cognitive-support",
+          "detox-support",
+          "digestive-support",
+          "energy-support",
+          "eye-health",
+          "hair-skin-nails",
+          "immune-support",
+          "mens-health",
+          "mood-stress-support",
+          "oral-support",
+          "respiratory-support",
+          "sexual-health",
+          "sleep",
+          "weight-management-support",
+          "womens",
+          "kids"
+        ],
+        "layout_type": "grid",
+        "layout_type_mobile": "grid",
+        "columns": 3,
+        "mobile_columns": "1",
+        "full_width_on_mobile": false,
+        "columns_gap": 16,
+        "rows_gap": 16,
+        "autoplay": false,
+        "autoplay_speed": 4,
+        "icons_style": "arrow",
+        "slideshow_controls_position": "center",
+        "icons_shape": "none",
+        "slideshow_controls_style": "none",
+        "slideshow_mobile_controls_style": "none",
+        "gap": 12,
+        "section_width": "page-width",
+        "color_scheme": "",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      },
+      "blocks": {
+        "static-health-interest": {
+          "type": "_1-health-interest",
+          "static": true,
+          "settings": {
+            "link": "",
+            "open_in_new_tab": false,
+            "content_direction": "row",
+            "vertical_on_mobile": false,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 12,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "shadow": "none",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "group_7icXXh": {
+              "type": "group",
+              "name": "t:names.group",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 12,
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "inherit_color_scheme": true,
+                "color_scheme": "",
+                "background_media": "none",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "group_Rqbjmh": {
+                  "type": "group",
+                  "name": "t:names.group",
+                  "settings": {
+                    "content_direction": "column",
+                    "vertical_on_mobile": true,
+                    "horizontal_alignment": "flex-start",
+                    "vertical_alignment": "center",
+                    "align_baseline": false,
+                    "horizontal_alignment_flex_direction_column": "flex-start",
+                    "vertical_alignment_flex_direction_column": "center",
+                    "gap": 12,
+                    "width": "fit-content",
+                    "custom_width": 100,
+                    "width_mobile": "fit-content",
+                    "custom_width_mobile": 100,
+                    "height": "fit",
+                    "custom_height": 100,
+                    "inherit_color_scheme": false,
+                    "color_scheme": "scheme-4",
+                    "background_media": "none",
+                    "video_position": "cover",
+                    "background_image_position": "cover",
+                    "border": "none",
+                    "border_width": 1,
+                    "border_opacity": 100,
+                    "border_radius": 60,
+                    "toggle_overlay": false,
+                    "overlay_color": "#00000026",
+                    "overlay_style": "solid",
+                    "gradient_direction": "to top",
+                    "link": "",
+                    "open_in_new_tab": false,
+                    "placeholder": "",
+                    "padding-block-start": 8,
+                    "padding-block-end": 8,
+                    "padding-inline-start": 8,
+                    "padding-inline-end": 8
+                  },
+                  "blocks": {
+                    "1_icon_HKwLYc": {
+                      "type": "1-icon",
+                      "name": "t:names.1_icon",
+                      "settings": {
+                        "icon": "price_tag",
+                        "image_upload": "{{ closest.metaobject.health_interests.icon.value }}",
+                        "apply_foreground_color": true,
+                        "width": 24,
+                        "width_mobile": 24,
+                        "link": "",
+                        "open_in_new_tab": false
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "1_icon_HKwLYc"
+                  ]
+                }
+              },
+              "block_order": [
+                "group_Rqbjmh"
+              ]
+            },
+            "1_text_KKdDcQ": {
+              "type": "1-text",
+              "name": "t:names.1_text",
+              "settings": {
+                "text": "<p>{{ closest.metaobject.health_interests.title.value }}</p>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "paragraph",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground-heading)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "group_7icXXh",
+            "1_text_KKdDcQ"
+          ]
+        }
+      },
+      "block_order": []
+    }
+  ]
+}
+{% endschema %}

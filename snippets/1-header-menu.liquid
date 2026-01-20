@@ -1,0 +1,129 @@
+{% liquid
+  assign menu_content_type = block.settings.menu_style | default: 'text'
+  assign image_border_radius = block.settings.image_border_radius
+  assign color_scheme_classes = ''
+  assign color_scheme_setting_id = 'color_scheme_' | append: section.settings.menu_row
+  assign current_color_scheme = block.settings.color_scheme
+  assign parent_color_scheme = section.settings[color_scheme_setting_id]
+
+  if parent_color_scheme.id != current_color_scheme.id
+    assign color_scheme_classes = ' color-' | append: current_color_scheme
+  endif
+
+  # Check if header and menu colors match. This is used to apply different padding styles in css
+  if parent_color_scheme.settings.background.rgb == current_color_scheme.settings.background.rgb
+    assign color_scheme_classes = color_scheme_classes | append: ' color-scheme-matches-parent'
+  endif
+
+  if block.settings.menu_style == 'featured_collections'
+    assign ratio = block.settings.featured_collections_aspect_ratio
+  elsif block.settings.menu_style == 'featured_products'
+    assign ratio = block.settings.featured_products_aspect_ratio
+  endif
+
+  # Parse megamenu items from captured content
+  assign megamenu_items_array = megamenu_items | strip | split: '<!--@megamenu/split-->'
+  assign megamenu_menu_items_raw_array = megamenu_items | strip | split: '<!--@megamenu/split-menu-item-->'
+  assign megamenu_menu_items_array = ''
+
+  for megamenu_menu_item_raw in megamenu_menu_items_raw_array
+    assign is_even = forloop.index | modulo: 2
+    if is_even == 0
+      assign megamenu_menu_item = megamenu_menu_item_raw | strip | remove: '<!--' | remove: '-->'
+      assign megamenu_menu_items_array = megamenu_menu_items_array | append: megamenu_menu_item | append: '|---|'
+    endif
+  endfor
+
+  assign megamenu_menu_items_array = megamenu_menu_items_array | strip | split: '|---|'
+%}
+{% capture children %}
+  {% for link in block.settings.menu.links %}
+    {%- comment -%} Check for custom megamenu first {%- endcomment -%}
+    {%- assign has_custom_megamenu = false -%}
+    {%- assign custom_megamenu_index = -1 -%}
+
+    {%- for menu_item in megamenu_menu_items_array -%}
+      {%- assign link_title_downcase = link.title | strip | downcase -%}
+      {%- assign menu_item_downcase = menu_item | strip | downcase -%}
+      {%- if menu_item_downcase == link_title_downcase -%}
+        {%- assign has_custom_megamenu = true -%}
+        {%- assign custom_megamenu_index = forloop.index0 -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- assign has_dropdown = false -%}
+    {%- if link.links != blank or has_custom_megamenu -%}
+      {%- assign has_dropdown = true -%}
+    {%- endif -%}
+    
+    <li
+      role="presentation"
+      class="menu-list__list-item"
+      on:focus="/activate"
+      on:blur="/deactivate"
+      on:pointerenter="/activate"
+      on:pointerleave="/deactivate"
+    >
+      <a
+        href="{{ link.url }}"
+        class="menu-list__link{% if link.active %} menu-list__link--active{% endif %}"
+        {%- if has_dropdown -%}
+          aria-controls="submenu-{{ forloop.index }}"
+          aria-haspopup="true"
+          aria-expanded="false"
+        {%- endif -%}
+        ref="menuitem"
+      >
+        <span class="menu-list__link-title">{{- link.title -}}</span>
+      </a>
+      {%- if has_dropdown -%}
+        <div class="menu-list__submenu{{ color_scheme_classes }}" ref="submenu[]">
+          <div
+            id="submenu-{{ forloop.index }}"
+            class="menu-list__submenu-inner"
+            style="{% render 'submenu-font-styles', settings: block.settings %}"
+          >
+            {%- if has_custom_megamenu -%}
+              <div class="mega-menu section section--full-width-margin section--{{ section.settings.section_width }}">
+                {{ megamenu_items_array[custom_megamenu_index] }}
+              </div>
+            {%- else -%}
+              {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
+              {% render 'mega-menu',
+                parent_link: link,
+                id: list_id,
+                menu_content_type: menu_content_type,
+                content_aspect_ratio: ratio,
+                image_border_radius: image_border_radius
+              %}
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </li>
+  {% endfor %}
+  <li
+    class="menu-list__list-item"
+    role="presentation"
+    slot="more"
+    on:focus="/activate"
+    on:blur="/deactivate"
+    on:pointerenter="/activate"
+    on:pointerleave="/deactivate"
+  >
+    <button role="menuitem" class="button menu-list__link button-unstyled">
+      <span class="menu-list__link-title">{{ 'actions.more' | t }}</span>
+    </button>
+  </li>
+{% endcapture %}
+
+<nav header-menu>
+  <div
+    class="menu-list"
+    style="{% render '1-menu-font-styles', settings: block.settings %}"
+  >
+    {% assign class = 'overflow-menu' | append: color_scheme_classes %}
+    {% render 'overflow-list', class: class, ref: 'overflowMenu', children: children, minimum-items: 2 %}
+  </div>
+</nav>

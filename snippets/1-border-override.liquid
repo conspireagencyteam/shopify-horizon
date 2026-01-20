@@ -1,0 +1,20 @@
+{%- comment -%}
+  Renders border override CSS with support for individual border widths
+{%- endcomment -%}
+
+--border-style: {{ settings.border }}; 
+--border-color: rgb(var(--color-border-rgb) / {{ settings.border_opacity | divided_by: 100.0 }}); 
+--border-radius: {{ settings.border_radius }}px; 
+{% if settings.border_radius > 0 %} overflow: hidden; {% endif %}
+{% if settings.use_individual_borders %}
+  --border-width-top: {{ settings.border_width_top }}px;
+  --border-width-bottom: {{ settings.border_width_bottom }}px;
+  --border-width-left: {{ settings.border_width_left }}px;
+  --border-width-right: {{ settings.border_width_right }}px;
+  --border-width-top-mobile: {{ settings.border_width_top_mobile }}px;
+  --border-width-bottom-mobile: {{ settings.border_width_bottom_mobile }}px;
+  --border-width-left-mobile: {{ settings.border_width_left_mobile }}px;
+  --border-width-right-mobile: {{ settings.border_width_right_mobile }}px;
+{% else %}
+  --border-width: {{ settings.border_width }}px;
+{% endif %}

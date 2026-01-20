@@ -1,0 +1,397 @@
+<script
+  src="{{ '1-marquee.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+{% assign gap_between_elements = section.settings.gap_between_elements %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<one-marquee-component
+  class="section spacing-style gap-style color-{{ section.settings.color_scheme }}"
+  style="
+    {%- render 'spacing-style', settings: section.settings %};
+    {% render 'gap-style', value: gap_between_elements, name: '1-marquee-gap' %}
+    --1-marquee-direction: {{ section.settings.movement_direction }};
+  "
+  data-speed-factor="25"
+  data-movement-direction="{{ section.settings.movement_direction }}"
+>
+  <div
+    class="1-marquee__wrapper"
+    ref="wrapper"
+  >
+    <div
+      class="1-marquee__content"
+      ref="content"
+    >
+      <div
+        class="1-marquee__repeated-items"
+        ref="marqueeItems[]"
+      >
+        {% content_for 'blocks' %}
+      </div>
+    </div>
+  </div>
+</one-marquee-component>
+
+{% stylesheet %}
+  one-marquee-component {
+    display: block;
+    width: 100%;
+    overflow: clip;
+    position: relative;
+  }
+
+  .\31-marquee__wrapper {
+    display: flex;
+    gap: var(--1-marquee-gap);
+    width: max-content;
+    white-space: nowrap;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    animation: one-marquee-scroll var(--ticker-duration, 20s) linear infinite;
+    animation-direction: var(--ticker-direction, normal);
+  }
+
+  @keyframes one-marquee-scroll {
+    0% {
+      transform: translateZ(0);
+    }
+    100% {
+      transform: translate3d(calc(-1 * var(--ticker-width, 50%)), 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .\31-marquee__wrapper {
+      animation: none;
+    }
+  }
+
+  .\31-marquee__content {
+    min-width: max-content;
+    display: flex;
+    gap: var(--1-marquee-gap);
+    flex-shrink: 0;
+  }
+
+  .\31-marquee__content :is(p, h1, h2, h3, h4, h5, h6) {
+    white-space: nowrap;
+  }
+
+  .\31-marquee__content .\31-marquee__repeated-items * {
+    max-width: none;
+  }
+
+  .\31-marquee__repeated-items {
+    min-width: max-content;
+    display: flex;
+    gap: var(--1-marquee-gap);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .\31-marquee__repeated-items > * {
+    align-content: center;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.1_marquee",
+  "blocks": [
+    {
+      "type": "text"
+    },
+    {
+      "type": "1-icon"
+    },
+    {
+      "type": "icon"
+    },
+    {
+      "type": "logo"
+    },
+    {
+      "type": "_divider"
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "movement_direction",
+      "label": "t:settings.motion_direction",
+      "options": [
+        {
+          "value": "reverse",
+          "label": "t:options.forward"
+        },
+        {
+          "value": "normal",
+          "label": "t:options.reverse"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "gap_between_elements",
+      "label": "t:settings.gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.1_marquee_section",
+      "category": "t:categories.banners",
+      "blocks": {
+        "icon_9YTVV6": {
+          "type": "1-icon",
+          "name": "t:names.1_icon",
+          "settings": {
+            "icon": "price_tag",
+            "image_upload": "shopify://shop_images/icon-leaf-fill.svg",
+            "width": 24,
+            "width_mobile": 24,
+            "link": "",
+            "open_in_new_tab": false
+          },
+          "blocks": {}
+        },
+        "text_k6xNpW": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Herbal Extract Pioneers</strong></p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h3",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "color": "var(--color-foreground-heading)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "icon_H9fXUw": {
+          "type": "1-icon",
+          "name": "t:names.1_icon",
+          "settings": {
+            "icon": "price_tag",
+            "image_upload": "shopify://shop_images/icon-leaf-fill.svg",
+            "width": 24,
+            "width_mobile": 24,
+            "link": "",
+            "open_in_new_tab": false
+          },
+          "blocks": {}
+        },
+        "text_6wmfdA": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>EST. 1972 New York</strong></p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h3",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "color": "var(--color-foreground-heading)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "icon_X89zmM": {
+          "type": "1-icon",
+          "name": "t:names.1_icon",
+          "settings": {
+            "icon": "price_tag",
+            "image_upload": "shopify://shop_images/icon-leaf-fill.svg",
+            "width": 24,
+            "width_mobile": 24,
+            "link": "",
+            "open_in_new_tab": false
+          },
+          "blocks": {}
+        },
+        "text_4QL8MR": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Propietary Cold Extraction</strong></p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h3",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "color": "var(--color-foreground-heading)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "icon_pbWDka": {
+          "type": "1-icon",
+          "name": "t:names.1_icon",
+          "settings": {
+            "icon": "price_tag",
+            "image_upload": "shopify://shop_images/icon-leaf-fill.svg",
+            "width": 24,
+            "width_mobile": 24,
+            "link": "",
+            "open_in_new_tab": false
+          },
+          "blocks": {}
+        },
+        "text_hkYYDz": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Family Owned</strong></p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h3",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "color": "var(--color-foreground-heading)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "icon_6q7Bcp": {
+          "type": "1-icon",
+          "name": "t:names.1_icon",
+          "settings": {
+            "icon": "price_tag",
+            "image_upload": "shopify://shop_images/icon-leaf-fill.svg",
+            "width": 24,
+            "width_mobile": 24,
+            "link": "",
+            "open_in_new_tab": false
+          },
+          "blocks": {}
+        },
+        "text_cTAcGU": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Personal Care Products</strong></p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h3",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "color": "var(--color-foreground-heading)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "icon_9YTVV6",
+        "text_k6xNpW",
+        "icon_H9fXUw",
+        "text_6wmfdA",
+        "icon_X89zmM",
+        "text_4QL8MR",
+        "icon_pbWDka",
+        "text_hkYYDz",
+        "icon_6q7Bcp",
+        "text_cTAcGU"
+      ],
+      "settings": {
+        "movement_direction": "normal",
+        "color_scheme": "scheme-5",
+        "padding-block-start": 24,
+        "padding-block-end": 24,
+        "gap_between_elements": 32
+      }
+    }
+  ]
+}
+{% endschema %}

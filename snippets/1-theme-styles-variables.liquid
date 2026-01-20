@@ -1,0 +1,215 @@
+<style>
+  /* Custom Font Face Declarations for Conspire */
+  
+  {% comment %} @font-face {
+    font-family: 'Cabinet Grotesk';
+    src: url('{{ "1-CabinetGrotesk-Medium.woff" | asset_url }}') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: 'Cabinet Grotesk';
+    src: url('{{ "1-CabinetGrotesk-Extrabold.woff" | asset_url }}') format('woff');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* Cabinet Grotesk Variable Font Family */
+  @font-face {
+    font-family: 'Cabinet Grotesk Variable';
+    src: url('{{ "1-CabinetGrotesk-Regular.woff" | asset_url }}') format('woff-variations');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Cabinet Grotesk Variable';
+    src: url('{{ "1-CabinetGrotesk-Medium.woff" | asset_url }}') format('woff-variations');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  } {% endcomment %}
+
+  :root {
+    /* Section Heights */
+    --section-height-medium: 41rem;
+    --section-height-large: 45rem;
+    @media screen and (min-width: 60em) {
+      --section-height-medium: 68.5svh;
+      --section-height-large: 75svh;
+    }
+
+
+    /* Margin sizes */
+    --font-paragraph--spacing: 1em;
+      
+    /* Conspire Custom Font families with theme fallbacks */
+    {% comment %} --font-body--family: "Cabinet Grotesk Variable", {{ settings.type_subheading_font.fallback_families }};
+    --font-subheading--family: "Cabinet Grotesk", {{ settings.type_body_font.fallback_families }};
+    --font-heading--family: "Cabinet Grotesk", {{ settings.type_heading_font.fallback_families }};
+    --font-accent--family: "Cabinet Grotesk", {{ settings.type_accent_font.fallback_families }}; {% endcomment %}
+
+    /* Typography presets */
+    {% liquid
+      assign font_sizes = "paragraph, h1, h2, h3, h4, h5, h6" | split: ", "
+      assign fluid_size_cutoff = 24
+      assign absolute_font_size_min = 10
+
+      comment
+        Build an array of font sizes and sort it
+      endcomment
+      assign font_size_values = ''
+      for font_size in font_sizes
+        assign size_setting = 'type_size_[font_size]' | replace: '[font_size]', font_size
+        assign size_setting_value = settings[size_setting] | times: 1
+
+        comment
+          If the font size is less than 100, pad it with a 0
+          This is because we end up with an array of strings, which | sort filter can't order "correctly")
+        endcomment
+        if size_setting_value < 100
+          assign size_setting_value = '0[size_setting_value]' | replace: '[size_setting_value]', size_setting_value
+        endif
+
+        assign font_size_values = font_size_values | append: '[size_setting_value],' | replace: '[size_setting_value]', size_setting_value
+      endfor
+
+      assign font_size_values = font_size_values | split: ',' | uniq | sort_natural
+
+      comment
+        For each font size S, find the next smaller size S-1, and determine the minimum for S
+        The calculation depends on the size of S-1 (over or under the cutoff)
+      endcomment
+      for font_size in font_sizes
+        assign size_setting = 'type_size_[font_size]' | replace: '[font_size]', font_size
+        assign font_size_value = settings[size_setting] | times: 1
+        assign font_size_string = '[font_size_value]' | replace: '[font_size_value]', font_size_value
+        assign index = font_size_values | find_index: font_size_string
+
+        if font_size_value >= fluid_size_cutoff
+
+          comment
+            Calculate the minimum size for each font size
+          endcomment
+          assign fluid_font_size_min = font_size_value
+
+          if index == 0
+            assign fluid_font_size_min = absolute_font_size_min
+          else
+            assign next_font_size_index = index | minus: 2
+            assign next_font_size_value = font_size_values[next_font_size_index]
+            assign next_font_size_value_number = next_font_size_value | times: 1
+
+            comment
+              If the next bigger font size under the fluid cutoff, we use keep a 4px buffer
+            endcomment
+            if next_font_size_value_number < fluid_size_cutoff
+              assign fluid_font_size_min = next_font_size_value_number | plus: 4
+              if font_size_value < fluid_font_size_min
+                assign fluid_font_size_min = font_size_value
+              endif
+            else
+              assign fluid_font_size_min = next_font_size_value | times: 1
+            endif
+          endif
+
+          comment
+            Calculate the fluid and maximum size for each font size
+          endcomment
+          assign fluid_size_min_rem = fluid_font_size_min | divided_by: 16.0
+          assign fluid_size = font_size_value | times: 0.1
+          assign fluid_size_max_rem = font_size_value | divided_by: 16.0
+
+          echo '--font-size--[font_size]: clamp([fluid_size_min_rem]rem, [fluid_size]vw, [fluid_size_max_rem]rem);' | replace: '[font_size]', font_size | replace: '[fluid_size_min_rem]', fluid_size_min_rem | replace: '[fluid_size]', fluid_size | replace: '[fluid_size_max_rem]', fluid_size_max_rem
+        else
+          assign fluid_size_rem = font_size_value | divided_by: 16.0
+          echo '--font-size--[font_size]: [fluid_size_rem]rem;' | replace: '[font_size]', font_size | replace: '[fluid_size_rem]', fluid_size_rem
+        endif
+      endfor
+
+      assign type_presets = "paragraph, h1, h2, h3, h4, h5, h6" | split: ", "
+
+      for preset_name in type_presets
+        assign preset_size = '--font-size--[preset_name]' | replace: '[preset_name]', preset_name
+        assign preset_line_height = 'type_line_height_[preset_name]' | replace: '[preset_name]', preset_name
+
+        if preset_name == 'paragraph'
+          assign preset_font = '--font-body--family'
+          assign preset_style = '--font-body--style'
+          assign preset_weight = '400'
+          assign preset_case = '--font-body--case'
+          assign preset_letter_spacing = 'body-normal'
+
+          echo '--font-[preset_name]--weight: [preset_weight];' | replace: '[preset_name]', preset_name | replace: '[preset_weight]', preset_weight
+          echo '--font-[preset_name]--letter-spacing: var(--letter-spacing--[preset_letter_spacing]);' | replace: '[preset_name]', preset_name | replace: '[preset_letter_spacing]', preset_letter_spacing
+        else
+          assign preset_font_id = 'type_font_[preset_name]' | replace: '[preset_name]', preset_name
+          assign preset_font = '--font-[preset_font]--family' | replace: '[preset_font]', settings[preset_font_id]
+          assign preset_style = '--font-[preset_font]--style' | replace: '[preset_font]', settings[preset_font_id]
+          assign preset_weight = '--font-[preset_font]--weight' | replace: '[preset_font]', settings[preset_font_id]
+          assign preset_case = 'type_case_[preset_name]' | replace: '[preset_name]', preset_name
+          assign preset_letter_spacing = 'type_letter_spacing_[preset_name]' | replace: '[preset_name]', preset_name
+
+          echo '--font-[preset_name]--weight: var([preset_weight]);' | replace: '[preset_name]', preset_name | replace: '[preset_weight]', preset_weight
+          echo '--font-[preset_name]--letter-spacing: var(--letter-spacing--[preset_letter_spacing]);' | replace: '[preset_name]', preset_name | replace: '[preset_letter_spacing]', settings[preset_letter_spacing]
+        endif
+
+        echo '--font-[preset_name]--size: var([preset_size]);' | replace: '[preset_name]', preset_name | replace: '[preset_size]', preset_size
+        echo '--font-[preset_name]--family: var([preset_font]);' | replace: '[preset_name]', preset_name | replace: '[preset_font]', preset_font
+        echo '--font-[preset_name]--style: var([preset_style]);' | replace: '[preset_name]', preset_name | replace: '[preset_style]', preset_style
+        echo '--font-[preset_name]--case: [preset_case];' | replace: '[preset_name]', preset_name | replace: '[preset_case]', settings[preset_case]
+        echo '--font-[preset_name]--line-height: var(--line-height--[preset_line_height]);' | replace: '[preset_name]', preset_name | replace: '[preset_line_height]', settings[preset_line_height]
+      endfor
+    %}
+    /* Letter-spacing / Tracking */
+    --letter-spacing--display-normal: -0.01em;
+
+    --letter-spacing--heading-normal: -0.01em;
+    --line-height--display-normal: 1.2;
+    --line-height--display-loose: 1.4;
+
+    /* Colors */
+    --color-instock: #85BF71;
+    --color-instock-rgb: 133 191 113;
+    --color-lowstock: #EE9441;
+    --color-lowstock-rgb: 238 148 65;
+    --color-outofstock: #C8C8C8;
+    --color-outofstock-rgb: 200 200 200;
+
+    /* Button size */
+    --button-padding-inline: 32px;
+    --button-padding-block: 11px;
+
+    /* Focus */
+    --focus-outline-offset: 0rem;
+
+    /* Badges */
+    --badge-rectangle-padding-block: 3px;
+    --badge-rectangle-padding-inline: 12px;
+    @media screen and (min-width: 750px) {
+      --badge-rectangle-padding-block: 3px;
+      --badge-rectangle-padding-inline: 12px;
+    }
+
+    /* Spacing */
+    --spacing-scale-sm: 0.4;
+    --spacing-scale-md: 0.6;
+
+
+    /* Utilities */
+    --minimum-touch-target: 48px;
+
+    /* Icons */
+    --icon-leaf-url: url('{{ "1-icon-leaf.svg" | asset_url }}');
+  }
+  .section--page-width {
+    @media screen and (min-width: 750px) {
+      /* Slideshow */
+      --peek-next-slide-size: 0rem;
+    }
+  }
+</style>

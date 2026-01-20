@@ -1,0 +1,171 @@
+{%- doc -%}
+  Renders a carousel of list
+
+  @param {string} ref - The ref of the slideshow
+  @param {object} slides - An array of HTML for the slides to display in the carousel
+  @param {number} slide_count - The number of slides to display in the carousel
+  @param {object} settings - The block or sections settings from the parent block/section.
+  @param {string} [slide_width_max] - The maximum width of the slides in the carousel.
+  @param {object} [timeline_times] - Array of timeline titles to be displayed as timeline titles, sorted.
+  @param {object} [tablist] - Array of tabs to be displayed as tabs, sorted.
+  @param {string} [controls_position] - The position of the controls
+
+  @example
+  {% render '1-list-carousel', slides: slides, slide_count: slide_count, settings: block.settings, tablist: tablist %}
+{%- enddoc -%}
+
+{% liquid
+  assign slideshow_ref = ref | default: 'resourceListCarousel'
+  if settings.section_width == 'page-width' or settings.section_width == 'custom'
+    assign slideshow_gutters = 'start end'
+  else
+    assign slideshow_gutters = 'null'
+  endif
+
+  assign render_slideshow_controls = false
+  if settings.layout_type == 'carousel' and settings.autoplay or settings.slideshow_controls_style != 'none'
+    assign render_slideshow_controls = true
+  endif
+
+  assign render_mobile_slideshow_controls = false
+
+  if settings.slideshow_controls_style != settings.slideshow_mobile_controls_style
+    assign slideshow_controls_class = 'mobile:hidden'
+  endif
+
+  if settings.layout_type == 'grid' or settings.slideshow_controls_style != settings.slideshow_mobile_controls_style
+    assign render_mobile_slideshow_controls = true
+  endif
+
+  assign slideshow_controls_style = settings.slideshow_controls_style
+  # Use a counter instead of dots when there are many images to avoid cropping/overflow.
+  if slideshow_controls_style == 'dots' and slide_count > 10
+    assign slideshow_controls_style = 'counter'
+  endif
+  assign arrows_on_media = true
+
+  assign slideshow_class = 'resource-list__carousel'
+  if settings.slideshow_controls_style == 'tabs' or settings.slideshow_mobile_controls_style == 'tabs'
+    assign slideshow_class = slideshow_class | append: ' 1-resource-list__carousel--tabs'
+  endif
+%}
+
+{% capture slides %}
+  {% for item in slides limit: slides.size %}
+    {% render 'slideshow-slide'
+      index : forloop.index0,
+      children : item,
+      class : 'resource-list__slide'
+    %}
+  {% endfor %}
+{% endcapture %}
+
+{% comment %} {% capture slideshow_arrows %}
+  {% render 'slideshow-arrows', icon_style: settings.icons_style, icon_shape: settings.icons_shape %}
+{% endcapture %} {% endcomment %}
+
+
+<div
+  class="1-resource-list__carousel resource-list__carousel"
+  style="
+    {% if settings.section_width == 'page-width' or settings.section_width == 'custom' %}
+      --gutter-slide-width: var(--util-page-margin-offset);
+    {% elsif settings.section_width == 'full-width' %}
+      --gutter-slide-width: 0px;
+    {% endif %}
+    --slide-width-max: {{ slide_width_max | default: '300px' }};
+    {% if settings.full_width_on_mobile %}
+      --slide-width--mobile: 100%;
+    {% endif %}
+  "
+>
+
+  {% if slide_count > 1 %}
+    {% capture controls %}
+      {% if render_slideshow_controls %}
+        {%- render '1-slideshow-controls',
+          class: slideshow_controls_class,
+          style: slideshow_controls_style,
+          item_count: slide_count,
+          pagination_position: 'center',
+          arrows_on_media: arrows_on_media,
+          autoplay: settings.autoplay,
+          timeline_times : timeline_times,
+          tablist: tablist
+        -%}
+      {% endif %}
+    
+      {% if render_mobile_slideshow_controls %}
+        {%- render '1-slideshow-controls',
+          class: 'desktop:hidden media-gallery__mobile-controls resource-list__mobile-controls',
+          style: settings.slideshow_mobile_controls_style,
+          item_count: slide_count,
+          pagination_position: 'center',
+          arrows_on_media: arrows_on_media,
+          autoplay: settings.autoplay,
+          timeline_times : timeline_times,
+          tablist: tablist
+        -%}
+      {% endif %}
+    {% endcapture %}
+  {% endif %}
+
+  {% capture slideshow_arrows %}
+    {% render '1-slideshow-arrows', icon_style: settings.icons_style, icon_shape: settings.icons_shape, arrows_position: settings.slideshow_controls_position %}
+  {% endcapture %}
+
+  {% render '1-slideshow',
+    ref: slideshow_ref,
+    class: slideshow_class,
+    slides: slides,
+    slideshow_arrows: slideshow_arrows,
+    auto_hide_controls: false,
+    infinite: settings.autoplay,
+    initial_slide: 0,
+    slide_count: slide_count,
+    slideshow_gutters: slideshow_gutters,
+    arrows_position: settings.slideshow_controls_position,
+    controls: controls,
+    autoplay: settings.autoplay,
+    autoplay_speed: settings.autoplay_speed,
+    controls_position: controls_position
+  %}
+</div>
+{% stylesheet %}
+  slideshow-component:has(slideshow-arrows[position='bottom']) {
+    gap: var(--gap);
+  }
+  slideshow-arrows[position="bottom"] .slideshow-control {
+    opacity: 1;
+  }
+  
+  @container resource-list-carousel (width < 750px) {
+    .resource-list__carousel .resource-list__slide {
+      --slide-width: var(--slide-width--mobile, clamp(150px, var(--mobile-card-size, 60cqw), var(--slide-width-max)));
+    }
+  }
+  .\31-resource-list__carousel slideshow-controls:has(.slideshow-controls__dots) {
+    mix-blend-mode: unset;
+  }
+  .\31-resource-list__carousel .slideshow-controls__dots {
+    margin-block-start: var(--margin-xl);
+  }
+  .\31-resource-list__carousel .slideshow-controls__dots button {
+    --color: rgb(var(--color-foreground-heading-rgb) / 0.2);
+    --width: 24px;
+    --height: 6px;
+    width: calc(var(--width) * 2);
+    height: calc(var(--height) * 2);
+    margin: calc(var(--height) / 2) calc(var(--width) / -2);
+  }
+
+
+  .\31-resource-list__carousel .slideshow-controls__dots button:after {
+    width: var(--width);
+    height: var(--height);
+  }
+
+  .\31-resource-list__carousel .slideshow-controls__dots button[aria-selected='true'] {
+    --color: var(--color-foreground-heading);
+  }
+{% endstylesheet %}

@@ -1,0 +1,217 @@
+<script
+  src="{{ '1-marquee.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+{% assign gap_between_elements = section.settings.gap_between_elements %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<one-marquee-component
+  class="section spacing-style gap-style color-{{ section.settings.color_scheme }} section-resource-list"
+  style="
+    {%- render 'spacing-style', settings: section.settings %};
+    {%  render 'gap-style', value: section.settings.gap %}
+    {% render 'gap-style', value: gap_between_elements, name: '1-marquee-gap' %}
+    --1-marquee-direction: {{ section.settings.movement_direction }};
+  "
+  data-speed-factor="25"
+  data-movement-direction="{{ section.settings.movement_direction }}"
+>
+  <div class="section-resource-list__content">
+    {%- content_for 'block', type: '_content', id: 'static-header' -%}
+  </div>
+  <div
+    class="1-marquee__wrapper"
+    ref="wrapper"
+  >
+    <div
+      class="1-marquee__content"
+      ref="content"
+    >
+      <div
+        class="1-marquee__repeated-items"
+        ref="marqueeItems[]"
+      >
+        {% for retailer in section.settings.retailers %}
+          {% if retailer.logo != blank %}
+            {%- content_for 'block', type: '_content', id: 'static-marquee-item', retailer: retailer, closest.metaobject.retailer: retailer -%}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="section-resource-list__content">
+    {%- content_for 'block', type: '_content', id: 'static-footer' -%}
+  </div>
+</one-marquee-component>
+
+{% stylesheet %}
+  one-marquee-component {
+    display: block;
+    width: 100%;
+    overflow: clip;
+    position: relative;
+  }
+
+  .\31-marquee__wrapper {
+    display: flex;
+    gap: var(--1-marquee-gap);
+    width: max-content;
+    white-space: nowrap;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    animation: one-marquee-scroll var(--ticker-duration, 20s) linear infinite;
+    animation-direction: var(--ticker-direction, normal);
+  }
+
+  @keyframes one-marquee-scroll {
+    0% {
+      transform: translateZ(0);
+    }
+    100% {
+      transform: translate3d(calc(-1 * var(--ticker-width, 50%)), 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .\31-marquee__wrapper {
+      animation: none;
+    }
+  }
+
+  .\31-marquee__content {
+    min-width: max-content;
+    display: flex;
+    gap: var(--1-marquee-gap);
+    flex-shrink: 0;
+  }
+
+  .\31-marquee__content :is(p, h1, h2, h3, h4, h5, h6) {
+    white-space: nowrap;
+  }
+
+  .\31-marquee__content .\31-marquee__repeated-items * {
+    max-width: none;
+  }
+
+  .\31-marquee__repeated-items {
+    min-width: max-content;
+    display: flex;
+    gap: var(--1-marquee-gap);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .\31-marquee__repeated-items > * {
+    align-content: center;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.1_marquee_retailers",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "blocks": [
+    {
+      "type": "text"
+    },
+    {
+      "type": "icon"
+    },
+    {
+      "type": "logo"
+    },
+    {
+      "type": "_divider"
+    }
+  ],
+  "settings": [
+    {
+      "type": "metaobject_list",
+      "metaobject_type": "retailer",
+      "id": "retailers",
+      "label": "t:settings.1_retailers",
+    },
+    {
+      "type": "select",
+      "id": "movement_direction",
+      "label": "t:settings.motion_direction",
+      "options": [
+        {
+          "value": "reverse",
+          "label": "t:options.forward"
+        },
+        {
+          "value": "normal",
+          "label": "t:options.reverse"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "header",
+      "content": "t:content.section_layout"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "t:settings.gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "gap_between_elements",
+      "label": "t:settings.gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.1_marquee_retailers",
+      "category": "t:categories.text"
+    }
+  ]
+}
+{% endschema %}
