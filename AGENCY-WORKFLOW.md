@@ -186,7 +186,9 @@ Use when starting a new client project from the agency base theme.
 ```
 Set up a new client project "[CLIENT-NAME]" from the agency base theme:
 
-1. Clone the base theme to a new directory:
+1. Create the client directory structure and clone the base theme:
+   mkdir -p ../../../[CLIENT-NAME]/themes
+   cd [CLIENT-NAME]/themes
    git clone git@github-conspire:conspireagencyteam/shopify-horizon.git [CLIENT-NAME]-theme
 
 2. Navigate into the new project:
@@ -207,6 +209,8 @@ Expected output:
    base     → git@github-conspire:conspireagencyteam/shopify-horizon.git
    origin   → git@github-conspire:conspireagencyteam/[CLIENT-NAME]-theme.git
    upstream → https://github.com/Shopify/horizon.git
+
+Final path: conspireAgency/[CLIENT-NAME]/themes/[CLIENT-NAME]-theme
 
 Replace [CLIENT-NAME] with the actual client name (e.g., "naturessunshine", "herblife").
 ```
