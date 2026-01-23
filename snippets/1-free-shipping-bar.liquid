@@ -1,0 +1,133 @@
+{%- doc -%}
+  Renders a free shipping progress bar that shows how much more the customer needs
+  to spend to qualify for free shipping. Updates dynamically when items are added
+  or removed from the cart.
+
+  @param {object} [settings] - Theme settings object
+  @param {boolean} [settings.show_free_shipping_bar] - Whether to show the free shipping bar
+  @param {string} [settings.free_shipping_threshold] - The minimum cart total for free shipping
+{%- enddoc -%}
+
+{%- liquid
+  # Calculate total price of shipping-eligible items
+  assign calculated_total_price = 0
+
+  for line_item in cart.items
+    if line_item.requires_shipping
+      assign calculated_total_price = calculated_total_price | plus: line_item.final_line_price
+    endif
+  endfor
+
+  # Subtract cart-level discounts
+  assign total_cart_discount = 0
+
+  for discount_application in cart.cart_level_discount_applications
+    assign total_cart_discount = total_cart_discount | plus: discount_application.total_allocated_amount
+  endfor
+
+  assign calculated_total_price = calculated_total_price | minus: total_cart_discount
+
+  # Parse threshold - remove currency symbols and convert to cents
+  assign threshold_value = settings.free_shipping_threshold | default: '50'
+  assign threshold_cents = threshold_value | times: 100
+
+  # Calculate progress percentage (0-100)
+  assign progress = calculated_total_price | times: 100 | divided_by: threshold_cents
+  assign progress = progress | at_most: 100 | round
+-%}
+
+{%- if settings.show_free_shipping_bar and cart.requires_shipping -%}
+  <script
+    src="{{ '1-free-shipping-bar.js' | asset_url }}"
+    type="module"
+    fetchpriority="low"
+  ></script>
+
+  <one-free-shipping-bar
+    class="1-free-shipping-bar"
+    threshold="{{ settings.free_shipping_threshold | default: '50' }}"
+    total-price="{{ calculated_total_price }}"
+    reached-message="{{ 'cart.free_shipping_bar.limit_reached_html' | t | escape }}"
+    unreached-message="{{ 'cart.free_shipping_bar.limit_unreached_html' | t | escape }}"
+    money-format="{{ shop.money_format | escape }}"
+  >
+    <span ref="message" class="1-free-shipping-bar__message">
+      {%- if calculated_total_price >= threshold_cents -%}
+        {{ 'cart.free_shipping_bar.limit_reached_html' | t }}
+      {%- else -%}
+        {%- assign remaining = threshold_cents | minus: calculated_total_price -%}
+        {%- assign remaining_formatted = remaining | money -%}
+        {{ 'cart.free_shipping_bar.limit_unreached_html' | t: remaining_amount: remaining_formatted }}
+      {%- endif -%}
+    </span>
+
+    <div
+      ref="progressBar"
+      class="1-free-shipping-bar__progress"
+      role="progressbar"
+      aria-label="{{ 'cart.free_shipping_bar.progress_label' | t }}"
+      aria-valuemin="0"
+      aria-valuenow="{{ progress }}"
+      aria-valuemax="100"
+      aria-busy="false"
+      style="--progress: {{ progress | divided_by: 100.0 }};"
+    >
+      <div class="1-free-shipping-bar__progress-fill"></div>
+    </div>
+  </one-free-shipping-bar>
+
+{%- endif -%}
+
+{% stylesheet %}
+  .\31-free-shipping-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: var(--font-size--sm);
+  }
+
+  .\31-free-shipping-bar__message {
+    color: var(--color-foreground);
+  }
+
+  .\31-free-shipping-bar__progress {
+    position: relative;
+    height: var(--free-shipping-bar-height);
+    background-color: var(--color-border);
+    border-radius: calc(var(--free-shipping-bar-height) / 2);
+    overflow: hidden;
+  }
+
+  .\31-free-shipping-bar__progress-fill {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-primary);
+    transform: scaleX(var(--progress, 0));
+    transform-origin: left;
+    transition: transform 0.3s ease-out;
+    border-radius: inherit;
+  }
+
+  /* When threshold is reached, show a success color */
+  .\31-free-shipping-bar__progress[aria-valuenow="100"] .\31-free-shipping-bar__progress-fill {
+    background-color: var(--color-primary);
+  }
+
+  .cart-drawer {
+    .\31-free-shipping-bar {
+      padding: var(--cart-drawer-padding);
+      padding-block: var(--padding-sm);
+      margin-block-end: var(--gap-xl);
+      border-width: 1px 0;
+      border-style: solid;
+      border-color: var(--color-border);
+    }
+  }
+  .cart-page {
+    .\31-free-shipping-bar {
+      padding-block: var(--padding-xl);
+      margin-block-end: var(--gap-xl);
+      border-bottom: 1px solid var(--color-border);
+    }
+  }
+{% endstylesheet %}

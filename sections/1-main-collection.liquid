@@ -72,7 +72,7 @@
         {% render '1-product-grid', section: section, children: children, products: products, paginate: paginate %}
       {% endpaginate %}
     {% else %}
-      {% paginate collection.products by 16 %}
+      {% paginate collection.products by 24 %}
         {% assign results_start = paginate.current_offset | plus: 1 %}
         {% assign results_end = paginate.current_offset | plus: paginate.page_size | at_most: collection.products_count %}
         {% content_for 'block',
