@@ -4,25 +4,36 @@
   {% render 'text', fallback_text: collection_title, block: block %}
 {% elsif closest.collection != blank %}
   {% assign primary_health_interest_filter = closest.collection.filters | where: 'param_name', 'filter.p.m.product_details.primary_health_interest' | first %}
-  <one-filter-observer>
-    {% if primary_health_interest_filter.active_values.size == 1 %}
-      {% assign collection_title = '<h1><strong>' | append: primary_health_interest_filter.active_values.first.label | append: '</strong></h1>' %}
+  {% if primary_health_interest_filter.active_values.size == 1 %}
+    {% assign gid =  primary_health_interest_filter.active_values.first.value %}
+    {% assign id =  gid | replace: 'gid://shopify/Metaobject/', '' | times: 1 %}
+    {% assign matched_health_interest = nil %}
+    {% for health_interest in metaobjects.health_interests.values %}
+      {% if health_interest.system.id == id %}
+        {% assign matched_health_interest = health_interest %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+    {% if matched_health_interest and matched_health_interest.description.value %}
+      {% assign collection_title = '<div>' | append: matched_health_interest.description.value | append: '</div>' %}
+      <one-filter-observer>
         {% render 'text', fallback_text: collection_title, block: block %}
-    {% else %}
-      {% assign collection_title = '<h1><strong>' | append: closest.collection.title | append: '</strong></h1>' %}
-      {% render 'text', fallback_text: collection_title, block: block %}
+      </one-filter-observer>
     {% endif %}
-  </one-filter-observer>
+  {% elsif closest.collection.description != blank %}
+    {% assign collection_title = '<div>' | append: closest.collection.description | append: '</div>' %}
+    {% render 'text', fallback_text: collection_title, block: block %}
+  {% endif %}
 {% endif %}
 
 {% schema %}
 {
-  "name": "t:names.1_collection_title",
+  "name": "t:names.1_collection_description",
   "tag": null,
   "settings": [
     {
       "type": "paragraph",
-      "content": "t:content.resource_reference_collection_title"
+      "content": "t:content.1_resource_reference_collection_description"
     },
     {
       "type": "header",
@@ -397,7 +408,7 @@
   ],
   "presets": [
     {
-      "name": "t:names.1_collection_title",
+      "name": "t:names.1_collection_description",
       "category": "t:categories.collection"
     }
   ]

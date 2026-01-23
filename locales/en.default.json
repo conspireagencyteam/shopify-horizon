@@ -340,6 +340,7 @@
     }
   },
   "placeholders": {
+    "1_collection_description": "Collection description",
     "password": "Password",
     "search": "Search",
     "product_title": "Product title",
@@ -349,6 +350,13 @@
     "blog_post_author": "Author",
     "blog_post_date": "Date",
     "blog_post_description": "An excerpt of your blog post's content"
+  },
+  "cart": {
+    "free_shipping_bar": {
+      "limit_unreached_html": "Spend {{ remaining_amount }} more and get free shipping!",
+      "limit_reached_html": "You have earned free shipping!",
+      "progress_label": "Free shipping progress"
+    }
   },
   "products": {
     "product": {

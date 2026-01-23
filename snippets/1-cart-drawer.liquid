@@ -24,7 +24,10 @@
   <button
     class="button 1-header-actions__action header-actions__action button-unstyled"
     on:click="/open"
-    aria-label="{{ 'accessibility.open_cart_drawer' | t }} {{ 'accessibility.cart_count' | t}}: {{ cart.item_count }}"
+    aria-haspopup="dialog"
+    aria-label="{{ 'accessibility.cart' | t }}"
+    aria-describedby="cart-bubble-text"
+    data-testid="cart-drawer-trigger"
   >
     {% render '1-cart-icon-component' %}
   </button>
@@ -86,6 +89,8 @@
               </span>
             </button>
           </div>
+
+          {% render '1-free-shipping-bar' %}
 
           <div
             class="cart-drawer__content motion-reduce"

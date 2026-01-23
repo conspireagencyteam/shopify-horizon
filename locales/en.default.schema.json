@@ -33,6 +33,7 @@
     "text": "Text"
   },
   "content": {
+    "1_resource_reference_collection_description": "Displays description from parent collection",
     "1_callout_pointer": "Callout pointer",
     "1_heading_spacing": "Heading spacing",
     "1_resource_reference_product_sizes": "Displays sizes from parent product",
@@ -57,6 +58,7 @@
     "carousel_navigation": "Carousel navigation",
     "carousel_pagination": "Carousel pagination",
     "cart_features": "Cart features",
+    "1_free_shipping_bar": "Free shipping bar",
     "colors": "Colors",
     "collection_page": "Collection page",
     "complementary_products": "Complementary products must be set up using the Search & Discovery app. [Learn more](https://help.shopify.com/manual/online-store/search-and-discovery)",
@@ -216,6 +218,7 @@
     "work_quickly_to_ship": "<p>We will work quickly to ship your order as soon as possible. Once your order has shipped, you will receive an email with further information. Delivery times vary depending on your location.</p>"
   },
   "info": {
+    "1_free_shipping_threshold": "Enter the minimum order amount (in your store currency) required for free shipping. Example: 50",
     "1_menu_item_info": "Enter the exact menu item title to apply this mega menu to.",
     "1_allow_transparent_header_info": "This setting only applies when this section is the first one.",
     "1_metafield_namespace_key": "Enter the namespace and key of the metafield to check if it is not blank",
@@ -250,6 +253,7 @@
     "media_type_info": "Features are populated from your menu links"
   },
   "names": {
+    "1_collection_description": "1 Collection description",
     "1_collection_title": "1 Collection title",
     "1_menu_group": "1 Menu group",
     "1_megamenu": "1 Megamenu",
@@ -1026,6 +1030,8 @@
     "cart_total": "Cart total",
     // Setting label for cart display format (page vs drawer)
     "cart_type": "Type",
+    "1_show_free_shipping_bar": "Show free shipping bar",
+    "1_free_shipping_threshold": "Free shipping threshold",
     "auto_open_cart_drawer": "\"Add to cart\" auto-opens drawer",
     // Text case setting for typography (uppercase/lowercase)
     "case": "Case",
