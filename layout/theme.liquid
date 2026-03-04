@@ -25,10 +25,13 @@
     {% endif %}
 
     {%- render 'meta-tags' -%}
-    {%- render 'stylesheets' -%}
+    {% comment %} {%- render 'stylesheets' -%} {% endcomment %}
+    {%- render '1-stylesheets' -%}
     {%- render 'fonts' -%}
-    {%- render 'scripts' -%}
+    {% comment %} {%- render 'scripts' -%} {% endcomment %}
+    {%- render '1-scripts' -%}
     {%- render 'theme-styles-variables' -%}
+    {%- render '1-client-styles-variables' -%}
     {%- render 'color-schemes' -%}
 
     {% if request.design_mode %}
