@@ -1,9 +1,6 @@
 import { Component } from '@theme/component';
-import { debounce, onDocumentLoaded } from '@theme/utilities';
+import { debounce, onDocumentLoaded, setHeaderMenuStyle } from '@theme/utilities';
 import { MegaMenuHoverEvent } from '@theme/events';
-
-const ACTIVATE_DELAY = 0;
-const DEACTIVATE_DELAY = 350;
 
 /**
  * A custom element that manages a header menu.
@@ -20,22 +17,37 @@ const DEACTIVATE_DELAY = 350;
 class HeaderMenu extends Component {
   requiredRefs = ['overflowMenu'];
 
-  #abortController = new AbortController();
+  /**
+   * @type {MutationObserver | null}
+   */
+  #submenuMutationObserver = null;
 
   connectedCallback() {
     super.connectedCallback();
 
-    this.overflowMenu?.addEventListener('pointerleave', () => this.#debouncedDeactivate(), {
-      signal: this.#abortController.signal,
-    });
-
     onDocumentLoaded(this.#preloadImages);
+    window.addEventListener('resize', this.#resizeListener);
+    this.overflowMenu?.addEventListener('pointerleave', this.#overflowSubmenuListener);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.#abortController.abort();
+    window.removeEventListener('resize', this.#resizeListener);
+    this.overflowMenu?.removeEventListener('pointerleave', this.#overflowSubmenuListener);
+    this.#cleanupMutationObserver();
   }
+
+  /**
+   * Debounced resize event listener to recalculate menu style
+   */
+  #resizeListener = debounce(() => {
+    setHeaderMenuStyle();
+  }, 100);
+
+
+  #overflowSubmenuListener = () => {
+    this.#deactivate();
+  };
 
   /**
    * @type {State}
@@ -45,15 +57,6 @@ class HeaderMenu extends Component {
   };
 
   /**
-   * Time to allow for a closing animation between initiating a deactivation and actually deactivating the active item.
-   * @returns {number}
-   */
-  get animationDelay() {
-    const value = this.dataset.animationDelay;
-    return value ? parseInt(value, 10) : 0;
-  }
-
-  /**
    * Get the overflow menu
    */
   get overflowMenu() {
@@ -61,11 +64,15 @@ class HeaderMenu extends Component {
   }
 
   /**
-   * Whether the overflow menu is hovered
+   * Whether the overflow list is hovered
    * @returns {boolean}
    */
-  get overflowHovered() {
-    return this.refs.overflowMenu?.matches(':hover') ?? false;
+  get overflowListHovered() {
+    return this.refs.overflowMenu?.shadowRoot?.querySelector('[part="overflow-list"]')?.matches(':hover') ?? false;
+  }
+
+  get headerComponent() {
+    return /** @type {HTMLElement | null} */ (this.closest('header-component'));
   }
 
   /**
@@ -73,24 +80,9 @@ class HeaderMenu extends Component {
    * @param {PointerEvent | FocusEvent} event
    */
   activate = (event) => {
-    this.#debouncedDeactivate.cancel();
-    this.#debouncedActivateHandler.cancel();
-
-    this.#debouncedActivateHandler(event);
-  };
-
-  /**
-   * Activate the selected menu item with a delay
-   * @param {PointerEvent | FocusEvent} event
-   */
-  #activateHandler = (event) => {
-    this.#debouncedDeactivate.cancel();
-
     this.dispatchEvent(new MegaMenuHoverEvent());
 
-    this.removeAttribute('data-animating');
-
-    if (!(event.target instanceof Element)) return;
+    if (!(event.target instanceof Element) || !this.headerComponent) return;
 
     let item = findMenuItem(event.target);
 
@@ -111,40 +103,81 @@ class HeaderMenu extends Component {
     item.ariaExpanded = 'true';
 
     let submenu = findSubmenu(item);
+    const hasSubmenu = Boolean(submenu);
 
-    if (!submenu && !isDefaultSlot) {
+    if (!hasSubmenu && !isDefaultSlot) {
       submenu = this.overflowMenu;
     }
 
-    // Mark submenu as active for content-visibility optimization
     if (submenu) {
+      // Mark submenu as active for content-visibility optimization
       submenu.dataset.active = '';
+
+      // Cleanup any existing mutation observer from previous menu activations
+      this.#cleanupMutationObserver();
+
+      // Monitor DOM mutations to catch deferred content injection (from section hydration)
+      this.#submenuMutationObserver = new MutationObserver(() => {
+        requestAnimationFrame(() => {
+          // Double requestAnimationFrame to ensure the height is properly calculated and not defaulting to the contain-intrinsic-size
+          requestAnimationFrame(() => {
+            if (submenu.offsetHeight > 0) {
+              this.headerComponent?.style.setProperty('--submenu-height', `${submenu.offsetHeight}px`);
+              this.#cleanupMutationObserver();
+            }
+          });
+        });
+      });
+      this.#submenuMutationObserver.observe(submenu, {childList: true, subtree: true});
+
+      // Auto-disconnect after 500ms to prevent memory leaks
+      setTimeout(() => {
+        this.#cleanupMutationObserver();
+      }, 500);
     }
 
-    const submenuHeight = submenu ? submenu.offsetHeight : 0;
+    let finalHeight = submenu?.offsetHeight || 0;
 
-    this.style.setProperty('--submenu-height', `${submenuHeight}px`);
+    // For overflow menu, the height needs to be either content of the submenu or the total height of the menu list links
+    if (!isDefaultSlot) {
+      const overflowListHeight = this.#getOverflowListLinksHeight();
+      if (hasSubmenu) {
+        /* Note: When the submenu is inside the overflow menu, its offsetHeight is not valid due to the lack of padding
+         * we could add the padding variables to the submenu.offsetHeight, but measuring the overflowMenu.offsetHeight is just easier */
+        const overflowHeight = this.overflowMenu?.offsetHeight || 0;
+        finalHeight = Math.max(overflowHeight, overflowListHeight);
+      } else {
+        finalHeight = overflowListHeight;
+      }
+    }
+
+    if (!submenu) {
+      // If there is no content to open, don't try to open it
+      finalHeight = 0;
+    }
+
+    this.headerComponent.style.setProperty('--submenu-height', `${finalHeight}px`);
+    this.#setFullOpenHeaderHeight(finalHeight);
     this.style.setProperty('--submenu-opacity', '1');
   };
-
-  #debouncedActivateHandler = debounce(this.#activateHandler, ACTIVATE_DELAY);
 
   /**
    * Deactivate the active item after a delay
    * @param {PointerEvent | FocusEvent} event
    */
   deactivate(event) {
-    this.#debouncedActivateHandler.cancel();
-
     if (!(event.target instanceof Element)) return;
 
-    const item = findMenuItem(event.target);
+    const menu = findSubmenu(this.#state.activeItem);
+    const isMovingWithinMenu = event.relatedTarget instanceof Node && menu?.contains(document.activeElement);
+    const isMovingToSubmenu =
+      event.relatedTarget instanceof Node && event.type === 'blur' && menu?.contains(event.relatedTarget);
+    const isMovingToOverflowMenu =
+      event.relatedTarget instanceof Node && event.relatedTarget.parentElement?.matches('[slot="overflow"]');
 
-    // Make sure the item to be deactivated is still the active one. Ideally
-    // we cancelled the debounce before the item was changed, but just in case.
-    if (item === this.#state.activeItem) {
-      this.#debouncedDeactivate();
-    }
+    if (isMovingWithinMenu || isMovingToOverflowMenu || isMovingToSubmenu) return;
+
+    this.#deactivate();
   }
 
   /**
@@ -153,9 +186,12 @@ class HeaderMenu extends Component {
    */
   #deactivate = (item = this.#state.activeItem) => {
     if (!item || item != this.#state.activeItem) return;
-    if (this.overflowHovered) return;
 
-    this.style.setProperty('--submenu-height', '0px');
+    // Don't deactivate if the overflow menu or overflow list is still being hovered
+    if (this.overflowListHovered || this.overflowMenu?.matches(':hover')) return;
+
+    this.headerComponent?.style.setProperty('--submenu-height', '0px');
+    this.#setFullOpenHeaderHeight(0);
     this.style.setProperty('--submenu-opacity', '0');
     this.dataset.overflowExpanded = 'false';
 
@@ -164,22 +200,58 @@ class HeaderMenu extends Component {
     this.#state.activeItem = null;
     this.ariaExpanded = 'false';
     item.ariaExpanded = 'false';
-    item.setAttribute('data-animating', '');
 
-    setTimeout(() => {
-      item.removeAttribute('data-animating');
-      // Remove active state from submenu after animation completes
-      if (submenu) {
-        delete submenu.dataset.active;
-      }
-    }, Math.max(0, this.animationDelay - 150)); // Start header transition 150ms before submenu finishes
+    // Remove active state from submenu after animation completes
+    if (submenu) {
+      delete submenu.dataset.active;
+    }
   };
 
+  #getOverflowListLinksHeight() {
+    const slottedMenuLinks = this.overflowMenu?.querySelector('slot')?.assignedElements();
+    if (!slottedMenuLinks) return this.overflowMenu?.offsetHeight || 0;
+
+    /**
+     * @param {(submenu: HTMLElement) => void} cb
+     */
+    const mapSubmenus = (cb) => {
+      slottedMenuLinks.forEach((link) => {
+        const submenu = /** @type {HTMLElement | null} */ (link.querySelector('[ref="submenu[]"]'));
+        if (submenu) {
+          cb(submenu);
+        }
+      });
+    }
+
+    mapSubmenus((submenu) => {
+      submenu.style.setProperty('display', 'none');
+    });
+    const height = this.overflowMenu?.offsetHeight || 0;
+    mapSubmenus((submenu) => {
+      submenu.style.removeProperty('display');
+    });
+    return height;
+  }
+
   /**
-   * Deactivate the active item after a delay
-   * @param {PointerEvent | FocusEvent} event
+   * Calculate and set the full open header height. If the submenu is not open, the full open header height is 0.
+   * @param {number} submenuHeight
    */
-  #debouncedDeactivate = debounce(this.#deactivate, DEACTIVATE_DELAY);
+  #setFullOpenHeaderHeight(submenuHeight) {
+    if (!this.headerComponent) return;
+
+    const isOverlapSituation = this.headerComponent.hasAttribute('data-submenu-overlap-bottom-row');
+
+    const headerVisibleHeight =
+      isOverlapSituation && this.headerComponent.offsetHeight > 0
+        ? /** @type {HTMLElement | null} */ (this.headerComponent.querySelector('.header__row--top'))?.offsetHeight ?? 0
+        : this.headerComponent.offsetHeight;
+
+    const nothingToOpen = submenuHeight === 0;
+    const fullOpenHeaderHeight = nothingToOpen ? 0 : submenuHeight + (headerVisibleHeight ?? 0);
+
+    this.headerComponent?.style.setProperty('--full-open-header-height', `${fullOpenHeaderHeight}px`);
+  }
 
   /**
    * Preload images that are set to load lazily.
@@ -188,6 +260,11 @@ class HeaderMenu extends Component {
     const images = this.querySelectorAll('img[loading="lazy"]');
     images?.forEach((image) => image.removeAttribute('loading'));
   };
+
+  #cleanupMutationObserver() {
+    this.#submenuMutationObserver?.disconnect();
+    this.#submenuMutationObserver = null;
+  }
 }
 
 if (!customElements.get('header-menu')) {

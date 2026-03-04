@@ -244,22 +244,6 @@ export function normalizeString(str) {
 }
 
 /**
- * Format a money value
- * @param {string} value The value to format
- * @returns {string} The formatted value
- */
-export function formatMoney(value) {
-  let valueWithNoSpaces = value.replace(' ', '');
-  if (valueWithNoSpaces.indexOf(',') === -1) return valueWithNoSpaces;
-  if (valueWithNoSpaces.indexOf(',') < valueWithNoSpaces.indexOf('.')) return valueWithNoSpaces.replace(',', '');
-  if (valueWithNoSpaces.indexOf('.') < valueWithNoSpaces.indexOf(','))
-    return valueWithNoSpaces.replace('.', '').replace(',', '.');
-  if (valueWithNoSpaces.indexOf(',') !== -1) return valueWithNoSpaces.replace(',', '.');
-
-  return valueWithNoSpaces;
-}
-
-/**
  * Check if the document is ready/loaded and call the callback when it is.
  * @param {() => void} callback The function to call when the document is ready.
  */
@@ -367,6 +351,14 @@ export function isMobileBreakpoint() {
  */
 export function isDesktopBreakpoint() {
   return mediaQueryLarge.matches;
+}
+
+/**
+ * Check if the device is a touch device independently ot the screen size
+ * @returns {boolean} True if the device is a touch device, false otherwise
+ */
+export function isTouchDevice() {
+  return 'ontouchstart' in window && navigator.maxTouchPoints > 0;
 }
 
 /**
@@ -707,7 +699,26 @@ export class ResizeNotifier extends ResizeObserver {
   }
 }
 
-// Header calculation functions for maintaining CSS variables
+/**
+ * Sets the menuStyle dataset attribute on the header component element.
+ */
+export function setHeaderMenuStyle() {
+  const headerComponent = /** @type {HTMLElement} | null */ (document.querySelector('#header-component'));
+  if (headerComponent) {
+    window.requestAnimationFrame(() => {
+      const overflowList = headerComponent?.querySelector('overflow-list');
+      const hasReachedMinimum = overflowList && overflowList.hasAttribute('minimum-reached');
+      headerComponent.dataset.menuStyle = isTouchDevice() || hasReachedMinimum ? 'drawer' : 'menu';
+    });
+  }
+}
+
+/**
+ * Header group includes the header (with the menu, etc) and other sections like announcements, dividers, etc.
+ * @param {HTMLElement | null} header - The header element
+ * @param {HTMLElement | null} headerGroup - The header group element, defaults to the #header-group element
+ * @returns {number} The height of the header group
+ */
 export function calculateHeaderGroupHeight(
   header = document.querySelector('#header-component'),
   headerGroup = document.querySelector('#header-group')
@@ -761,14 +772,22 @@ function updateHeaderHeights() {
   // Calculate initial heights
   const headerHeight = header.offsetHeight;
   const headerGroupHeight = calculateHeaderGroupHeight(header);
+  const headerTopRow = /** @type {HTMLElement} | null */ (header.querySelector('.header__row--top'));
 
   document.body.style.setProperty('--header-height', `${headerHeight}px`);
   document.body.style.setProperty('--header-group-height', `${headerGroupHeight}px`);
+
+  if (headerTopRow) {
+    window.requestAnimationFrame(function () {
+      header.style.setProperty('--top-row-height', `${headerTopRow.offsetHeight}px`);
+    });
+  }
 }
 
 export function updateAllHeaderCustomProperties() {
   updateHeaderHeights();
   updateTransparentHeaderOffset();
+  setHeaderMenuStyle();
 }
 
 // Theme is not defined in some layouts, like the gift card page

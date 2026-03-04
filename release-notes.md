@@ -1,29 +1,24 @@
-# Release Notes - Version 3.2.1
+# Release Notes - Version 3.4.0
 
-This release delivers extensive performance optimizations across many components and resolves issues in the menu drawer, cart, and sticky add-to-cart behavior.
+This release adds a text option for header links as an alternative for the current icons as well as updates to customer accounts. It also includes UX and accessibility improvements, and bugfixes.
 
 ## What's Changed
 
+### Added
+
+* [Header] Added text style for header links (Search, Account and Cart)
+* [Product card] Added width control settings for desktop and mobile
+
+### Changed
+
+* [Header] Changed existing account menu in favor of new web component version
+* [Accessibility] Marked the footer section as a semantic footer element
+* [Accessibility] Improved accessibility of the header menu with better aria roles
+* [Product] Allow product details column to expand on larger viewports
+* [Product] Display single-value variant options as text instead of dropdown
+
 ### Fixes and improvements
 
-- [Performance] Improved Liquid rendering performance by reducing snippet use
-- [Performance] Improved overall CSS performance
-- [Performance] Improved animation performance
-- [Performance] Improved header, email signup, quick-add, meta color, predictive search, hero banner, fly-to-cart, jumbo text, and slideshow performance
-- [Performance] Improved page load speed when page transitions are turned off
-- [Performance] Disabled all view transitions for low-powered devices
-- [Performance] Improved interaction performance for various components
-- [Menu drawer] Fixed menu drawer not closing on Firefox
-- [Footer] Fixed footer copyright text wrapping
-- [Quick add] Fixed quick add modal variant selector appearance issues after opening multiple modals
-- [Collection cards] Collection cards in lists and grids match height of tallest card
-- [Slideshow] Fixed slideshow controls visibility on transparent product images
-- [Marquee] Fixed marquee jump on mobile scroll
-- [Sticky add to cart] Polished sticky add to cart behaviors
-- [Cart drawer] Entire cart drawer becomes scrollable when its footer is too tall
-- [Cart drawer] Addressed UI inconsistencies in the cart drawer
-- [Gift cards] Fixed "copy gift card code" button
-- [Cart] Fixed discount field sizing for narrow viewports
-- [Blog] Removed section title uppercase styling
-- [Editor] Added recommended blocks to Slideshow and Layered slideshow
-- [Editor] Improved the clarity of a number of labels in the editor
+* [Product] Fixed flash of disabled buttons when changing a variant
+* [Cart] Fixed cart drawer spacing and line wrapping
+* [Page] Fixed inconsistent vertical spacing between heading presets and RTE headings

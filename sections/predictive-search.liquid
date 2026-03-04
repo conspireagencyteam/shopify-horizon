@@ -194,19 +194,10 @@
       height: fit-content;
     }
   }
-
   .dialog-modal .predictive-search-form__header-inner {
     @media screen and (min-width: 750px) {
       border: 0;
     }
-  }
-
-  .header[transparent] :is(.predictive-search):not(:focus-within) {
-    background-color: transparent;
-  }
-
-  .header[transparent] .predictive-search-form__header-inner {
-    border-color: var(--color-foreground);
   }
 
   .search-modal__content .predictive-search-form__content {
@@ -372,6 +363,9 @@
   }
 
   .predictive-search-results__card {
+    --title-font-size: var(--font-size--md);
+    --title-margin-block: var(--margin-xs);
+
     flex: 0 0 auto;
     scroll-snap-align: start;
     scroll-margin-block: calc(var(--title-font-size) + var(--title-margin-block) + var(--padding-sm))
