@@ -167,7 +167,7 @@ Use after completing work on a client project to sync reusable customizations ba
 Sync this project's customizations to the agency base theme:
 
 1. Run the sync script:
-   ./sync-to-base.sh /Users/Yujan/Documents/Work/conspireAgency/shopify/themes/shopify-horizon
+   ./sync-to-base.sh ../../_shopify/themes/shopify-horizon
 
 2. For locale files (locales/en.default.json and locales/en.default.schema.json):
    - Compare with base theme versions
@@ -177,7 +177,7 @@ Sync this project's customizations to the agency base theme:
 
 3. Show me git status and diff summary in the base theme so I can review before committing
 
-Base theme path: /Users/Yujan/Documents/Work/conspireAgency/shopify/themes/shopify-horizon
+Base theme path: ../../_shopify/themes/shopify-horizon
 ```
 
 ### Prompt 2: Set Up New Client Project
