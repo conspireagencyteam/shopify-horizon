@@ -1,44 +1,43 @@
 <style>
   /* Custom Font Face Declarations */
-  
-  {% comment %} @font-face {
-    font-family: 'Cabinet Grotesk';
-    src: url('{{ "1-CabinetGrotesk-Medium.woff" | asset_url }}') format('woff');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-  }
-  
-  @font-face {
-    font-family: 'Cabinet Grotesk';
-    src: url('{{ "1-CabinetGrotesk-Extrabold.woff" | asset_url }}') format('woff');
-    font-weight: 800;
-    font-style: normal;
-    font-display: swap;
-  }
 
-  /* Cabinet Grotesk Variable Font Family */
   @font-face {
-    font-family: 'Cabinet Grotesk Variable';
-    src: url('{{ "1-CabinetGrotesk-Regular.woff" | asset_url }}') format('woff-variations');
+    font-family: 'Suisse Intl Trial';
+    src: url('{{ "1-SuisseIntlTrial-Book.woff" | asset_url }}') format('woff');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
   }
 
   @font-face {
-    font-family: 'Cabinet Grotesk Variable';
-    src: url('{{ "1-CabinetGrotesk-Medium.woff" | asset_url }}') format('woff-variations');
+    font-family: 'Suisse Intl Trial';
+    src: url('{{ "1-SuisseIntlTrial-Medium.woff" | asset_url }}') format('woff');
     font-weight: 500;
     font-style: normal;
     font-display: swap;
-  } {% endcomment %}
+  }
 
-  :root {      
+  @font-face {
+    font-family: 'Suisse Intl Trial';
+    src: url('{{ "1-SuisseIntlTrial-MediumItalic.woff" | asset_url }}') format('woff');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Suisse Intl Trial';
+    src: url('{{ "1-SuisseIntlTrial-Bold.woff" | asset_url }}') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
     /* Custom Font families with theme fallbacks */
-    {% comment %} --font-body--family: "Cabinet Grotesk Variable", {{ settings.type_subheading_font.fallback_families }};
-    --font-subheading--family: "Cabinet Grotesk", {{ settings.type_body_font.fallback_families }};
-    --font-heading--family: "Cabinet Grotesk", {{ settings.type_heading_font.fallback_families }};
-    --font-accent--family: "Cabinet Grotesk", {{ settings.type_accent_font.fallback_families }}; {% endcomment %}
+    --font-body--family: "Suisse Intl Trial", {{ settings.type_body_font.fallback_families }};
+    --font-subheading--family: "Suisse Intl Trial", {{ settings.type_subheading_font.fallback_families }};
+    --font-heading--family: "Suisse Intl Trial", {{ settings.type_heading_font.fallback_families }};
+    --font-accent--family: "Suisse Intl Trial", {{ settings.type_accent_font.fallback_families }};
   }
 </style>
