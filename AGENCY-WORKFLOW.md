@@ -190,14 +190,14 @@ Set up a new client project "[CLIENT-NAME]" from the agency base theme:
 1. Create the client directory structure and clone the base theme:
    mkdir -p ../../../[CLIENT-NAME]/themes
    cd [CLIENT-NAME]/themes
-   git clone git@github-conspire:conspireagencyteam/shopify-horizon.git [CLIENT-NAME]-theme
+   git clone https://github.com/conspireagencyteam/shopify-horizon.git [CLIENT-NAME]-theme
 
 2. Navigate into the new project:
    cd [CLIENT-NAME]-theme
 
 3. Set up the remotes (rename origin to base, add new origin for client repo):
    git remote rename origin base
-   git remote add origin git@github-conspire:conspireagencyteam/[CLIENT-NAME]-theme.git
+   git remote add origin https://github.com/conspireagencyteam/[CLIENT-NAME]-theme.git
    git remote add upstream https://github.com/Shopify/horizon.git
 
 4. Push to the new client repo:
@@ -207,8 +207,8 @@ Set up a new client project "[CLIENT-NAME]" from the agency base theme:
    git remote -v
 
 Expected output:
-   base     → git@github-conspire:conspireagencyteam/shopify-horizon.git
-   origin   → git@github-conspire:conspireagencyteam/[CLIENT-NAME]-theme.git
+   base     → https://github.com/conspireagencyteam/shopify-horizon.git
+   origin   → https://github.com/conspireagencyteam/[CLIENT-NAME]-theme.git
    upstream → https://github.com/Shopify/horizon.git
 
 Final path: conspireAgency/[CLIENT-NAME]/themes/[CLIENT-NAME]-theme
