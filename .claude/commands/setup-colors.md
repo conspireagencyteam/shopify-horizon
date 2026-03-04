@@ -1,6 +1,6 @@
 # Setup Color Schemes
 
-Set up the 6 color schemes for a new client project. You can either provide a Figma URL for automatic extraction, or supply color values directly.
+Set up color schemes for a new client project. You can either provide a Figma URL for automatic extraction, or supply color values directly.
 
 ## Step 1 — Get color data
 
@@ -8,18 +8,19 @@ Set up the 6 color schemes for a new client project. You can either provide a Fi
 
 **If colors were provided directly:** use those values as-is.
 
-## Step 2 — Propose a 6-scheme mapping
+## Step 2 — Propose a scheme mapping
 
-Analyze the design intent and propose the following scheme structure. Present this to the user for approval **before making any file changes**.
+Count the distinct surface/background colors in the design. Propose as many schemes as makes sense — **minimum 6, no maximum**. Always include these anchor schemes:
 
-| Scheme | Purpose | Typical background |
-|--------|---------|-------------------|
-| scheme-1 | Primary / main brand feel | Lightest brand color or white |
-| scheme-2 | Secondary / neutral variant | Secondary surface color |
-| scheme-3 | Accent color 1 | First accent (e.g. yellow, warm tone) |
-| scheme-4 | Accent color 2 | Second accent (e.g. purple, cool tone) |
-| scheme-5 | Dark / inverted | Darkest brand color |
-| scheme-6 | Transparent / overlay | `rgba(0,0,0,0)` |
+| Role | Purpose | Typical background |
+|------|---------|-------------------|
+| Primary / light | Main brand feel | Lightest brand color or white |
+| Neutral | Secondary surface | Secondary surface color |
+| Dark / inverted | High contrast | Darkest brand color |
+| Transparent | Overlay / no background | `rgba(0,0,0,0)` |
+| + one scheme per additional accent color | Accent backgrounds | Each distinct accent |
+
+Assign scheme numbers sequentially starting from `scheme-1`. For example, a palette with 2 accent colors yields 6 schemes; a palette with 4 accent colors yields 8 schemes.
 
 For each scheme propose:
 - `background`
@@ -34,11 +35,16 @@ For each scheme propose:
 - Input: background, text color, border color, hover background
 - Variant swatches: all 6 variant color states
 
-**Pause and show the user the proposed mapping. Wait for approval.**
+**Pause and show the user the proposed mapping as a table. State the total number of schemes. Wait for the user to confirm the count and mapping before making any file changes.**
 
 ## Step 3 — Update config/settings_data.json
 
-Once the user approves, update the `color_schemes` object inside the `"current"` section. Replace all 6 named schemes (`scheme-1` through `scheme-6`). Do NOT modify any UUID-keyed schemes.
+Once the user approves, update the `color_schemes` object inside the `"current"` section:
+
+- Replace **all existing `scheme-N` numbered keys** (scheme-1, scheme-2, etc.) with the approved set
+- For projects needing more than 6: add additional `scheme-7`, `scheme-8`, etc. entries as needed
+- For projects needing fewer than the existing numbered schemes: remove the extra numbered keys
+- **Never touch UUID-keyed schemes** (e.g. `scheme-58084d4c-...`) — these are Shopify-generated and used for template-specific overrides
 
 Each scheme has this structure:
 ```json
@@ -85,7 +91,7 @@ Each scheme has this structure:
 
 ## Step 4 — Verify
 
-After saving, confirm the 6 schemes were updated and remind the user to:
+After saving, confirm all schemes were updated and remind the user to:
 1. Open the Shopify theme editor to visually verify each scheme
 2. Apply each scheme to a test section and preview the result
 3. Run `npm run check` to ensure no Theme Check errors
