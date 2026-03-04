@@ -1,0 +1,316 @@
+/* ═══════════════════════════════════════════════════════════
+   Herb Index — A-Z browsable herb catalog
+   BEM: .herb-index / .herb-index__element / --modifier
+   ═══════════════════════════════════════════════════════════ */
+
+.herb-index {
+  --hi-sidebar-w: 326px;
+  --hi-sticky-top: 0px;
+  --hi-mobile-nav-h: 0px;
+}
+
+/* Offset for sticky header */
+:is(
+  body:has(.header-section > #header-component[sticky='always']),
+  body:has(.header-section > #header-component[sticky='scroll-up'][data-sticky-state='active'])
+) .herb-index {
+  --hi-sticky-top: calc(var(--header-height, 0px) - 1px);
+}
+
+/* ── Layout ── */
+.herb-index__layout {
+  display: flex;
+  gap: var(--margin-2xl);
+  align-items: flex-start;
+}
+
+/* ── Sidebar ── */
+.herb-index__sidebar {
+  position: sticky;
+  top: var(--hi-sticky-top);
+  width: var(--hi-sidebar-w);
+  flex-shrink: 0;
+}
+
+.herb-index__sidebar-inner {
+  max-height: calc(100svh - var(--hi-sticky-top));
+  overflow-y: auto;
+  padding-block-end: var(--padding-5xl);
+  scrollbar-width: none;
+}
+
+.herb-index__sidebar-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.herb-index__sidebar-heading {
+  font-size: var(--font-size--2xl);
+  line-height: var(--line-height--display-loose);
+  letter-spacing: var(--letter-spacing--heading-tight);
+  color: var(--color-foreground);
+  padding-block: var(--padding-lg);
+  margin-block-end: var(--margin-2xl);
+  border-block-end: var(--border-width-sm) solid var(--border-color);
+  font-weight: 400;
+}
+
+/* ── Search ── */
+.herb-index__search {
+  position: relative;
+  margin-block-end: var(--margin-2xl);
+}
+
+.herb-index__search-input {
+  width: 100%;
+  padding: 10px 44px 10px 18px;
+  border: var(--border-width-sm) solid var(--border-color);
+  border-radius: 100px;
+  font-family: inherit;
+  font-size: var(--font-size--md);
+  color: var(--color-foreground);
+  background: transparent;
+  outline: none;
+  transition: border-color var(--animation-speed-slow);
+}
+
+.herb-index__search-input::placeholder {
+  color: rgb(var(--color-foreground-rgb) / var(--opacity-50));
+}
+
+.herb-index__search-input:focus {
+  border-color: var(--color-foreground);
+}
+
+.herb-index__search-icon {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgb(var(--color-foreground-rgb) / var(--opacity-50));
+  pointer-events: none;
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+/* ── Alphabet Grid (Sidebar) ── */
+.herb-index__alpha-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ── Alphabet Button ── */
+.herb-index__alpha-btn {
+  width: var(--minimum-touch-target);
+  height: var(--minimum-touch-target);
+  border-radius: var(--style-border-radius-50);
+  border: var(--border-width-sm) solid var(--color-border);
+  background: transparent;
+  color: var(--color-foreground);
+  font-size: var(--font-size--md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--animation-speed-slow), color var(--animation-speed-slow), border-color var(--animation-speed-slow), transform var(--animation-speed-medium);
+  -webkit-tap-highlight-color: transparent;
+  padding: 0;
+}
+
+@media (hover: hover) {
+  .herb-index__alpha-btn:hover:not(:disabled) {
+    background: var(--color-primary-button-background);
+    color: var(--color-primary-button-text);
+    border-color: var(--color-primary-button-background);
+  }
+}
+
+.herb-index__alpha-btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+@media (pointer: coarse) {
+  .herb-index__alpha-btn:active:not(:disabled) {
+    background: var(--color-primary-button-background);
+    color: var(--color-primary-button-text);
+    border-color: var(--color-primary-button-background);
+  }
+}
+
+.herb-index__alpha-btn--disabled {
+  opacity: var(--opacity-20);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ── Content Area ── */
+.herb-index__content {
+  flex: 1;
+  min-width: 0;
+  padding-block-end: 80px;
+}
+
+/* ── Letter Sections ── */
+.herb-index__letter-section {
+  scroll-margin-top: var(--hi-sticky-top);
+}
+
+.herb-index__letter-heading {
+  position: sticky;
+  top: var(--hi-sticky-top);
+  z-index: var(--layer-window-overlay);
+  background: var(--color-background);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: var(--padding-lg);
+  border-block-end: var(--border-width-sm) solid var(--border-color);
+  margin-block-end: var(--margin-2xl);
+}
+
+.herb-index__letter-char {
+  font-size: var(--font-size--2xl);
+  line-height: var(--line-height--display-loose);
+  letter-spacing: var(--letter-spacing--heading-tight);
+  color: var(--color-foreground);
+  font-weight: 400;
+}
+
+/* ── Cards Grid ── */
+.herb-index__cards-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--herb-index-columns, 3), 1fr);
+  column-gap: var(--herb-index-col-gap, var(--gap-lg));
+  row-gap: var(--herb-index-row-gap, var(--gap-lg));
+  margin-block-end: var(--margin-lg);
+}
+
+/* ── Card wrapper ── */
+.herb-index .resource-card {
+  transition: transform 0.25s var(--ease-out-cubic);
+}
+
+@media (hover: hover) {
+  .herb-index .resource-card:hover {
+    transform: translateY(-3px);
+  }
+}
+
+@media (pointer: coarse) {
+  .herb-index .resource-card:active {
+    transform: scale(0.98);
+  }
+}
+
+/* ── Empty State ── */
+.herb-index__empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: rgb(var(--color-foreground-rgb) / var(--opacity-50));
+}
+
+.herb-index__empty-icon {
+  margin-block-end: var(--margin-lg);
+  opacity: var(--opacity-40);
+}
+
+.herb-index__empty-state h3 {
+  font-size: var(--font-size--lg);
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin-block-end: 6px;
+}
+
+.herb-index__empty-state p {
+  font-size: var(--font-size--sm);
+}
+
+/* ── Mobile Navigation ── */
+.herb-index__mobile-nav {
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+
+/* Tablet — 2 columns */
+@media (max-width: 999px) {
+  .herb-index__cards-grid {
+    grid-template-columns: repeat(min(var(--herb-index-columns, 3), 2), 1fr);
+  }
+}
+
+/* Mobile — below 750px */
+@media (max-width: 749px) {
+  .herb-index__sidebar {
+    display: none;
+  }
+
+  .herb-index__mobile-nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: sticky;
+    top: var(--hi-sticky-top);
+    z-index: var(--layer-temporary);
+    background: color-mix(in srgb, var(--color-background) 96%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-block-end: var(--border-width-sm) solid var(--border-color);
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .herb-index__mobile-alpha {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .herb-index__mobile-alpha::-webkit-scrollbar {
+    display: none;
+  }
+
+  .herb-index__mobile-alpha .herb-index__alpha-btn {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    font-size: var(--font-size--xs);
+    scroll-snap-align: start;
+  }
+
+  .herb-index__letter-heading {
+    top: calc(var(--hi-sticky-top) + var(--hi-mobile-nav-h) - 1px);
+    padding-block: 12px;
+  }
+
+  .herb-index__letter-section {
+    scroll-margin-top: calc(var(--hi-sticky-top) + var(--hi-mobile-nav-h) - 1px);
+  }
+
+  .herb-index__cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .herb-index__layout {
+    flex-wrap: wrap;
+    padding-inline: var(--padding-lg);
+  }
+
+  .herb-index__letter-char {
+    font-size: var(--font-size--xl);
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .herb-index .resource-card,
+  .herb-index__alpha-btn {
+    transition: none;
+  }
+}

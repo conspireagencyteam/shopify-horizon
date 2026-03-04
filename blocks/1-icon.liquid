@@ -6,6 +6,19 @@
   {% assign apply_color_overlay = true %}
 {% endif %}
 
+{% liquid
+  assign image_ratio = block_settings.image_ratio | default: 'adapt'
+  assign ratio = null
+  case image_ratio
+    when 'landscape'
+      assign ratio = '16 / 9'
+    when 'portrait'
+      assign ratio = '4 / 5'
+    when 'square'
+      assign ratio = '1'
+  endcase
+%}
+
 {% capture icon %}
   {% render '1-icon-or-image',
     icon: block_settings.icon,
@@ -17,6 +30,17 @@
     color_overlay: apply_color_overlay
   %}
 {% endcapture %}
+
+{% if ratio %}
+  <style>
+    img.icon-block-{{ block.id }},
+    .icon-block-{{ block.id }} img {
+      aspect-ratio: {{ ratio }};
+      object-fit: cover;
+      height: unset;
+    }
+  </style>
+{% endif %}
 
 {%- if block_settings.link != blank -%}
   <a
@@ -330,6 +354,30 @@
       "id": "apply_foreground_color",
       "label": "t:settings.1_apply_foreground_color",
       "default": false
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:options.auto"
+        },
+        {
+          "value": "portrait",
+          "label": "t:options.portrait"
+        },
+        {
+          "value": "square",
+          "label": "t:options.square"
+        },
+        {
+          "value": "landscape",
+          "label": "t:options.landscape"
+        }
+      ],
+      "default": "adapt",
+      "label": "t:settings.aspect_ratio"
     },
     {
       "type": "range",

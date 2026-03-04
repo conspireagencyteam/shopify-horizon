@@ -4,10 +4,14 @@
   {% render 'text', fallback_text: collection_title, block: block %}
 {% elsif closest.collection != blank %}
   {% assign primary_health_interest_filter = closest.collection.filters | where: 'param_name', 'filter.p.m.product_details.primary_health_interest' | first %}
+  {% assign herbs_filter = closest.collection.filters | where: 'param_name', 'filter.p.m.product_details.herbs' | first %}
   <one-filter-observer>
     {% if primary_health_interest_filter.active_values.size == 1 %}
       {% assign collection_title = '<h1><strong>' | append: primary_health_interest_filter.active_values.first.label | append: '</strong></h1>' %}
-        {% render 'text', fallback_text: collection_title, block: block %}
+      {% render 'text', fallback_text: collection_title, block: block %}
+    {% elsif herbs_filter.active_values.size == 1 %}
+      {% assign collection_title = '<h1><strong>' | append: herbs_filter.active_values.first.label | append: '</strong></h1>' %}
+      {% render 'text', fallback_text: collection_title, block: block %}
     {% else %}
       {% assign collection_title = '<h1><strong>' | append: closest.collection.title | append: '</strong></h1>' %}
       {% render 'text', fallback_text: collection_title, block: block %}

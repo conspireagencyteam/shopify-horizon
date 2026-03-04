@@ -20,7 +20,15 @@
         width: block.settings.width,
         class_name: 'details__icon'
       %}
-      <span class="accordion-heading">{{ block.settings.heading }}</span>
+      <span class="accordion-heading">
+        {%- if block.settings.heading_check != blank -%}
+          {{- block.settings.heading -}}
+        {%- elsif block.settings.heading_fallback != blank -%}
+          {{- block.settings.heading_fallback -}}
+        {%- else -%}
+          {{- block.settings.heading -}}
+        {%- endif -%}
+      </span>
       <span class="svg-wrapper icon-caret icon-animated">
         {{- '1-icon-caret.svg' | inline_asset_content -}}
       </span>
@@ -166,6 +174,17 @@
       "id": "heading",
       "label": "t:settings.heading",
       "default": "t:text_defaults.accordion_heading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading_fallback",
+      "label": "t:settings.1_heading_fallback"
+    },
+    {
+      "type": "text",
+      "id": "heading_check",
+      "label": "t:settings.1_heading_check",
+      "info": "t:info.1_heading_check"
     },
     {
       "type": "checkbox",

@@ -321,6 +321,44 @@
     },
     {
       "type": "header",
+      "content": "t:content.truncate"
+    },
+    {
+      "type": "select",
+      "id": "truncate_type",
+      "label": "t:settings.truncate_type",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:options.none"
+        },
+        {
+          "value": "characters",
+          "label": "t:options.characters"
+        },
+        {
+          "value": "1_sentence",
+          "label": "t:options.first_sentence"
+        },
+        {
+          "value": "2_sentences",
+          "label": "t:options.first_2_sentences"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "truncate_characters",
+      "label": "t:settings.truncate_characters",
+      "min": 25,
+      "max": 500,
+      "step": 5,
+      "default": 125,
+      "visible_if": "{{ block.settings.truncate_type != 'none' }}"
+    },
+    {
+      "type": "header",
       "content": "t:content.appearance"
     },
     {

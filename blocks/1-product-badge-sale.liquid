@@ -1,0 +1,119 @@
+{%- liquid
+  assign block_settings = block.settings
+  assign variant = closest.product.selected_or_first_available_variant
+  assign is_on_sale = false
+
+  if product.available and product.compare_at_price > product.price
+    assign is_on_sale = true
+  endif
+-%}
+
+<one-product-badge-sale
+  class="1-product-badge-sale spacing-style"
+  style="
+    --badge-border-radius: {{ settings.badge_corner_radius }}px;
+    --badge-font-family: var(--font-{{ settings.badge_font_family }}--family);
+    --badge-font-weight: var(--font-{{ settings.badge_font_family }}--weight);
+    --badge-text-transform: {{ settings.badge_text_transform }};
+    {% render 'spacing-style', settings: block_settings %}
+  "
+  {{ block.shopify_attributes }}
+  data-product-id="{{ product.id }}"
+>
+  {%- if is_on_sale or request.design_mode -%}
+    <div class="1-product-badge-sale__badge color-{{ settings.badge_sale_color_scheme }}">
+      {{ 'content.product_badge_sale' | t }}
+    </div>
+  {%- endif -%}
+</one-product-badge-sale>
+
+{% stylesheet %}
+  .one-product-badge-sale,
+  .\31-product-badge-sale {
+    display: block;
+  }
+
+  .one-product-badge-sale:empty,
+  .\31-product-badge-sale:empty {
+    display: none;
+  }
+
+  .\31-product-badge-sale__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--color-foreground);
+    background: var(--color-background);
+    font-size: var(--font-size--xs);
+    font-family: var(--badge-font-family);
+    font-weight: var(--badge-font-weight);
+    text-transform: var(--badge-text-transform);
+    border-radius: var(--badge-border-radius);
+    padding-block: var(--badge-rectangle-padding-block);
+    padding-inline: var(--badge-rectangle-padding-inline);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.1_product_badge_sale",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:content.1_resource_reference_product_badge_sale"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.1_product_badge_sale",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

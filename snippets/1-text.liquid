@@ -80,13 +80,51 @@
   endif
 %}
 
+{% liquid
+  assign truncate_type = block.settings.truncate_type
+  assign should_truncate = false
+  if truncate_type != 'none' and truncate_type != blank
+    assign should_truncate = true
+  endif
+%}
+
 {% if fallback_text != blank and plain_text == blank %}
   <div {{ attributes }}>
     {{ fallback_text }}
   </div>
 {% elsif plain_text != blank %}
   <{{ element }} {{ attributes }}>
-    {{ block.settings.text }}
+    {%- if should_truncate -%}
+      {%- liquid
+        assign truncated_text = block.settings.text | strip_html
+        assign char_limit = block.settings.truncate_characters
+
+        # Handle sentence-based truncation first
+        if truncate_type == '1_sentence' or truncate_type == '2_sentences'
+          assign sentences = truncated_text | split: '.'
+          if truncate_type == '1_sentence'
+            if sentences.size > 0 and sentences[0] != blank
+              assign truncated_text = sentences[0] | append: '.'
+            endif
+          else
+            if sentences.size > 1 and sentences[1] != blank
+              assign truncated_text = sentences[0] | append: '.' | append: ' ' | append: sentences[1] | append: '.'
+            elsif sentences.size > 0 and sentences[0] != blank
+              assign truncated_text = sentences[0] | append: '.'
+            endif
+          endif
+        endif
+
+        # Apply character cap
+        assign text_length = truncated_text | size
+        if text_length > char_limit
+          assign truncated_text = truncated_text | truncate: char_limit, '...'
+        endif
+      -%}
+      {{- truncated_text -}}
+    {%- else -%}
+      {{- block.settings.text -}}
+    {%- endif -%}
   </{{ element }}>
 {% endif %}
 
