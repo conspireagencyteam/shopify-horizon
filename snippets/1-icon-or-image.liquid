@@ -5,10 +5,28 @@
   @param {object} image_upload - The uploaded image from block.settings.image_upload
   @param {number} width - The width setting from block.settings.width
   @param {number} width_mobile - The width setting from block.settings.width_mobile
+  @param {string} [sizing_mode] - 'width' or 'height', defaults to 'width'
+  @param {number} [height] - The height setting from block.settings.height
+  @param {number} [height_mobile] - The height setting from block.settings.height_mobile
   @param {string} class_name - CSS class name for the rendered element
   @param {object} [attributes] - Additional HTML attributes to add to the element
   @param {boolean} [color_overlay] - Whether to apply color overlay effect using CSS mask
+  @param {number} [border_radius] - Border radius in px for uploaded images
 {%- enddoc -%}
+{%- liquid
+  assign use_height = false
+  if sizing_mode == 'height'
+    assign use_height = true
+  endif
+
+  if use_height
+    assign size_value = height
+    assign size_mobile_value = height_mobile
+  else
+    assign size_value = width
+    assign size_mobile_value = width_mobile
+  endif
+-%}
 {%- if icon != 'none' and image_upload == blank -%}
   {% assign class_name = class_name | append: ' 1-icon-or-image 1-icon-or-image--icon' %}
   <svg
@@ -16,41 +34,45 @@
     aria-hidden="true"
     focusable="false"
     xmlns="http://www.w3.org/2000/svg"
-    width="{{ width }}"
-    height="{{ width }}"
+    width="{{ size_value }}"
+    height="{{ size_value }}"
     viewBox="0 0 20 20"
     {% if attributes %}
       {{ attributes }}
     {% endif %}
     style="
-      --size: {{ width }}px;
-      --size-mobile: {{ width_mobile }}px;
+      --size: {{ size_value }}px;
+      --size-mobile: {{ size_mobile_value }}px;
     "
   >
     {%- render 'icon', icon: icon -%}
   </svg>
 {%- elsif image_upload != blank -%}
   {% liquid
-    assign sizes = '(min-width: 750px) ' | append: width | append: 'px, ' | append: width_mobile | append: 'px'
+    assign sizes = '(min-width: 750px) ' | append: size_value | append: 'px, ' | append: size_mobile_value | append: 'px'
     assign widths = '240, 352, 832, 1200'
     assign class_name = class_name | append: ' 1-icon-or-image 1-icon-or-image--image'
   %}
 
-  {% assign image_style = '--size: ' | append: width | append: 'px; --size-mobile: ' | append: width_mobile | append: 'px; max-width: none;' %}
+  {% assign image_style = '--size: ' | append: size_value | append: 'px; --size-mobile: ' | append: size_mobile_value | append: 'px; max-width: none;' %}
+  {% if border_radius > 0 %}
+    {% assign image_style = image_style | append: ' --border-radius: ' | append: border_radius | append: 'px;' %}
+    {% assign class_name = class_name | append: ' border-style' %}
+  {% endif %}
   {% if color_overlay %}
     {% assign image_url = image_upload | image_url: width: 1200 %}
     <span class="{{ class_name }}" style="{{ image_style }} --mask-image: url({{ image_url }});">
       {{
         image_upload
         | image_url: width: 1200
-        | image_tag: widths: widths, sizes: sizes, width: width, height: width
+        | image_tag: widths: widths, sizes: sizes, width: size_value, height: size_value
       }}
     </span>
   {% else %}
     {{
       image_upload
       | image_url: width: 1200
-      | image_tag: widths: widths, class: class_name, style: image_style, sizes: sizes, width: width, height: width
+      | image_tag: widths: widths, class: class_name, style: image_style, sizes: sizes, width: size_value, height: size_value
     }}
   {% endif %}
 {%- endif -%}
