@@ -38,6 +38,7 @@
     "1_callout_pointer": "Callout pointer",
     "1_heading_spacing": "Heading spacing",
     "1_resource_reference_product_sizes": "Displays sizes from parent product",
+    "1_corner_radius": "Corner radius",
     "1_mobile_padding": "Mobile padding",
     "1_mobile_border_widths": "Mobile border widths",
     "visible_if_collection_has_more_products": "Visible if collection has more products than shown",
