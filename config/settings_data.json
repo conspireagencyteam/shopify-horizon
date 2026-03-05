@@ -21,12 +21,12 @@
     "type_size_h1": "80",
     "type_line_height_h1": "display-loose",
     "type_letter_spacing_h1": "heading-tight",
-    "type_case_h1": "none",
+    "type_case_h1": "capitalize",
     "type_font_h2": "heading",
     "type_size_h2": "48",
     "type_line_height_h2": "display-loose",
     "type_letter_spacing_h2": "heading-tight",
-    "type_case_h2": "none",
+    "type_case_h2": "capitalize",
     "type_font_h3": "heading",
     "type_size_h3": "32",
     "type_line_height_h3": "display-loose",
@@ -46,7 +46,7 @@
     "type_size_h6": "13",
     "type_line_height_h6": "display-normal",
     "type_letter_spacing_h6": "heading-normal",
-    "type_case_h6": "none",
+    "type_case_h6": "uppercase",
     "page_width": "narrow",
     "page_transition_enabled": false,
     "transition_to_main_product": false,
@@ -90,10 +90,11 @@
       "scheme-1": {
         "settings": {
           "background": "#fffff5",
+          "background_gradient": "",
           "foreground_heading": "#362407",
           "foreground": "#362407",
-          "primary": "#362407",
-          "primary_hover": "#5d3f0d",
+          "primary": "#5d3f0d",
+          "primary_hover": "#362407",
           "border": "#36240721",
           "shadow": "#362407",
           "primary_button_background": "#5d3f0d",
@@ -129,6 +130,7 @@
       "scheme-2": {
         "settings": {
           "background": "#aca38a",
+          "background_gradient": "",
           "foreground_heading": "#362407",
           "foreground": "#362407",
           "primary": "#362407",
@@ -168,6 +170,7 @@
       "scheme-3": {
         "settings": {
           "background": "#fffb56",
+          "background_gradient": "",
           "foreground_heading": "#362407",
           "foreground": "#362407",
           "primary": "#362407",
@@ -207,6 +210,7 @@
       "scheme-4": {
         "settings": {
           "background": "#dbbdff",
+          "background_gradient": "",
           "foreground_heading": "#362407",
           "foreground": "#362407",
           "primary": "#362407",
@@ -246,6 +250,7 @@
       "scheme-5": {
         "settings": {
           "background": "#362407",
+          "background_gradient": "",
           "foreground_heading": "#fffff5",
           "foreground": "#fffff5",
           "primary": "#fffb56",
@@ -285,6 +290,7 @@
       "scheme-6": {
         "settings": {
           "background": "rgba(0,0,0,0)",
+          "background_gradient": "",
           "foreground_heading": "#ffffff",
           "foreground": "#ffffffbf",
           "primary": "#ffffff",
@@ -324,6 +330,7 @@
       "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7": {
         "settings": {
           "background": "rgba(0,0,0,0)",
+          "background_gradient": "",
           "foreground_heading": "#000000",
           "foreground": "#000000",
           "primary": "#000000",

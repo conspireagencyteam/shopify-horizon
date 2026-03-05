@@ -33,6 +33,7 @@
     "text": "Text"
   },
   "content": {
+    "1_truncate": "Truncate",
     "1_resource_reference_collection_description": "Displays description from parent collection",
     "1_callout_pointer": "Callout pointer",
     "1_heading_spacing": "Heading spacing",
@@ -255,6 +256,8 @@
     "media_type_info": "Features are populated from your menu links"
   },
   "names": {
+    "1_slide": "1 Slide",
+    "1_slideshow": "1 Slideshow",
     "1_collection_description": "1 Collection description",
     "1_collection_title": "1 Collection title",
     "1_menu_group": "1 Menu group",
@@ -284,6 +287,8 @@
     "1_featured_product": "1 Product Highlight",
     "1_custom_group": "1 Custom group",
     "1_herb_item": "1 Herb item",
+    "1_herb_index": "1 Herb index",
+    "1_herb_index_item": "1 Herb index item",
     "1_herbs": "1 Herbs",
     "1_icon": "1 Icon",
     "1_preheading": "1 Preheading",
@@ -926,6 +931,9 @@
     "below_media": "Below media"
   },
   "settings": {
+    "1_overlay_gradient": "Overlay gradient",
+    "1_truncate_type": "Truncate type",
+    "1_truncate_characters": "Character limit",
     "1_show_badges": "Show badges",
     "1_menu_item": "Menu item",
     "1_apply_foreground_color": "Apply foreground color",
