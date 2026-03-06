@@ -257,6 +257,7 @@
     "media_type_info": "Features are populated from your menu links"
   },
   "names": {
+    "1_custom_section": "1 Custom section",
     "1_slide": "1 Slide",
     "1_slideshow": "1 Slideshow",
     "1_collection_description": "1 Collection description",
@@ -932,6 +933,7 @@
     "below_media": "Below media"
   },
   "settings": {
+    "1_padding_scale": "Padding scale",
     "1_sizing_mode": "Sizing mode",
     "1_height_mobile": "Mobile height",
     "1_size_multiplier": "Size multiplier",

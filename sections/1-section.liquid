@@ -523,6 +523,17 @@
       "content": "t:content.padding"
     },
     {
+      "type": "select",
+      "id": "padding_scale",
+      "label": "t:settings.1_padding_scale",
+      "options": [
+        { "value": "1", "label": "1x" },
+        { "value": "2", "label": "2x" },
+        { "value": "3", "label": "3x" }
+      ],
+      "default": "1"
+    },
+    {
       "type": "range",
       "id": "padding-block-start",
       "label": "t:settings.top",
@@ -544,6 +555,13 @@
     }
   ],
   "presets": [
+    {
+      "name": "t:names.1_custom_section",
+      "category": "t:categories.layout",
+      "settings": {
+        "section_height": "small"
+      }
+    },
     {
       "name": "t:names.1_faq_section",
       "category": "t:categories.storytelling",

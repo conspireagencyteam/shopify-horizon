@@ -9,12 +9,17 @@
       suffix: {string}
       scale_min {number}: Value above which spacing scaling will be applied. Default: 20
       disable_scaling {boolean}: Disable scaling. Default: false
+      padding_scale {string}: Multiplier for padding values ('1', '2', or '3'). Default: '1'
 {%- endcomment -%}
 {%- liquid
   assign properties = 'padding,margin' | split: ','
   assign directions = 'block,inline' | split: ','
   assign edges = ',start,end' | split: ','
   assign min = scale_min | default: 20
+  assign scale = padding_scale | default: '1' | plus: 0
+  if scale < 1
+    assign scale = 1
+  endif
 -%}
 {%- capture variables -%}
   {%- for property in properties -%}
@@ -34,6 +39,10 @@
           endif
 
           assign value = settings[setting_id]
+
+          if property == 'padding' and scale > 1
+            assign value = value | times: scale
+          endif
          -%}
 
         {%- if value != blank -%}
@@ -49,15 +58,15 @@
 
   {%- comment -%} Mobile-specific padding variables {%- endcomment -%}
   {%- if settings.use_mobile_padding -%}
-    --mobile-padding-block-start: {{ settings.padding-block-start-mobile | default: 0 }}px;
-    --mobile-padding-block-end: {{ settings.padding-block-end-mobile | default: 0 }}px;
-    --mobile-padding-inline-start: {{ settings.padding-inline-start-mobile | default: 0 }}px;
-    --mobile-padding-inline-end: {{ settings.padding-inline-end-mobile | default: 0 }}px;
+    --mobile-padding-block-start: {{ settings.padding-block-start-mobile | default: 0 | times: scale }}px;
+    --mobile-padding-block-end: {{ settings.padding-block-end-mobile | default: 0 | times: scale }}px;
+    --mobile-padding-inline-start: {{ settings.padding-inline-start-mobile | default: 0 | times: scale }}px;
+    --mobile-padding-inline-end: {{ settings.padding-inline-end-mobile | default: 0 | times: scale }}px;
   {%- else -%}
-    --mobile-padding-block-start: {{ settings.padding-block-start | default: 0 }}px;
-    --mobile-padding-block-end: {{ settings.padding-block-end | default: 0 }}px;
-    --mobile-padding-inline-start: {{ settings.padding-inline-start | default: 0 }}px;
-    --mobile-padding-inline-end: {{ settings.padding-inline-end | default: 0 }}px;
+    --mobile-padding-block-start: {{ settings.padding-block-start | default: 0 | times: scale }}px;
+    --mobile-padding-block-end: {{ settings.padding-block-end | default: 0 | times: scale }}px;
+    --mobile-padding-inline-start: {{ settings.padding-inline-start | default: 0 | times: scale }}px;
+    --mobile-padding-inline-end: {{ settings.padding-inline-end | default: 0 | times: scale }}px;
   {%- endif -%}
 {%- endcapture -%}
 {{- variables | strip | strip_newlines -}}
