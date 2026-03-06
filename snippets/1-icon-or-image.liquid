@@ -5,23 +5,17 @@
   @param {object} image_upload - The uploaded image from block.settings.image_upload
   @param {number} width - The width setting from block.settings.width
   @param {number} width_mobile - The width setting from block.settings.width_mobile
-  @param {string} [sizing_mode] - 'width' or 'height', defaults to 'width'
-  @param {number} [height] - The height setting from block.settings.height
-  @param {number} [height_mobile] - The height setting from block.settings.height_mobile
+  @param {string} [size_multiplier] - Multiplier for uploaded image width ('1'-'5'), defaults to '1'. Only applied to uploaded images.
   @param {string} class_name - CSS class name for the rendered element
   @param {object} [attributes] - Additional HTML attributes to add to the element
   @param {boolean} [color_overlay] - Whether to apply color overlay effect using CSS mask
   @param {number} [border_radius] - Border radius in px for uploaded images
 {%- enddoc -%}
 {%- liquid
-  assign use_height = false
-  if sizing_mode == 'height'
-    assign use_height = true
-  endif
-
-  if use_height
-    assign size_value = height
-    assign size_mobile_value = height_mobile
+  assign multiplier = size_multiplier | default: '1' | times: 1
+  if image_upload != blank and multiplier > 1
+    assign size_value = width | times: multiplier
+    assign size_mobile_value = width_mobile | times: multiplier
   else
     assign size_value = width
     assign size_mobile_value = width_mobile

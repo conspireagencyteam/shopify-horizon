@@ -25,9 +25,7 @@
     image_upload: block_settings.image_upload,
     width: block_settings.width,
     width_mobile: block_settings.width_mobile,
-    sizing_mode: block_settings.sizing_mode,
-    height: block_settings.height,
-    height_mobile: block_settings.height_mobile,
+    size_multiplier: block_settings.size_multiplier,
     class_name: icon_block_class,
     attributes: block.shopify_attributes,
     color_overlay: apply_color_overlay,
@@ -395,16 +393,6 @@
       "visible_if": "{{ block.settings.image_upload != blank }}"
     },
     {
-      "type": "select",
-      "id": "sizing_mode",
-      "label": "t:settings.1_sizing_mode",
-      "options": [
-        { "value": "width", "label": "t:settings.width" },
-        { "value": "height", "label": "t:settings.height" }
-      ],
-      "default": "width"
-    },
-    {
       "type": "range",
       "id": "width",
       "label": "t:settings.width",
@@ -412,8 +400,7 @@
       "max": 200,
       "step": 2,
       "unit": "px",
-      "default": 24,
-      "visible_if": "{{ block.settings.sizing_mode == 'width' }}"
+      "default": 24
     },
     {
       "type": "range",
@@ -423,30 +410,21 @@
       "max": 200,
       "step": 2,
       "unit": "px",
-      "default": 24,
-      "visible_if": "{{ block.settings.sizing_mode == 'width' }}"
+      "default": 24
     },
     {
-      "type": "range",
-      "id": "height",
-      "label": "t:settings.height",
-      "min": 16,
-      "max": 320,
-      "step": 8,
-      "unit": "px",
-      "default": 48,
-      "visible_if": "{{ block.settings.sizing_mode == 'height' }}"
-    },
-    {
-      "type": "range",
-      "id": "height_mobile",
-      "label": "t:settings.1_height_mobile",
-      "min": 16,
-      "max": 320,
-      "step": 8,
-      "unit": "px",
-      "default": 48,
-      "visible_if": "{{ block.settings.sizing_mode == 'height' }}"
+      "type": "select",
+      "id": "size_multiplier",
+      "label": "t:settings.1_size_multiplier",
+      "options": [
+        { "value": "1", "label": "1x" },
+        { "value": "2", "label": "2x" },
+        { "value": "3", "label": "3x" },
+        { "value": "4", "label": "4x" },
+        { "value": "5", "label": "5x" }
+      ],
+      "default": "1",
+      "visible_if": "{{ block.settings.image_upload != blank }}"
     },
     {
       "type": "url",

@@ -934,6 +934,7 @@
   "settings": {
     "1_sizing_mode": "Sizing mode",
     "1_height_mobile": "Mobile height",
+    "1_size_multiplier": "Size multiplier",
     "1_overlay_gradient": "Overlay gradient",
     "1_truncate_type": "Truncate type",
     "1_truncate_characters": "Character limit",
