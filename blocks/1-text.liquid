@@ -1,5 +1,3 @@
-
-
 {% render '1-text', block: block %}
 
 {% schema %}
@@ -320,42 +318,35 @@
       "visible_if": "{{ block.settings.type_preset != 'rte' }}"
     },
     {
-      "type": "header",
-      "content": "t:content.1_truncate"
-    },
-    {
       "type": "select",
-      "id": "truncate_type",
-      "label": "t:settings.1_truncate_type",
+      "id": "italic_style",
+      "label": "t:settings.1_italic_style",
       "options": [
         {
-          "value": "none",
-          "label": "t:options.none"
+          "value": "italic",
+          "label": "t:options.1_italic"
         },
         {
-          "value": "characters",
-          "label": "t:options.characters"
+          "value": "link_color",
+          "label": "t:options.1_link_color"
         },
         {
-          "value": "1_sentence",
-          "label": "t:options.first_sentence"
+          "value": "pill",
+          "label": "t:options.1_pill"
         },
         {
-          "value": "2_sentences",
-          "label": "t:options.first_2_sentences"
+          "value": "underline",
+          "label": "t:options.1_underline"
         }
       ],
-      "default": "none"
+      "default": "italic"
     },
     {
-      "type": "range",
-      "id": "truncate_characters",
-      "label": "t:settings.truncate_characters",
-      "min": 25,
-      "max": 500,
-      "step": 5,
-      "default": 125,
-      "visible_if": "{{ block.settings.truncate_type != 'none' }}"
+      "type": "color_scheme",
+      "id": "pill_color_scheme",
+      "label": "t:settings.1_pill_color_scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.italic_style == 'pill' }}"
     },
     {
       "type": "header",

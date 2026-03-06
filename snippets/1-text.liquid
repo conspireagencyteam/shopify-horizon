@@ -3,6 +3,7 @@
 
   @param {string} [class] - custom class to define in addition to text-block classes
   @param {string} [fallback_text] - fallback text if settings.text does not exist
+  @param {object} [block] - The block object
   @param {string} [width] - width of the text block
 {%- enddoc -%}
 
@@ -43,6 +44,13 @@
     if is_rte
       echo ' rte '
     endif
+    if block.settings.italic_style == 'link_color'
+      echo ' text-block--italic-link-color '
+    elsif block.settings.italic_style == 'pill'
+      echo ' text-block--italic-pill '
+    elsif block.settings.italic_style == 'underline'
+      echo ' text-block--italic-underline '
+    endif
   endcapture
 %}
 
@@ -65,6 +73,13 @@
       --text-corner-radius: {{ block.settings.corner_radius }}px;
       --text-padding: max(var(--padding-2xs), calc((var(--text-corner-radius) + var(--padding-xs)) * (1 - cos(45deg))));
     {% endif %}
+    {% if block.settings.italic_style == 'pill' and block.settings.pill_color_scheme != blank %}
+      {% assign pill_scheme = settings.color_schemes | find: 'id', block.settings.pill_color_scheme.id %}
+      {% if pill_scheme %}
+        --pill-background: rgb({{ pill_scheme.settings.background.rgb }});
+        --pill-color: rgb({{ pill_scheme.settings.foreground.rgb }});
+      {% endif %}
+    {% endif %}
   "
 
   {{ block.shopify_attributes }}
@@ -80,51 +95,13 @@
   endif
 %}
 
-{% liquid
-  assign truncate_type = block.settings.truncate_type
-  assign should_truncate = false
-  if truncate_type != 'none' and truncate_type != blank
-    assign should_truncate = true
-  endif
-%}
-
 {% if fallback_text != blank and plain_text == blank %}
   <div {{ attributes }}>
     {{ fallback_text }}
   </div>
 {% elsif plain_text != blank %}
   <{{ element }} {{ attributes }}>
-    {%- if should_truncate -%}
-      {%- liquid
-        assign truncated_text = block.settings.text | strip_html
-        assign char_limit = block.settings.truncate_characters
-
-        # Handle sentence-based truncation first
-        if truncate_type == '1_sentence' or truncate_type == '2_sentences'
-          assign sentences = truncated_text | split: '.'
-          if truncate_type == '1_sentence'
-            if sentences.size > 0 and sentences[0] != blank
-              assign truncated_text = sentences[0] | append: '.'
-            endif
-          else
-            if sentences.size > 1 and sentences[1] != blank
-              assign truncated_text = sentences[0] | append: '.' | append: ' ' | append: sentences[1] | append: '.'
-            elsif sentences.size > 0 and sentences[0] != blank
-              assign truncated_text = sentences[0] | append: '.'
-            endif
-          endif
-        endif
-
-        # Apply character cap
-        assign text_length = truncated_text | size
-        if text_length > char_limit
-          assign truncated_text = truncated_text | truncate: char_limit, '...'
-        endif
-      -%}
-      {{- truncated_text -}}
-    {%- else -%}
-      {{- block.settings.text -}}
-    {%- endif -%}
+    {{ block.settings.text }}
   </{{ element }}>
 {% endif %}
 
@@ -233,7 +210,29 @@
     color: var(--color);
   }
 
-  .\31-text-block :is(h1, h2, h3 ,h4, h5,h6) p {
+  .text-block--italic-link-color :is(em, i) {
+    color: var(--color-primary);
+    font-style: normal;
+  }
+
+  .text-block--italic-pill :is(em, i) {
+    display: inline-block;
+    font-style: normal;
+    font-size: 72%;
+    line-height: 1.3;
+    background-color: var(--pill-background);
+    color: var(--pill-color);
+    padding-inline: var(--padding-xs);
+    padding-block-start: var(--padding-2xs);
+    border-radius: 9999px;
+  }
+
+  .text-block--italic-underline :is(em, i) {
+    font-style: normal;
+    text-decoration: underline;
+  }
+
+  .\31-text-block :is(h1, h2, h3, h4, h5, h6) p {
     margin-block: 0;
   }
 

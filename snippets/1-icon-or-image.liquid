@@ -48,7 +48,12 @@
     assign class_name = class_name | append: ' 1-icon-or-image 1-icon-or-image--image'
   %}
 
-  {% assign image_style = '--size: ' | append: size_value | append: 'px; --size-mobile: ' | append: size_mobile_value | append: 'px; max-width: none;' %}
+  {% assign image_style = '--size: '
+    | append: size_value
+    | append: 'px; --size-mobile: '
+    | append: size_mobile_value
+    | append: 'px;'
+  %}
   {% if border_radius > 0 %}
     {% assign image_style = image_style | append: ' --border-radius: ' | append: border_radius | append: 'px;' %}
     {% assign class_name = class_name | append: ' border-style' %}
@@ -66,7 +71,13 @@
     {{
       image_upload
       | image_url: width: 1200
-      | image_tag: widths: widths, class: class_name, style: image_style, sizes: sizes, width: size_value, height: size_value
+      | image_tag:
+        widths: widths,
+        class: class_name,
+        style: image_style,
+        sizes: sizes,
+        width: size_value,
+        height: size_value
     }}
   {% endif %}
 {%- endif -%}

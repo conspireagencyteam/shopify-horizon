@@ -1,42 +1,10 @@
-{% assign full_width = false %}
-
-{% if section.settings.width_percent == 100 and section.settings.section_width == 'full-width' %}
-  {% assign full_width = true %}
-{% endif %}
-
-<div class="section-background color-{{ section.settings.color_scheme }}"></div>
-<div
-  class="section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
->
-  {% render '1-divider', id: section.id, settings: section.settings, attributes: true, full_width: full_width %}
-</div>
+{% render '1-divider', id: block.id, settings: block.settings, attributes: true %}
 
 {% schema %}
 {
   "name": "t:names.1_divider",
+  "tag": null,
   "settings": [
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:settings.color_scheme",
-      "default": "scheme-5"
-    },
-    {
-      "type": "select",
-      "id": "section_width",
-      "label": "t:settings.width",
-      "options": [
-        {
-          "value": "page-width",
-          "label": "t:options.page"
-        },
-        {
-          "value": "full-width",
-          "label": "t:options.full"
-        }
-      ],
-      "default": "full-width"
-    },
     {
       "type": "range",
       "id": "thickness",
@@ -45,7 +13,7 @@
       "max": 5,
       "step": 0.5,
       "unit": "px",
-      "default": 4
+      "default": 1
     },
     {
       "type": "select",
@@ -100,7 +68,7 @@
         }
       ],
       "default": "square",
-      "visible_if": "{{ section.settings.thickness > 1 and section.settings.width_percent != 100 or section.settings.section_width == \"page-width\"}}"
+      "visible_if": "{{ block.settings.thickness > 1 }}"
     },
     {
       "type": "range",
@@ -111,27 +79,6 @@
       "step": 1,
       "unit": "%",
       "default": 100
-    },
-    {
-      "type": "select",
-      "id": "alignment_horizontal",
-      "label": "t:settings.alignment",
-      "options": [
-        {
-          "value": "flex-start",
-          "label": "t:options.left"
-        },
-        {
-          "value": "center",
-          "label": "t:options.center"
-        },
-        {
-          "value": "flex-end",
-          "label": "t:options.right"
-        }
-      ],
-      "default": "center",
-      "visible_if": "{{ section.settings.width_percent < 100 }}"
     },
     {
       "type": "header",
@@ -160,7 +107,7 @@
   ],
   "presets": [
     {
-      "name": "t:names.1_divider_section",
+      "name": "t:names.1_divider",
       "category": "t:categories.layout"
     }
   ]
