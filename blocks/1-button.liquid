@@ -1,0 +1,450 @@
+{% render '1-button', link: block.settings.link, block: block %}
+
+
+{% stylesheet %}
+  .button__icon--color-overlay {
+    position: relative;
+    display: inline-block;
+  }
+
+  .button__icon--color-overlay img {
+    visibility: hidden;
+  }
+
+  .button__icon--color-overlay::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--button-color);
+    -webkit-mask-image: var(--mask-image);
+    mask-image: var(--mask-image);
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center center;
+    mask-position: center center;
+  }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "t:names.1_button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "t:settings.label",
+      "default": "t:text_defaults.button_label"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "t:settings.link"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "t:settings.open_new_tab",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "style_class",
+      "label": "t:settings.style",
+      "options": [
+        {
+          "value": "button",
+          "label": "t:options.primary"
+        },
+        {
+          "value": "button-secondary",
+          "label": "t:options.secondary"
+        },
+        {
+          "value": "link",
+          "label": "t:options.link"
+        }
+      ],
+      "default": "button"
+    },
+    {
+      "type": "header",
+      "content": "t:content.icon"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "t:settings.show_icon",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "t:settings.icon",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:options.none"
+        },
+        {
+          "value": "apple",
+          "label": "t:options.apple"
+        },
+        {
+          "value": "arrow",
+          "label": "t:options.arrow"
+        },
+        {
+          "value": "banana",
+          "label": "t:options.banana"
+        },
+        {
+          "value": "bottle",
+          "label": "t:options.bottle"
+        },
+        {
+          "value": "box",
+          "label": "t:options.box"
+        },
+        {
+          "value": "carrot",
+          "label": "t:options.carrot"
+        },
+        {
+          "value": "chat_bubble",
+          "label": "t:options.chat_bubble"
+        },
+        {
+          "value": "check_box",
+          "label": "t:options.check_box"
+        },
+        {
+          "value": "clipboard",
+          "label": "t:options.clipboard"
+        },
+        {
+          "value": "dairy",
+          "label": "t:options.dairy"
+        },
+        {
+          "value": "dairy_free",
+          "label": "t:options.dairy_free"
+        },
+        {
+          "value": "dryer",
+          "label": "t:options.dryer"
+        },
+        {
+          "value": "eye",
+          "label": "t:options.eye"
+        },
+        {
+          "value": "fire",
+          "label": "t:options.fire"
+        },
+        {
+          "value": "gluten_free",
+          "label": "t:options.gluten_free"
+        },
+        {
+          "value": "heart",
+          "label": "t:options.heart"
+        },
+        {
+          "value": "iron",
+          "label": "t:options.iron"
+        },
+        {
+          "value": "leaf",
+          "label": "t:options.leaf"
+        },
+        {
+          "value": "leather",
+          "label": "t:options.leather"
+        },
+        {
+          "value": "lightning_bolt",
+          "label": "t:options.lightning_bolt"
+        },
+        {
+          "value": "lipstick",
+          "label": "t:options.lipstick"
+        },
+        {
+          "value": "lock",
+          "label": "t:options.lock"
+        },
+        {
+          "value": "map_pin",
+          "label": "t:options.map_pin"
+        },
+        {
+          "value": "nut_free",
+          "label": "t:options.nut_free"
+        },
+        {
+          "value": "pants",
+          "label": "t:options.pants"
+        },
+        {
+          "value": "paw_print",
+          "label": "t:options.paw_print"
+        },
+        {
+          "value": "pepper",
+          "label": "t:options.pepper"
+        },
+        {
+          "value": "perfume",
+          "label": "t:options.perfume"
+        },
+        {
+          "value": "plane",
+          "label": "t:options.plane"
+        },
+        {
+          "value": "plant",
+          "label": "t:options.plant"
+        },
+        {
+          "value": "price_tag",
+          "label": "t:options.price_tag"
+        },
+        {
+          "value": "question_mark",
+          "label": "t:options.question_mark"
+        },
+        {
+          "value": "recycle",
+          "label": "t:options.recycle"
+        },
+        {
+          "value": "return",
+          "label": "t:options.return"
+        },
+        {
+          "value": "ruler",
+          "label": "t:options.ruler"
+        },
+        {
+          "value": "serving_dish",
+          "label": "t:options.serving_dish"
+        },
+        {
+          "value": "shirt",
+          "label": "t:options.shirt"
+        },
+        {
+          "value": "shoe",
+          "label": "t:options.shoe"
+        },
+        {
+          "value": "silhouette",
+          "label": "t:options.silhouette"
+        },
+        {
+          "value": "bluesky",
+          "label": "t:options.social_bluesky"
+        },
+        {
+          "value": "facebook",
+          "label": "t:options.social_facebook"
+        },
+        {
+          "value": "instagram",
+          "label": "t:options.social_instagram"
+        },
+        {
+          "value": "linkedin",
+          "label": "t:options.social_linkedin"
+        },
+        {
+          "value": "pinterest",
+          "label": "t:options.social_pinterest"
+        },
+        {
+          "value": "snapchat",
+          "label": "t:options.social_snapchat"
+        },
+        {
+          "value": "spotify",
+          "label": "t:options.social_spotify"
+        },
+        {
+          "value": "threads",
+          "label": "t:options.social_threads"
+        },
+        {
+          "value": "tiktok",
+          "label": "t:options.social_tiktok"
+        },
+        {
+          "value": "tumblr",
+          "label": "t:options.social_tumblr"
+        },
+        {
+          "value": "twitter",
+          "label": "t:options.social_twitter"
+        },
+        {
+          "value": "vimeo",
+          "label": "t:options.social_vimeo"
+        },
+        {
+          "value": "youtube",
+          "label": "t:options.social_youtube"
+        },
+        {
+          "value": "whatsapp",
+          "label": "t:options.social_whatsapp"
+        },
+        {
+          "value": "snowflake",
+          "label": "t:options.snowflake"
+        },
+        {
+          "value": "star",
+          "label": "t:options.star"
+        },
+        {
+          "value": "stopwatch",
+          "label": "t:options.stopwatch"
+        },
+        {
+          "value": "truck",
+          "label": "t:options.truck"
+        },
+        {
+          "value": "washing",
+          "label": "t:options.washing"
+        }
+      ],
+      "default": "arrow",
+      "visible_if": "{{ block.settings.show_icon }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_image",
+      "label": "t:settings.image_icon",
+      "visible_if": "{{ block.settings.show_icon }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "apply_foreground_color",
+      "label": "t:settings.1_apply_foreground_color",
+      "default": true,
+      "visible_if": "{{ block.settings.show_icon and block.settings.icon_image != blank }}"
+    },
+    {
+      "type": "select",
+      "id": "icon_position",
+      "label": "t:settings.icon_position",
+      "options": [
+        {
+          "value": "start",
+          "label": "t:options.start"
+        },
+        {
+          "value": "end",
+          "label": "t:options.end"
+        }
+      ],
+      "default": "end",
+      "visible_if": "{{ block.settings.show_icon }}"
+    },
+    {
+      "type": "range",
+      "id": "icon_width",
+      "label": "t:settings.width",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 30,
+      "visible_if": "{{ block.settings.show_icon }}"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "t:settings.gap",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16,
+      "visible_if": "{{ block.settings.show_icon }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.size"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:settings.width_desktop",
+      "options": [
+        {
+          "value": "fit-content",
+          "label": "t:options.fit_content"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "t:settings.custom_width",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width == \"custom\" }}"
+    },
+    {
+      "type": "select",
+      "id": "width_mobile",
+      "label": "t:settings.width_mobile",
+      "options": [
+        {
+          "value": "fit-content",
+          "label": "t:options.fit_content"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "t:settings.custom_width",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width_mobile == \"custom\" }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.1_button",
+      "category": "t:categories.basic",
+      "settings": {
+        "link": "shopify://collections/all"
+      }
+    }
+  ]
+}
+{% endschema %}

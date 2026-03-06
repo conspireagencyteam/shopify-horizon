@@ -1,6 +1,42 @@
+/* BUTTON */
+.button {
+  position: relative;
+}
+
+.button:not(.button-secondary, .button-unstyled) {
+
+  /* effect */
+  &::before {
+    display: var(--effect-primary-button-display);
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.25) inset, 0 2px 2px 0 rgba(255, 255, 255, 0.50) inset, 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+  }
+
+}
+
+.button.button-secondary {
+
+  /* effect */
+  &::before {
+    display: var(--effect-secondary-button-display);
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.25) inset, 0 2px 2px 0 rgba(255, 255, 255, 0.50) inset, 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+  }
+
+}
+
 /* TESTIMONIALS */
 .\31-resource-list--testimonials.resource-list--grid {
   padding-bottom: var(--padding-3xl);
+
   .\31-resource-list__item--testimonial {
     &:nth-child(odd) {
       @media screen and (min-width: 750px) {

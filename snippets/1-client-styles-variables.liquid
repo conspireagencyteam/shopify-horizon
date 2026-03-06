@@ -42,5 +42,28 @@
 
     --button-padding-inline: 36px;
     --button-padding-block: 13px;
+
+    
+
+    /*
+     * Primary Button Effect Override
+     * Shows a decorative effect on primary/secondary buttons when the button
+     * background is any non-transparent color. This ensures the effect
+     * is visible on all color schemes with solid button backgrounds
+     * but hidden when the background is transparent.
+     */
+    {% for scheme in settings.color_schemes -%}
+      {% if scheme.settings.primary_button_background != 'rgba(0,0,0,0)' or scheme.settings.secondary_button_background != 'rgba(0,0,0,0)' %}
+        {% assign scheme_classes = scheme_classes | append: ', .color-' | append: scheme.id %}
+        .color-{{ scheme.id }} {
+          {% if scheme.settings.primary_button_background != 'rgba(0,0,0,0)' %}
+            --effect-primary-button-display: block;
+          {% endif %}
+          {% if scheme.settings.secondary_button_background != 'rgba(0,0,0,0)' %}
+            --effect-secondary-button-display: block;
+          {% endif %}
+        }
+      {% endif %}
+    {% endfor %}
   }
 </style>

@@ -1,0 +1,67 @@
+{%- doc -%}
+  Extended button with optional icon support.
+  Reuses theme's .button/.button-secondary classes.
+
+  @param {string} link - Link URL to render
+  @param {object} [block] - The block object with settings
+
+  @example
+  {% render '1-button', link: '/collections/all', block: block %}
+{%- enddoc -%}
+
+{% assign block_settings = block.settings %}
+{% assign show_icon = block_settings.show_icon %}
+{% assign icon_position = block_settings.icon_position | default: 'end' %}
+{% assign icon_block_class = 'button__icon' %}
+{% if block_settings.apply_foreground_color and block_settings.icon_image != blank %}
+  {% assign icon_block_class = icon_block_class | append: ' button__icon--color-overlay' %}
+  {% assign apply_color_overlay = true %}
+{% endif %}
+
+<a
+  {% if link == blank %}
+    role="link"
+    aria-disabled="true"
+  {% else %}
+    href="{{ link }}"
+  {% endif %}
+  class="
+    size-style
+    {{ block_settings.style_class }}
+    {{ block_settings.style_class }}--{{ block.id }}
+    {% if show_icon %}{{ block_settings.style_class }}--with-icon{% endif %}
+  "
+  style="
+    {% render 'size-style', settings: block_settings %}
+    {% if show_icon %}--button-icon-gap: {{ block_settings.gap }}px;{% endif %}
+  "
+  {%- if block_settings.open_in_new_tab -%}
+    target="_blank"
+    rel="noopener noreferrer"
+  {%- endif -%}
+  {{ block.shopify_attributes }}
+>
+  {%- if show_icon and icon_position == 'start' -%}
+    {% render '1-icon-or-image',
+      icon: block_settings.icon,
+      image_upload: block_settings.icon_image,
+      width: block_settings.icon_width,
+      width_mobile: block_settings.icon_width,
+      class_name: icon_block_class,
+      color_overlay: apply_color_overlay
+    %}
+  {%- endif -%}
+
+  <span>{{ block_settings.label }}</span>
+
+  {%- if show_icon and icon_position == 'end' -%}
+    {% render '1-icon-or-image',
+      icon: block_settings.icon,
+      image_upload: block_settings.icon_image,
+      width: block_settings.icon_width,
+      width_mobile: block_settings.icon_width,
+      class_name: icon_block_class,
+      color_overlay: apply_color_overlay
+    %}
+  {%- endif -%}
+</a>
