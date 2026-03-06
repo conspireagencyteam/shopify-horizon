@@ -7,9 +7,9 @@
   {% for testimonial in block.settings.testimonials limit: block.settings.max_testimonials %}
     {% assign testimonials_count = testimonials_count | plus: 1 %}
     <div
-      class="resource-list__item"
+      class="resource-list__item 1-resource-list__item 1-resource-list__item--testimonial"
     >
-      {%- content_for 'block', type: '1-testimonial-card', id: 'static-testimonial-card', testimonial: testimonial -%}
+      {%- content_for 'block', type: '1-testimonial-card', id: 'static-testimonial-card', closest.metaobject.testimonials: testimonial -%}
     </div>
 
     {% unless forloop.last %}

@@ -1,0 +1,11 @@
+/* TESTIMONIALS */
+.\31-resource-list--testimonials.resource-list--grid {
+  padding-bottom: var(--padding-3xl);
+  .\31-resource-list__item--testimonial {
+    &:nth-child(odd) {
+      @media screen and (min-width: 750px) {
+        transform: translateY(var(--padding-3xl));
+      }
+    }
+  }
+}
