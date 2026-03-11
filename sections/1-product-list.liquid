@@ -11,7 +11,6 @@
     assign max_items = section.settings.products.size
   endif
 
-
   if section.settings.columns > 3
     assign columns_tablet = section.settings.columns | divided_by: 2.0 | ceil
     assign columns_tablet_gap_ratio = columns_tablet | minus: 1.00 | divided_by: columns_tablet
@@ -28,14 +27,14 @@
 
   capture styles
     echo '--resource-list-column-gap-desktop: ' | append: section.settings.columns_gap | append: 'px;'
-    
+
     if section.settings.layout_type == 'grid'
       echo '--resource-list-row-gap-desktop: ' | append: section.settings.rows_gap | append: 'px;'
       comment
-        echo '--resource-list-columns: repeat(' | append: section.settings.columns | append: ', 1fr);' 
+        echo '--resource-list-columns: repeat(' | append: section.settings.columns | append: ', 1fr);'
       endcomment
       assign column_size = 100.00 | divided_by: section.settings.columns
-      assign column_gap_ratio = section.settings.columns | minus: 1.00 | divided_by: section.settings.columns 
+      assign column_gap_ratio = section.settings.columns | minus: 1.00 | divided_by: section.settings.columns
       echo '--resource-list-columns: repeat(auto-fit, calc(' | append: column_size | append: '% - var(--resource-list-column-gap-desktop) *' | append: column_gap_ratio | append: '));'
       if section.settings.columns > 3
         comment
@@ -48,7 +47,7 @@
         echo '--resource-list-columns-laptop: repeat(auto-fit, calc(' | append: column_size_laptop | append: '% - var(--resource-list-column-gap-desktop) *' | append: columns_laptop_gap_ratio | append: '));'
       endif
     endif
-    
+
     if section.settings.layout_type == 'carousel'
       echo '--column-count: ' | append: section.settings.columns | append: ';'
       if section.settings.columns > 3
@@ -56,11 +55,11 @@
         echo '--column-count-laptop: ' | append: columns_laptop | append: ';'
       endif
     endif
-    
+
     if section.settings.layout_type_mobile == 'grid'
       echo '--resource-list-columns-mobile: repeat(' | append: section.settings.mobile_columns | append: ', 1fr);'
     endif
-    
+
     if section.settings.layout_type_mobile == 'carousel'
       echo '--mobile-card-size: ' | append: section.settings.mobile_card_size | append: ';'
     endif
@@ -87,8 +86,10 @@
     {{ styles }}
   "
 >
-  <div class="section-resource-list__header"
-    style="--horizontal-alignment: {{ section.settings.horizontal_alignment }};">
+  <div
+    class="section-resource-list__header"
+    style="--horizontal-alignment: {{ section.settings.horizontal_alignment }};"
+  >
     {%- content_for 'block', type: '_product-list-content', id: 'static-header' -%}
   </div>
 
@@ -130,9 +131,9 @@
       {{ classes }}
     "
     style="
-      {{ styles }}
-       --horizontal-alignment: {{ section.settings.horizontal_alignment }};
-     "
+            {{ styles }}
+      --horizontal-alignment: {{ section.settings.horizontal_alignment }};
+    "
     {% if section.settings.layout_type == 'grid' %}
       data-testid="resource-list-grid"
     {% endif %}
@@ -153,7 +154,11 @@
     {% endcase %}
   </div>
 
-  {% if section.settings.layout_type_mobile != section.settings.layout_type or section.settings.layout_type != 'grid' and section.settings.layout_type_mobile != 'grid' and section.settings.columns != section.settings.mobile_columns %}
+  {% if section.settings.layout_type_mobile != section.settings.layout_type
+    or section.settings.layout_type != 'grid'
+    and section.settings.layout_type_mobile != 'grid'
+    and section.settings.columns != section.settings.mobile_columns
+  %}
     {% case section.settings.layout_type_mobile %}
       {% when 'carousel' %}
         {% liquid
@@ -208,7 +213,7 @@
     {%- content_for 'blocks' -%}
   </div>
 </div>
-{% stylesheet %}  
+{% stylesheet %}
   @container resource-list-carousel (width < 750px) {
     .resource-list__carousel .resource-list__slide {
       --slide-width: var(--slide-width--mobile, clamp(150px, var(--mobile-card-size, 60cqw), var(--slide-width-max)));
@@ -703,9 +708,7 @@
               "blocks": {}
             }
           },
-          "block_order": [
-            "button_nJdz44"
-          ]
+          "block_order": ["button_nJdz44"]
         },
         "static-header": {
           "type": "_product-list-content",
@@ -826,9 +829,7 @@
                   "blocks": {}
                 }
               },
-              "block_order": [
-                "1_text_PtWtTq"
-              ]
+              "block_order": ["1_text_PtWtTq"]
             },
             "group_9JbFtA": {
               "type": "group",
@@ -981,21 +982,13 @@
                       "blocks": {}
                     }
                   },
-                  "block_order": [
-                    "1_text_8AU3FD"
-                  ]
+                  "block_order": ["1_text_8AU3FD"]
                 }
               },
-              "block_order": [
-                "1_text_BWEhCL",
-                "1_group_wH4RVK"
-              ]
+              "block_order": ["1_text_BWEhCL", "1_group_wH4RVK"]
             }
           },
-          "block_order": [
-            "1_group_byndHB",
-            "group_9JbFtA"
-          ]
+          "block_order": ["1_group_byndHB", "group_9JbFtA"]
         },
         "static-product-card": {
           "type": "_1-product-card",
@@ -1261,9 +1254,7 @@
                           "blocks": {}
                         }
                       },
-                      "block_order": [
-                        "text_y8eLYj"
-                      ]
+                      "block_order": ["text_y8eLYj"]
                     },
                     "1_product_card_group_BiQwf4": {
                       "type": "_1-product-card-group",
@@ -1349,15 +1340,10 @@
                           "blocks": {}
                         }
                       },
-                      "block_order": [
-                        "1_okendo_star_rating_summary_PdpzKi"
-                      ]
+                      "block_order": ["1_okendo_star_rating_summary_PdpzKi"]
                     }
                   },
-                  "block_order": [
-                    "1_product_card_group_fWnEAp",
-                    "1_product_card_group_BiQwf4"
-                  ]
+                  "block_order": ["1_product_card_group_fWnEAp", "1_product_card_group_BiQwf4"]
                 },
                 "1_product_card_gallery_mP7Lt6": {
                   "type": "_1-product-card-gallery",
@@ -1503,21 +1489,13 @@
                           "blocks": {}
                         }
                       },
-                      "block_order": [
-                        "text_tydtBB",
-                        "text_zpqGjf"
-                      ]
+                      "block_order": ["text_tydtBB", "text_zpqGjf"]
                     }
                   },
-                  "block_order": [
-                    "1_product_card_gallery_hover_nqzdtH"
-                  ]
+                  "block_order": ["1_product_card_gallery_hover_nqzdtH"]
                 }
               },
-              "block_order": [
-                "1_product_card_group_aFr9Bh",
-                "1_product_card_gallery_mP7Lt6"
-              ]
+              "block_order": ["1_product_card_group_aFr9Bh", "1_product_card_gallery_mP7Lt6"]
             },
             "product_card_group_EVK6xM": {
               "type": "_1-product-card-group",
@@ -1801,10 +1779,7 @@
                           "blocks": {}
                         }
                       },
-                      "block_order": [
-                        "sizes_n6fjEP",
-                        "price_eqwLnU"
-                      ]
+                      "block_order": ["sizes_n6fjEP", "price_eqwLnU"]
                     },
                     "1_product_card_group_CYXzbR": {
                       "type": "_1-product-card-group",
@@ -1906,32 +1881,19 @@
                           "block_order": []
                         }
                       },
-                      "block_order": [
-                        "1_buy_buttons_xFiJjE"
-                      ]
+                      "block_order": ["1_buy_buttons_xFiJjE"]
                     }
                   },
-                  "block_order": [
-                    "1_product_card_group_N9qYVE",
-                    "1_product_card_group_CYXzbR"
-                  ]
+                  "block_order": ["1_product_card_group_N9qYVE", "1_product_card_group_CYXzbR"]
                 }
               },
-              "block_order": [
-                "product_title_fHjji6",
-                "product_card_group_mHnLDd"
-              ]
+              "block_order": ["product_title_fHjji6", "product_card_group_mHnLDd"]
             }
           },
-          "block_order": [
-            "1_product_card_group_VyPaYF",
-            "product_card_group_EVK6xM"
-          ]
+          "block_order": ["1_product_card_group_VyPaYF", "product_card_group_EVK6xM"]
         }
       },
-      "block_order": [
-        "1_group_Afrrqf"
-      ],
+      "block_order": ["1_group_Afrrqf"],
       "settings": {
         "products_source": "collection",
         "collection": "immune-support",
