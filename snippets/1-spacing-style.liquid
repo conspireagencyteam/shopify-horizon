@@ -9,14 +9,13 @@
       suffix: {string}
       scale_min {number}: Value above which spacing scaling will be applied. Default: 20
       disable_scaling {boolean}: Disable scaling. Default: false
-      padding_scale {string}: Multiplier for padding values ('1', '2', or '3'). Default: '1'
 {%- endcomment -%}
 {%- liquid
   assign properties = 'padding,margin' | split: ','
   assign directions = 'block,inline' | split: ','
   assign edges = ',start,end' | split: ','
   assign min = scale_min | default: 20
-  assign scale = padding_scale | default: '1' | plus: 0
+  assign scale = settings.padding_scale | default: '1' | plus: 0
   if scale < 1
     assign scale = 1
   endif

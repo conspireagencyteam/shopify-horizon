@@ -938,6 +938,7 @@
     "below_media": "Below media"
   },
   "settings": {
+    "1_show_icon": "Show icon",
     "1_ratio_width": "Ratio width",
     "1_ratio_height": "Ratio height",
     "1_italic_style": "Italic style",
