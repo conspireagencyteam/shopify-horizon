@@ -1396,6 +1396,7 @@
     "variant_images": "Variant images",
     "variant_per_page": "Variants per page",
     "vendor": "Vendor",
+    "horizontal_on_desktop": "Horizontal on desktop",
     "vertical_gap": "Vertical gap",
     "vertical_offset": "Shadow vertical offset",
     // Layout setting: stacks content vertically on mobile
