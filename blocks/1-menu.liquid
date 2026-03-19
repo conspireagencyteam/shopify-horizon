@@ -1,4 +1,3 @@
-
 {% liquid
   assign menu = block.settings.menu
   assign heading = block.settings.heading
@@ -36,7 +35,8 @@
       "
       {{ block.shopify_attributes }}
     >
-      <summary class="menu__heading{% if heading == blank %} menu__heading--empty{% endif %} {{ block.settings.heading_preset }}{% if block.settings.heading_preset == 'custom' %} custom-typography{% endif %}"
+      <summary
+        class="menu__heading{% if heading == blank %} menu__heading--empty{% endif %} {{ block.settings.heading_preset }}{% if block.settings.heading_preset == 'custom' %} custom-typography{% endif %}"
         {% if block.settings.heading_preset == 'custom' %}
           style="
             --font-family: {{ block.settings.heading_font }};
@@ -63,9 +63,21 @@
 
       <div class="details-content">
         {% if menu %}
-          <ul class="list-unstyled">
+          <ul
+            class="
+              list-unstyled
+              {% if block.settings.horizontal_on_desktop %}list-horizontal--desktop{% endif %}
+            "
+            style="
+              {% if block.settings.horizontal_on_desktop %}
+                --horizontal-gap: {{ block.settings.menu_spacing_horizontal }}px;
+                --horizontal-alignment: {{ block.settings.horizontal_alignment }};
+              {% endif %}
+            "
+          >
             {% for link in menu.links %}
-              <li class="menu__item {{ block.settings.link_preset }}{% if block.settings.link_preset == 'custom' %} custom-typography{% endif %}"
+              <li
+                class="menu__item {{ block.settings.link_preset }}{% if block.settings.link_preset == 'custom' %} custom-typography{% endif %}"
                 {% if block.settings.link_preset == 'custom' %}
                   style="
                     --font-family: {{ block.settings.link_font }};
@@ -167,7 +179,21 @@
   }
   .menu__heading {
     .menu__heading__default {
-      color: var(--color, var(--color-primary))
+      color: var(--color, var(--color-primary));
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .list-horizontal--desktop {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: var(--horizontal-alignment);
+      gap: var(--horizontal-gap, 12px);
+      .menu__item + .menu__item {
+        margin-block: 0;
+      }
     }
   }
 {% endstylesheet %}
@@ -207,6 +233,48 @@
       "id": "show_as_accordion",
       "label": "t:settings.show_as_accordion",
       "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "horizontal_on_desktop",
+      "label": "t:settings.1_horizontal_on_desktop",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "horizontal_alignment",
+      "label": "t:settings.alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "t:options.left"
+        },
+        {
+          "value": "center",
+          "label": "t:options.center"
+        },
+        {
+          "value": "flex-end",
+          "label": "t:options.right"
+        },
+        {
+          "value": "space-between",
+          "label": "t:options.space_between"
+        }
+      ],
+      "default": "flex-start",
+      "visible_if": "{{ block.settings.horizontal_on_desktop == true }}"
+    },
+    {
+      "type": "range",
+      "id": "menu_spacing_horizontal",
+      "label": "t:settings.horizontal_gap",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 12,
+      "visible_if": "{{ block.settings.horizontal_on_desktop == true }}"
     },
     {
       "type": "select",

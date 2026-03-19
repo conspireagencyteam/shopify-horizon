@@ -1,5 +1,3 @@
-
-
 <div
   class="
     group-copyright
@@ -12,7 +10,12 @@
   <span class="group-copyright__text">
     &copy; {{ 'now' | date: '%Y' }}
     {{ shop.name | link_to: routes.root_url -}}
-    , <a target="_blank" rel="nofollow" href="https://conspireagency.com/?utm_campaign=websiteby&amp;utm_medium=shopify&amp;utm_source=onlinestore">Website by Conspire</a>
+    ,
+    <a
+      target="_blank"
+      href="https://conspireagency.com/?utm_campaign=websiteby&amp;utm_medium=shopify&amp;utm_source=onlinestore"
+      >Website by Conspire</a
+    >
   </span>
 </div>
 
@@ -21,10 +24,6 @@
   "name": "t:names.1_copyright",
   "tag": null,
   "settings": [
-    {
-      "type": "paragraph",
-      "content": "t:content.copyright_info"
-    },
     {
       "type": "select",
       "id": "font_size",
