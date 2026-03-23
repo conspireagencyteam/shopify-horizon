@@ -20,13 +20,13 @@
 
   capture styles
     echo '--resource-list-column-gap-desktop: ' | append: block.settings.columns_gap | append: 'px;'
-    
+
     if block.settings.layout_type == 'grid'
       echo '--resource-list-row-gap-desktop: ' | append: block.settings.rows_gap | append: 'px;'
       comment
-        echo '--resource-list-columns: repeat(' | append: block.settings.columns | append: ', 1fr);' 
+        echo '--resource-list-columns: repeat(' | append: block.settings.columns | append: ', 1fr);'
       endcomment
-      echo '--resource-list-columns: '| append: 1.00 | divided_by: block.settings.columns | append: 'fr;'
+      echo '--resource-list-columns: ' | append: 1.00 | divided_by: block.settings.columns | append: 'fr;'
       if block.settings.columns > 3
         comment
           echo '--resource-list-columns-tablet: repeat(' | append: columns_tablet | append: ', 1fr);'
@@ -36,7 +36,7 @@
         echo '--resource-list-columns-laptop: ' | append: 1.00 | divided_by: columns_laptop | append: 'fr;'
       endif
     endif
-    
+
     if block.settings.layout_type == 'carousel'
       echo '--column-count: ' | append: block.settings.columns | append: ';'
       if block.settings.columns > 3
@@ -44,11 +44,11 @@
         echo '--column-count-laptop: ' | append: columns_laptop | append: ';'
       endif
     endif
-    
+
     if block.settings.layout_type_mobile == 'grid'
       echo '--resource-list-columns-mobile: repeat(' | append: block.settings.mobile_columns | append: ', 1fr);'
     endif
-    
+
     if block.settings.layout_type_mobile == 'carousel'
       echo '--mobile-card-size: ' | append: block.settings.mobile_card_size | append: ';'
     endif
@@ -788,9 +788,7 @@
                           "blocks": {}
                         }
                       },
-                      "block_order": [
-                        "text_y8eLYj"
-                      ]
+                      "block_order": ["text_y8eLYj"]
                     },
                     "1_product_card_group_BiQwf4": {
                       "type": "_1-product-card-group",
@@ -833,7 +831,7 @@
                         "position_left": 0,
                         "position_right": 0,
                         "inherit_color_scheme": true,
-                        "color_scheme": "scheme-58084d4c-a86e-4d0a-855e-a0966e5043f7",
+                        "color_scheme": "scheme-7",
                         "background_media": "none",
                         "video_position": "cover",
                         "background_image_position": "cover",
@@ -876,15 +874,10 @@
                           "blocks": {}
                         }
                       },
-                      "block_order": [
-                        "1_okendo_star_rating_summary_PdpzKi"
-                      ]
+                      "block_order": ["1_okendo_star_rating_summary_PdpzKi"]
                     }
                   },
-                  "block_order": [
-                    "1_product_card_group_fWnEAp",
-                    "1_product_card_group_BiQwf4"
-                  ]
+                  "block_order": ["1_product_card_group_fWnEAp", "1_product_card_group_BiQwf4"]
                 },
                 "1_product_card_gallery_mP7Lt6": {
                   "type": "_1-product-card-gallery",
@@ -1030,21 +1023,13 @@
                           "blocks": {}
                         }
                       },
-                      "block_order": [
-                        "text_tydtBB",
-                        "text_zpqGjf"
-                      ]
+                      "block_order": ["text_tydtBB", "text_zpqGjf"]
                     }
                   },
-                  "block_order": [
-                    "1_product_card_gallery_hover_nqzdtH"
-                  ]
+                  "block_order": ["1_product_card_gallery_hover_nqzdtH"]
                 }
               },
-              "block_order": [
-                "1_product_card_group_aFr9Bh",
-                "1_product_card_gallery_mP7Lt6"
-              ]
+              "block_order": ["1_product_card_group_aFr9Bh", "1_product_card_gallery_mP7Lt6"]
             },
             "product_card_group_EVK6xM": {
               "type": "_1-product-card-group",
@@ -1328,10 +1313,7 @@
                           "blocks": {}
                         }
                       },
-                      "block_order": [
-                        "sizes_n6fjEP",
-                        "price_eqwLnU"
-                      ]
+                      "block_order": ["sizes_n6fjEP", "price_eqwLnU"]
                     },
                     "1_product_card_group_CYXzbR": {
                       "type": "_1-product-card-group",
@@ -1433,27 +1415,16 @@
                           "block_order": []
                         }
                       },
-                      "block_order": [
-                        "1_buy_buttons_xFiJjE"
-                      ]
+                      "block_order": ["1_buy_buttons_xFiJjE"]
                     }
                   },
-                  "block_order": [
-                    "1_product_card_group_N9qYVE",
-                    "1_product_card_group_CYXzbR"
-                  ]
+                  "block_order": ["1_product_card_group_N9qYVE", "1_product_card_group_CYXzbR"]
                 }
               },
-              "block_order": [
-                "product_title_fHjji6",
-                "product_card_group_mHnLDd"
-              ]
+              "block_order": ["product_title_fHjji6", "product_card_group_mHnLDd"]
             }
           },
-          "block_order": [
-            "1_product_card_group_VyPaYF",
-            "product_card_group_EVK6xM"
-          ]
+          "block_order": ["1_product_card_group_VyPaYF", "product_card_group_EVK6xM"]
         }
       },
       "settings": {

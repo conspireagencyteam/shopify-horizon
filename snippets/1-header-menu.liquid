@@ -73,6 +73,9 @@
           aria-haspopup="true"
           aria-expanded="false"
         {%- endif -%}
+        {% if link.current %}
+          aria-current="page"
+        {% endif %}
         ref="menuitem"
       >
         <span class="menu-list__link-title">{{- link.title -}}</span>
@@ -90,7 +93,7 @@
               </div>
             {%- else -%}
               {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
-              {% render 'mega-menu',
+              {% render 'mega-menu-list',
                 parent_link: link,
                 id: list_id,
                 menu_content_type: menu_content_type,
