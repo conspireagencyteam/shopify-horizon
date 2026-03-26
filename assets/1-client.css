@@ -33,6 +33,56 @@
 
 }
 
+.\31-header {
+  --header-padding: var(--padding-2xl);
+
+  .header__column--left {
+    gap: var(--gap-3xl);
+  }
+
+  .menu-list__link-title {
+    padding-inline: 12px;
+  }
+
+  .header__column--right header-actions {
+    gap: var(--gap-xs);
+  }
+
+  cart-icon {
+    color: var(--color-primary-button-text);
+    background-color: var(--color-primary-button-background);
+    border-radius: var(--style-border-radius-buttons-primary);
+    padding-inline: 0;
+    padding-block: 0;
+
+    /* effect */
+    &::before {
+      display: var(--effect-primary-button-display);
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.25) inset, 0 2px 2px 0 rgba(255, 255, 255, 0.50) inset, 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+    }
+  }
+
+  ::part(signed-out-avatar) {
+    color: var(--color-primary-button-text);
+    background-color: var(--color-primary-button-background);
+    border-radius: var(--style-border-radius-buttons-primary);
+    min-width: var(--button-size);
+    min-height: var(--button-size);
+    position: relative;
+    box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.25) inset, 0 2px 2px 0 rgba(255, 255, 255, 0.50) inset, 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  [slot="signed-out-avatar"] {
+    display: flex;
+  }
+}
+
+
 /* TESTIMONIALS */
 .\31-resource-list--testimonials.resource-list--grid {
   padding-bottom: var(--padding-3xl);

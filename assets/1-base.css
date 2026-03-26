@@ -450,9 +450,14 @@ summary .svg-wrapper {
   right: 0;
   z-index: var(--layer-overlay);
 
-  &:not(:hover, [data-sticky-state='active'], :has(.mega-menu__list:hover),
+  &:not([data-sticky-state='active'],
+    :has(.menu-list__link:not([aria-haspopup]):hover),
+    :has(.mega-menu__list:hover),
     :has(.menu-list__link[aria-haspopup]:is(:hover, [aria-expanded='true'], [data-animating])),
     :has(.menu-list__list-item[slot='overflow'] .menu-list__link:is(:hover, [aria-expanded='true'], [data-animating]))) {
+    --header-logo-display: none;
+    --header-logo-inverse-display: block;
+
     --color-background: var(--transparent-color-background);
     /* RGB values only to apply different opacities - Relative color values are not supported in iOS < 16.4 */
     --color-background-rgb: var(--transparent-color-background-rgb);

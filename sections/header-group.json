@@ -45,7 +45,7 @@
       "type": "1-header",
       "blocks": {
         "header-logo": {
-          "type": "_header-logo",
+          "type": "_1-header-logo",
           "static": true,
           "settings": {
             "hide_logo_on_home_page": false,
@@ -65,7 +65,7 @@
             "type_font_primary_size": "0.875rem",
             "menu_font_style": "inverse",
             "type_font_primary_link": "body",
-            "type_case_primary_link": "none",
+            "type_case_primary_link": "uppercase",
             "menu_style": "featured_products",
             "featured_products_aspect_ratio": "4 / 5",
             "featured_collections_aspect_ratio": "16 / 9",
@@ -84,7 +84,7 @@
         "menu_position": "left",
         "menu_row": "top",
         "customer_account_menu": "customer-account-main-menu",
-        "show_search": true,
+        "show_search": false,
         "search_position": "right",
         "search_row": "top",
         "show_country": true,
