@@ -33,9 +33,11 @@
     {%- render 'theme-styles-variables' -%}
     {%- render '1-client-styles-variables' -%}
     {%- render 'color-schemes' -%}
+    {%- render '1-color-schemes' -%}
 
     {% if request.design_mode %}
       {%- render 'theme-editor' -%}
+      {%- render '1-theme-editor' -%}
     {% endif %}
 
     {{ content_for_header }}

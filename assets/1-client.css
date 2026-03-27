@@ -48,6 +48,11 @@
     gap: var(--gap-xs);
   }
 
+  .cart-drawer {
+    order: -1;
+    margin-inline-end: 0;
+  }
+
   cart-icon {
     color: var(--color-primary-button-text);
     background-color: var(--color-primary-button-background);
@@ -78,6 +83,7 @@
   }
 
   [slot="signed-out-avatar"] {
+    color: var(--color-primary-button-text);
     display: flex;
   }
 }
