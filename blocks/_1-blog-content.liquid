@@ -1,0 +1,107 @@
+<div class="1-main-blog__content" {{ block.shopify_attributes }}>
+  {% content_for 'block', type: '1-blog-filters', id: 'filters' %}
+  {% content_for 'block', type: '_1-divider', id: 'divider' %}
+
+  {%- paginate blog.articles by block.settings.articles_per_page -%}
+    {% liquid
+      assign classes = 'resource-list--grid'
+
+      capture styles
+        echo '--resource-list-column-gap: ' | append: block.settings.columns_gap | append: 'px;'
+        echo '--resource-list-column-gap-desktop: ' | append: block.settings.columns_gap | append: 'px;'
+        echo '--resource-list-row-gap: ' | append: block.settings.rows_gap | append: 'px;'
+        echo '--resource-list-row-gap-desktop: ' | append: block.settings.rows_gap | append: 'px;'
+        echo '--resource-list-columns-per-row: ' | append: block.settings.columns | append: ';'
+        echo '--resource-list-columns: repeat(' | append: block.settings.columns | append: ', 1fr);'
+        echo '--resource-list-columns-mobile: repeat(' | append: block.settings.mobile_columns | append: ', 1fr);'
+      endcapture
+    %}
+
+    <div
+      class="
+        group-block
+        spacing-style
+        color-{{ block.settings.color_scheme }}
+        block-resource-list
+      "
+      style="
+        --column-count-mobile: {{ block.settings.mobile_columns }};
+        {% render 'spacing-style', settings: block.settings %}
+        {% render 'gap-style', value: block.settings.gap %}
+        {{ styles }}
+      "
+    >
+      <div
+        class="
+          1-main-blog__grid
+          {{ classes }}
+        "
+        style="{{ styles }}"
+        data-testid="resource-list-grid"
+      >
+        {%- for article in blog.articles -%}
+          <div class="1-main-blog__item">
+            {% content_for 'block', id: 'static-1-blog-post-card', type: '1-blog-post-card', closest.article: article %}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {% content_for 'block', type: '_1-divider', id: 'divider-bottom' %}
+    {% render '1-pagination-controls', paginate: paginate %}
+  {%- endpaginate -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:names.1_blog_content",
+  "tag": null,
+  "settings": [
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:settings.columns",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "t:settings.mobile_columns",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:options.one_number"
+        },
+        {
+          "value": "2",
+          "label": "t:options.two_number"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "columns_gap",
+      "label": "t:settings.horizontal_gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "rows_gap",
+      "label": "t:settings.vertical_gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    }
+  ]
+}
+{% endschema %}

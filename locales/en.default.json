@@ -9,6 +9,7 @@
  */
 {
   "accessibility": {
+    "1_search": "Search",
     "account": "Account",
     "cart": "Cart",
     "cart_count": "Total items in cart",
@@ -150,7 +151,9 @@
       "post": "Post comment",
       "success_moderated": "Comment posted, awaiting moderation",
       "success": "Comment posted"
-    }
+    },
+    "1_search_placeholder": "Search",
+    "1_all_tags": "All"
   },
   "content": {
     "1_sharing": {

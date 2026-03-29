@@ -1,30 +1,13 @@
-{% liquid
-  assign current_url = request.origin | append: request.path
-  assign encoded_url = current_url | url_encode
-  assign page_title = page.title | default: product.title | default: collection.title | default: article.title | default: shop.name
-  assign encoded_title = page_title | url_encode
-  assign share_url = 'https://pinterest.com/pin/create/button/?url=' | append: encoded_url | append: '&description=' | append: encoded_title
-  assign platform_label = 'Pinterest'
-%}
 
 {% capture children %}
-  <a
-    href="{{ share_url }}"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="{{ 'content.1_sharing.1_share_on' | t: platform: platform_label }}"
-    title="{{ 'content.1_sharing.1_share_on' | t: platform: platform_label }}"
-    class="1-social-share__link"
-  >    
-    {% content_for 'blocks' %}
-  </a>
+  {% content_for 'blocks' %}
 {% endcapture %}
 
 {% render '1-group', children: children, settings: block.settings, shopify_attributes: block.shopify_attributes %}
 
 {% schema %}
 {
-  "name": "t:options.pinterest",
+  "name": "t:names.1_blog_header",
   "tag": null,
   "blocks": [
     {
@@ -35,9 +18,23 @@
     },
     {
       "type": "_divider"
+    },
+    {
+      "type": "1-article-search"
     }
   ],
   "settings": [
+    {
+      "type": "url",
+      "id": "link",
+      "label": "t:settings.link"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "t:settings.open_new_tab",
+      "default": false
+    },
     {
       "type": "header",
       "content": "Visibility"
@@ -175,7 +172,7 @@
           "label": "t:options.right"
         }
       ],
-      "default": "flex-start",
+      "default": "center",
       "visible_if": "{{ block.settings.content_direction != 'row' }}"
     },
     {
@@ -202,6 +199,33 @@
       ],
       "default": "center",
       "visible_if": "{{ block.settings.content_direction == 'column' }}"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "t:settings.gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "flex_wrap",
+      "label": "t:settings.1_flex_wrap",
+      "options": [
+        {
+          "value": "nowrap",
+          "label": "t:options.1_nowrap"
+        },
+        {
+          "value": "wrap",
+          "label": "t:options.1_wrap"
+        }
+      ],
+      "default": "nowrap",
+      "info": "t:info.1_flex_wrap"
     },
     {
       "type": "checkbox",
@@ -316,30 +340,14 @@
     },
     {
       "type": "range",
-      "id": "gap",
-      "label": "t:settings.gap",
+      "id": "gap_mobile",
+      "label": "t:settings.1_gap_mobile",
       "min": 0,
       "max": 100,
       "step": 1,
       "unit": "px",
-      "default": 12
-    },
-    {
-      "type": "select",
-      "id": "flex_wrap",
-      "label": "t:settings.1_flex_wrap",
-      "options": [
-        {
-          "value": "nowrap",
-          "label": "t:options.1_nowrap"
-        },
-        {
-          "value": "wrap",
-          "label": "t:options.1_wrap"
-        }
-      ],
-      "default": "nowrap",
-      "info": "t:info.1_flex_wrap"
+      "default": 12,
+      "visible_if": "{{ block.settings.use_mobile_layout }}"
     },
     {
       "type": "select",
@@ -461,276 +469,6 @@
     },
     {
       "type": "header",
-      "content": "Position & Effects"
-    },
-    {
-      "type": "select",
-      "id": "position",
-      "label": "Position",
-      "options": [
-        {
-          "value": "static",
-          "label": "Normal flow"
-        },
-        {
-          "value": "relative",
-          "label": "Relative to normal position"
-        },
-        {
-          "value": "absolute",
-          "label": "Free positioning"
-        }
-      ],
-      "default": "static",
-      "info": "Normal flow: Element follows standard layout. Relative: Can be offset from normal position. Free positioning: Can be placed anywhere within parent container."
-    },
-    {
-      "type": "range",
-      "id": "z_index",
-      "label": "Z-index",
-      "min": -10,
-      "max": 90,
-      "step": 1,
-      "default": 0,
-      "info": "Stack order (higher values appear on top)"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_parallax",
-      "label": "Enable parallax effect",
-      "default": false,
-      "info": "Creates a scrolling depth effect"
-    },
-    {
-      "type": "select",
-      "id": "parallax_speed",
-      "label": "Parallax speed",
-      "options": [
-        {
-          "value": "slow",
-          "label": "Slow"
-        },
-        {
-          "value": "medium",
-          "label": "Medium"
-        },
-        {
-          "value": "fast",
-          "label": "Fast"
-        }
-      ],
-      "default": "medium",
-      "visible_if": "{{ block.settings.enable_parallax == true }}"
-    },
-    {
-      "type": "select",
-      "id": "parallax_direction",
-      "label": "Parallax direction",
-      "options": [
-        {
-          "value": "vertical",
-          "label": "Vertical"
-        },
-        {
-          "value": "horizontal",
-          "label": "Horizontal"
-        },
-        {
-          "value": "both",
-          "label": "Both"
-        }
-      ],
-      "default": "vertical",
-      "visible_if": "{{ block.settings.enable_parallax == true }}"
-    },
-    {
-      "type": "checkbox",
-      "id": "parallax_on_mobile",
-      "label": "Enable parallax on mobile",
-      "default": false,
-      "visible_if": "{{ block.settings.enable_parallax == true }}"
-    },
-    {
-      "type": "header",
-      "content": "Free positioning placement",
-      "info": "Use these controls to place the element anywhere within its parent container. Leave at 0 to not set that direction.",
-      "visible_if": "{{ block.settings.position == 'absolute' }}"
-    },
-    {
-      "type": "range",
-      "id": "position_top",
-      "label": "Distance from top",
-      "min": -100,
-      "max": 100,
-      "step": 2,
-      "unit": "%",
-      "default": 0,
-      "visible_if": "{{ block.settings.position == 'absolute' }}",
-      "info": "0 = top edge, 50 = center, 100 = bottom edge"
-    },
-    {
-      "type": "range",
-      "id": "position_bottom",
-      "label": "Distance from bottom", 
-      "min": -100,
-      "max": 100,
-      "step": 2,
-      "unit": "%",
-      "default": 0,
-      "visible_if": "{{ block.settings.position == 'absolute' }}",
-      "info": "Use either top OR bottom, not both"
-    },
-    {
-      "type": "range",
-      "id": "position_left",
-      "label": "Distance from left",
-      "min": -100,
-      "max": 100,
-      "step": 2,
-      "unit": "%", 
-      "default": 0,
-      "visible_if": "{{ block.settings.position == 'absolute' }}",
-      "info": "0 = left edge, 50 = center, 100 = right edge"
-    },
-    {
-      "type": "range",
-      "id": "position_right",
-      "label": "Distance from right",
-      "min": -100,
-      "max": 100,
-      "step": 2,
-      "unit": "%",
-      "default": 0,
-      "visible_if": "{{ block.settings.position == 'absolute' }}",
-      "info": "Use either left OR right, not both"
-    },
-    {
-      "type": "header",
-      "content": "t:content.1_callout_pointer"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_callout_pointer",
-      "label": "t:settings.1_enable_callout_pointer",
-      "default": false
-    },
-    {
-      "type": "select",
-      "id": "pointer_side_desktop",
-      "label": "t:settings.1_pointer_side_desktop",
-      "options": [
-        {
-          "value": "top",
-          "label": "t:options.1_top"
-        },
-        {
-          "value": "right",
-          "label": "t:options.1_right"
-        },
-        {
-          "value": "bottom",
-          "label": "t:options.1_bottom"
-        },
-        {
-          "value": "left",
-          "label": "t:options.1_left"
-        }
-      ],
-      "default": "left",
-      "visible_if": "{{ block.settings.enable_callout_pointer == true }}"
-    },
-    {
-      "type": "select",
-      "id": "pointer_side_mobile",
-      "label": "t:settings.1_pointer_side_mobile",
-      "options": [
-        {
-          "value": "top-left",
-          "label": "t:options.1_top_left"
-        },
-        {
-          "value": "top-right",
-          "label": "t:options.1_top_right"
-        },        
-        {
-          "value": "bottom-left",
-          "label": "t:options.1_bottom_left"
-        },
-        {
-          "value": "bottom-right",
-          "label": "t:options.1_bottom_right"
-        }
-      ],
-      "default": "top-left",
-      "visible_if": "{{ block.settings.enable_callout_pointer == true }}"
-    },
-    {
-      "type": "range",
-      "id": "pointer_length",
-      "label": "t:settings.1_pointer_length",
-      "min": 0,
-      "max": 500,
-      "step": 5,
-      "unit": "px",
-      "default": 100,
-      "visible_if": "{{ block.settings.enable_callout_pointer == true }}"
-    },
-    {
-      "type": "range",
-      "id": "pointer_length_mobile",
-      "label": "t:settings.1_pointer_length_mobile",
-      "min": 0,
-      "max": 500,
-      "step": 5,
-      "unit": "px",
-      "default": 100,
-      "visible_if": "{{ block.settings.enable_callout_pointer == true }}"
-    },
-    {
-      "type": "range",
-      "id": "pointer_width_mobile",
-      "label": "t:settings.1_pointer_width_mobile",
-      "min": 0,
-      "max": 500,
-      "step": 5,
-      "unit": "px",
-      "default": 100,
-      "visible_if": "{{ block.settings.enable_callout_pointer == true }}"
-    },
-    {
-      "type": "select",
-      "id": "pointer_style",
-      "label": "t:settings.1_pointer_style",
-      "options": [
-        {
-          "value": "dashed",
-          "label": "t:options.1_dashed"
-        }
-      ],
-      "default": "dashed",
-      "visible_if": "{{ block.settings.enable_callout_pointer == true }}"
-    },
-    {
-      "type": "color",
-      "id": "pointer_color",
-      "label": "t:settings.1_pointer_color",
-      "alpha": true,
-      "default": "#ffffff",
-      "visible_if": "{{ block.settings.enable_callout_pointer == true }}"
-    },
-    {
-      "type": "range",
-      "id": "pointer_opacity",
-      "label": "t:settings.1_pointer_opacity",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "%",
-      "default": 100,
-      "visible_if": "{{ block.settings.enable_callout_pointer == true }}"
-    },
-    {
-      "type": "header",
       "content": "t:content.appearance"
     },
     {
@@ -842,16 +580,13 @@
         {
           "value": "solid",
           "label": "t:options.solid"
+        },
+        {
+          "value": "dashed",
+          "label": "t:options.1_dashed"
         }
       ],
       "default": "none"
-    },
-    {
-      "type": "checkbox",
-      "id": "use_individual_borders",
-      "label": "t:settings.1_use_individual_borders",
-      "default": false,
-      "visible_if": "{{ block.settings.border != 'none' }}"
     },
     {
       "type": "range",
@@ -862,100 +597,7 @@
       "unit": "px",
       "label": "t:settings.border_width",
       "default": 1,
-      "visible_if": "{{ block.settings.border != 'none' and block.settings.use_individual_borders == false }}"
-    },
-    {
-      "type": "range",
-      "id": "border_width_top",
-      "min": 0,
-      "max": 10,
-      "step": 0.5,
-      "unit": "px",
-      "label": "t:settings.1_border_width_top",
-      "default": 1,
-      "visible_if": "{{ block.settings.border != 'none' and block.settings.use_individual_borders == true }}"
-    },
-    {
-      "type": "range",
-      "id": "border_width_bottom",
-      "min": 0,
-      "max": 10,
-      "step": 0.5,
-      "unit": "px",
-      "label": "t:settings.1_border_width_bottom",
-      "default": 1,
-      "visible_if": "{{ block.settings.border != 'none' and block.settings.use_individual_borders == true }}"
-    },
-    {
-      "type": "range",
-      "id": "border_width_left",
-      "min": 0,
-      "max": 10,
-      "step": 0.5,
-      "unit": "px",
-      "label": "t:settings.1_border_width_left",
-      "default": 1,
-      "visible_if": "{{ block.settings.border != 'none' and block.settings.use_individual_borders == true }}"
-    },
-    {
-      "type": "range",
-      "id": "border_width_right",
-      "min": 0,
-      "max": 10,
-      "step": 0.5,
-      "unit": "px",
-      "label": "t:settings.1_border_width_right",
-      "default": 1,
-      "visible_if": "{{ block.settings.border != 'none' and block.settings.use_individual_borders == true }}"
-    },
-    {
-      "type": "header",
-      "content": "t:content.1_mobile_border_widths",
-      "visible_if": "{{ block.settings.border != 'none' and block.settings.use_individual_borders == true }}"
-    },
-    {
-      "type": "range",
-      "id": "border_width_top_mobile",
-      "min": 0,
-      "max": 10,
-      "step": 0.5,
-      "unit": "px",
-      "label": "t:settings.1_border_width_top_mobile",
-      "default": 1,
-      "visible_if": "{{ block.settings.border != 'none' and block.settings.use_individual_borders == true }}"
-    },
-    {
-      "type": "range",
-      "id": "border_width_bottom_mobile",
-      "min": 0,
-      "max": 10,
-      "step": 0.5,
-      "unit": "px",
-      "label": "t:settings.1_border_width_bottom_mobile",
-      "default": 1,
-      "visible_if": "{{ block.settings.border != 'none' and block.settings.use_individual_borders == true }}"
-    },
-    {
-      "type": "range",
-      "id": "border_width_left_mobile",
-      "min": 0,
-      "max": 10,
-      "step": 0.5,
-      "unit": "px",
-      "label": "t:settings.1_border_width_left_mobile",
-      "default": 1,
-      "visible_if": "{{ block.settings.border != 'none' and block.settings.use_individual_borders == true }}"
-    },
-    {
-      "type": "range",
-      "id": "border_width_right_mobile",
-      "min": 0,
-      "max": 10,
-      "step": 0.5,
-      "unit": "px",
-      "label": "t:settings.1_border_width_right_mobile",
-      "default": 1,
-      "visible_if": "{{ block.settings.border != 'none' and block.settings.use_individual_borders == true }}"
+      "visible_if": "{{ block.settings.border != 'none' }}"
     },
     {
       "type": "range",
@@ -1123,6 +765,12 @@
       "unit": "px",
       "default": 0,
       "visible_if": "{{ block.settings.use_mobile_padding == true }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.1_blog_header",
+      "category": "t:categories.1_blog_post"
     }
   ]
 }

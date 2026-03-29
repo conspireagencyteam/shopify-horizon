@@ -2669,7 +2669,7 @@
                   "name": "t:names.button",
                   "settings": {
                     "label": "Read More Articles",
-                    "link": "shopify://blogs/news",
+                    "link": "shopify://blogs/knowledge",
                     "open_in_new_tab": false,
                     "style_class": "button",
                     "width": "fit-content",
@@ -2752,7 +2752,7 @@
               "type": "1-recent-blog-posts",
               "name": "t:names.1_recent_blog_posts",
               "settings": {
-                "blog": "news",
+                "blog": "knowledge",
                 "slide_count": 3,
                 "layout_type": "grid",
                 "layout_type_mobile": "grid",
@@ -3325,7 +3325,7 @@
               "name": "t:names.button",
               "settings": {
                 "label": "Read More Articles",
-                "link": "shopify://blogs/news",
+                "link": "shopify://blogs/knowledge",
                 "open_in_new_tab": false,
                 "style_class": "button",
                 "width": "fit-content",
