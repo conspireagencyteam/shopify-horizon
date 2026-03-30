@@ -162,6 +162,10 @@
       "1_email_body": "I thought you might be interested in: {{ title }}\n\n{{ url }}"
     },
     "1_showing_results": "Showing {{ start }}-{{ end }} of {{ count }} results",
+    "1_products_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
     "cancel": "Cancel",
     "discount": "Discount",
     "account_title": "Account",
