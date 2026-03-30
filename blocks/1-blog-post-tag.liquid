@@ -6,9 +6,20 @@
 {%- if tag != blank -%}
   <span>
     <span
-      class="1-blog-post-tag spacing-style border-style {% if block.settings.inherit_color_scheme %}inherit-colors{% else %}color-{{ block.settings.color_scheme }}{% endif %}"
+      class="
+        1-blog-post-tag
+        spacing-style
+        border-style
+        text-block
+        {{ block.settings.type_preset }}
+        {% if block.settings.inherit_color_scheme %}
+          inherit-colors
+        {% else %}
+         color-{{ block.settings.color_scheme }}
+        {% endif %}
+      "
       style="
-        {% render '1-spacing-style', settings: block.settings %}
+        {% render 'spacing-style', settings: block.settings %}
         {% render 'border-override', settings: block.settings %}
       "
       {{ block.shopify_attributes }}
@@ -21,13 +32,7 @@
   .\31-blog-post-tag {
     display: inline-flex;
     align-items: center;
-    padding-inline: 12px;
-    padding-block: 6px;
-    font-size: 13px;
-    line-height: 1.2;
-    text-transform: uppercase;
     white-space: nowrap;
-    color: var(--color-foreground-heading);
     overflow: hidden;
     width: auto;
   }
@@ -38,6 +43,43 @@
   "name": "t:names.1_blog_post_tag",
   "tag": null,
   "settings": [
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "t:settings.preset",
+      "options": [
+        {
+          "value": "paragraph",
+          "label": "t:options.paragraph"
+        },
+        {
+          "value": "h1",
+          "label": "t:options.h1"
+        },
+        {
+          "value": "h2",
+          "label": "t:options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:options.h3"
+        },
+        {
+          "value": "h4",
+          "label": "t:options.h4"
+        },
+        {
+          "value": "h5",
+          "label": "t:options.h5"
+        },
+        {
+          "value": "h6",
+          "label": "t:options.h6"
+        }
+      ],
+      "default": "h6",
+      "info": "t:info.edit_presets_in_theme_settings"
+    },
     {
       "type": "header",
       "content": "t:content.appearance"
@@ -123,7 +165,7 @@
       "max": 50,
       "step": 1,
       "unit": "px",
-      "default": 0
+      "default": 6
     },
     {
       "type": "range",
@@ -133,7 +175,7 @@
       "max": 50,
       "step": 1,
       "unit": "px",
-      "default": 0
+      "default": 6
     },
     {
       "type": "range",
@@ -143,7 +185,7 @@
       "max": 50,
       "step": 1,
       "unit": "px",
-      "default": 0
+      "default": 12
     },
     {
       "type": "range",
@@ -153,7 +195,7 @@
       "max": 50,
       "step": 1,
       "unit": "px",
-      "default": 0
+      "default": 12
     }
   ],
   "presets": [

@@ -3,32 +3,35 @@
   assign format = block.settings.date_format | default: '%b %d'
 -%}
 
-<div class="1-blog-post-date spacing-style {% if block.settings.inherit_color_scheme %}inherit-colors{% else %}color-{{ block.settings.color_scheme }}{% endif %}"
-     style="{% render 'spacing-style', settings: block.settings %}"
-     {{ block.shopify_attributes }}>
-  
+<div
+  class="1-blog-post-date spacing-style {% if block.settings.inherit_color_scheme %}inherit-colors{% else %}color-{{ block.settings.color_scheme }}{% endif %}"
+  style="{% render 'spacing-style', settings: block.settings %}"
+  {{ block.shopify_attributes }}
+>
   {% if block.settings.layout == 'stacked' %}
     {% assign date_parts = article.published_at | date: format | split: ' ' %}
-    <div class="1-blog-post-card-date-month h5" style="color: var(--color-foreground-heading);">{{ date_parts[0] }}</div>
+    <div class="1-blog-post-card-date-month h5" style="color: var(--color-foreground-heading);">
+      {{ date_parts[0] }}
+    </div>
     <div class="1-blog-post-card-date-day h2" style="color: var(--color-foreground-heading);">{{ date_parts[1] }}</div>
   {% else %}
-    <div class="1-blog-post-card-date-inline h6">
+    <div class="1-blog-post-card-date-inline text-block {{ block.settings.type_preset }}">
       {{ article.published_at | date: format }}
     </div>
   {% endif %}
 </div>
 
 {% stylesheet %}
-.\31-blog-post-card-date-month {
-  &:after {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 1px;
-    background-color: var(--color-border);
-    margin-block: 16px;
+  .\31-blog-post-card-date-month {
+    &:after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background-color: var(--color-border);
+      margin-block: 16px;
+    }
   }
-}
 {% endstylesheet %}
 
 {% schema %}
@@ -58,6 +61,44 @@
       "label": "Date format",
       "default": "%b %d",
       "info": "Use Liquid date format. Examples: %b %d = Jun 24, %B %Y = June 2024"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "t:settings.preset",
+      "options": [
+        {
+          "value": "paragraph",
+          "label": "t:options.paragraph"
+        },
+        {
+          "value": "h1",
+          "label": "t:options.h1"
+        },
+        {
+          "value": "h2",
+          "label": "t:options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:options.h3"
+        },
+        {
+          "value": "h4",
+          "label": "t:options.h4"
+        },
+        {
+          "value": "h5",
+          "label": "t:options.h5"
+        },
+        {
+          "value": "h6",
+          "label": "t:options.h6"
+        }
+      ],
+      "default": "paragraph",
+      "info": "t:info.edit_presets_in_theme_settings",
+      "visible_if": "{{ block.settings.layout == 'inline' }}"
     },
     {
       "type": "header",

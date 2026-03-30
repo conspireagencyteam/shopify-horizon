@@ -1,5 +1,3 @@
-
-
 {% liquid
   assign product = closest.product
 -%}
@@ -11,7 +9,7 @@
 
 {% schema %}
 {
-  "name": "t:names.1_group",
+  "name": "t:names.1_product_card_group",
   "tag": null,
   "blocks": [
     {
@@ -583,7 +581,7 @@
     {
       "type": "range",
       "id": "position_bottom",
-      "label": "Distance from bottom", 
+      "label": "Distance from bottom",
       "min": -100,
       "max": 100,
       "step": 2,
@@ -599,7 +597,7 @@
       "min": -100,
       "max": 100,
       "step": 2,
-      "unit": "%", 
+      "unit": "%",
       "default": 0,
       "visible_if": "{{ block.settings.position == 'absolute' }}",
       "info": "0 = left edge, 50 = center, 100 = right edge"
@@ -996,7 +994,7 @@
   ],
   "presets": [
     {
-      "name": "t:names.1_group",
+      "name": "t:names.1_product_card_group",
       "category": "t:categories.layout"
     }
   ]

@@ -119,7 +119,7 @@ textarea,
 }
 
 /* Links */
-.link {
+.\31-link.link {
   text-decoration: underline;
   font-size: calc(var(--font-paragraph--size) + 2px);
 }

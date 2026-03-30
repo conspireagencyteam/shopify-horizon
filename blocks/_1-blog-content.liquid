@@ -2,7 +2,7 @@
   {% content_for 'block', type: '1-blog-filters', id: 'filters' %}
   {% content_for 'block', type: '_1-divider', id: 'divider' %}
 
-  {%- paginate blog.articles by block.settings.articles_per_page -%}
+  {%- paginate blog.articles by 1 -%}
     {% liquid
       assign classes = 'resource-list--grid'
 

@@ -1,7 +1,29 @@
+{%- doc -%}
+  Renders pagination controls with previous/next navigation and page numbers.
+
+  @param {object} paginate - The paginate object
+  @param {string} [ref] - Component reference attribute for the pagination nav element
+  @param {string} [on_click_handler] - Component function to handle pagination clicks.
+
+  When provided the handler will receive URL search params as data. It extracts URL parameters from each pagination link
+  and passes them through the onclick attribute in the format: "on:click='handler?params'". This allows components to
+  intercept pagination and update content via section-renderer. The handler receives an object containing the URL search
+  parameters (e.g., {page: "2"})
+
+  @example
+  {%- paginate collection.products by 24 -%}
+    {%- render 'pagination-controls', paginate: paginate -%}
+  {%- endpaginate -%}
+{%- enddoc -%}
+
 {%- if paginate.pages > 1 -%}
   <nav
     class="1-pagination pagination"
     aria-label="{{ 'content.pagination.nav_label' | t }}"
+    data-current_page="{{ paginate.current_page }}"
+    {% if ref != blank %}
+      ref="{{ ref }}"
+    {% endif %}
   >
     <ul
       class="pagination__list"
@@ -9,10 +31,14 @@
     >
       <li class="pagination__item">
         {%- if paginate.previous -%}
+          {%- assign prev_params = paginate.previous.url | split: '?' | last -%}
           <a
             href="{{ paginate.previous.url }}"
             aria-label="{{ 'content.pagination.previous' | t }}"
             class="pagination__link pagination__link--arrow pagination__link--prev"
+            {% if on_click_handler != blank %}
+              on:click="{{ on_click_handler }}?{{ prev_params }}"
+            {% endif %}
           >
             {{ '1-icon-caret.svg' | inline_asset_content }}
           </a>
@@ -78,10 +104,14 @@
         %}
         <li class="{{ li_classes }}">
           {%- if part.is_link -%}
+            {%- assign part_params = part.url | split: '?' | last -%}
             <a
               href="{{ part.url }}"
               aria-label="{{ 'content.pagination.page' | t: page: part.title }}"
               class="pagination__link pagination__link--page"
+              {% if on_click_handler != blank %}
+                on:click="{{ on_click_handler }}?{{ part_params }}"
+              {% endif %}
             >
               {{ part.title }}
             </a>
@@ -106,10 +136,14 @@
 
       <li class="pagination__item">
         {%- if paginate.next -%}
+          {%- assign next_params = paginate.next.url | split: '?' | last -%}
           <a
             href="{{ paginate.next.url }}"
             aria-label="{{ 'content.pagination.next' | t }}"
             class="pagination__link pagination__link--arrow pagination__link--next"
+            {% if on_click_handler != blank %}
+              on:click="{{ on_click_handler }}?{{ next_params }}"
+            {% endif %}
           >
             {{ '1-icon-caret.svg' | inline_asset_content }}
           </a>
@@ -132,6 +166,7 @@
     --pagination-size: 36px;
     --pagination-inset: 2px;
     --pagination-radius: 6;
+
     display: flex;
     justify-content: center;
     padding: var(--padding-xl) var(--padding-sm);
@@ -231,9 +266,7 @@
       opacity: 1;
     }
 
-    .pagination__link:hover:not([aria-current='page']):not(.pagination__link--gap):not(
-        .pagination__link--disabled
-      )::before {
+    .pagination__link:hover:not([aria-current='page'], .pagination__link--gap, .pagination__link--disabled)::before {
       opacity: 1;
     }
   }
@@ -262,8 +295,7 @@
     }
 
     .pagination__list:has(
-        .pagination__link:is(:hover, :focus-visible):not(.pagination__link--gap):not(.pagination__link--disabled)
-      )::before {
+        .pagination__link:is(:hover, :focus-visible):not(.pagination__link--gap, .pagination__link--disabled))::before {
       opacity: 1;
     }
 
@@ -279,8 +311,7 @@
 
     .pagination__list
       .pagination__item:has(
-        .pagination__link:is(:hover, :focus-visible):not(.pagination__link--gap):not(.pagination__link--disabled)
-      ) {
+        .pagination__link:is(:hover, :focus-visible):not(.pagination__link--gap, .pagination__link--disabled)) {
       anchor-name: --pagination-hover;
     }
 
@@ -311,6 +342,7 @@
     .pagination {
       --pagination-size: 44px;
       --pagination-inset: 5px;
+
       padding: var(--padding-lg) var(--padding-sm);
     }
 
@@ -328,60 +360,6 @@
 
     .pagination__item:has(.pagination__link--gap) {
       width: calc(var(--pagination-size) * 0.5);
-    }
-  }
-
-
-  .\31-pagination.pagination {
-    --pagination-size: 44px;
-    grid-column: 1 / -1;
-    margin-block-start: var(--margin-3xl);
-  }
-
-  @supports (anchor-name: --pagination-active) {
-    .\31-pagination .pagination__list::before {
-    border-radius: var(--style-border-radius-buttons-primary);
-    overflow: hidden;
-
-  }
-  .\31-pagination .pagination__list {
-    gap: var(--gap-xs);
-  }
-
-  .\31-pagination .pagination__link--page {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--style-border-radius-buttons-primary);
-    outline-color: var(--color-foreground-heading);
-    overflow: hidden;
-    a {        
-      color: var(--color-foreground);
-    }
-  }
-  @supports (anchor-name: --pagination-active) {
-    .\31-pagination .pagination__link:focus-visible {
-        outline-color: var(--color-foreground-heading);
-    }
-  }
-
-  .\31-pagination .pagination__link--current {
-    background-color: var(--color-foreground-heading);
-    color: var(--color-background);
-  }
-  .\31-pagination .pagination__link svg {
-    width: var(--icon-size-lg);
-    height: var(--icon-size-lg);
-  }
-  .\31-pagination .pagination__link--prev {
-    transform: rotate(90deg);
-  }
-  .\31-pagination .pagination__link--next {
-    transform: rotate(-90deg);
-  }
-  @media screen and (max-width: 749px) {
-    .\31-pagination.pagination {
-      --pagination-size: 36px;
     }
   }
 {% endstylesheet %}

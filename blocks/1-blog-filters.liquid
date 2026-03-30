@@ -3,44 +3,49 @@
 -%}
 
 {%- if enable_filtering and blog.all_tags.size > 0 -%}
-  <nav
-    class="1-blog-filters spacing-style {% if block.settings.inherit_color_scheme == false %}color-{{ block.settings.color_scheme }}{% endif %}"
-    style="{% render '1-spacing-style', settings: block.settings %}"
-    aria-label="{{ 'blogs.1_all_tags' | t }}"
-    {{ block.shopify_attributes }}
+  <scroll-hint
+    class="1-blog-filters-container"
+    ref="thumbnails"
   >
-    <ul class="1-blog-filters__tags">
-      {%- liquid
-        assign is_all_active = true
-        if current_tags.size > 0
-          assign is_all_active = false
-        endif
-      -%}
+    <nav
+      class="1-blog-filters spacing-style {% if block.settings.inherit_color_scheme == false %}color-{{ block.settings.color_scheme }}{% endif %}"
+      style="{% render '1-spacing-style', settings: block.settings %}"
+      aria-label="{{ 'blogs.1_all_tags' | t }}"
+      {{ block.shopify_attributes }}
+    >
+      <ul class="1-blog-filters__tags">
+        {%- liquid
+          assign is_all_active = true
+          if current_tags.size > 0
+            assign is_all_active = false
+          endif
+        -%}
 
-      <li>
-        <a
-          href="{{ blog.url }}"
-          class="1-blog-filters__pill {% if is_all_active %}1-blog-filters__pill--active{% endif %}"
-          {% if is_all_active %}
-            aria-current="page"
-          {% endif %}
-        >
-          {{- 'blogs.1_all_tags' | t -}}
-        </a>
-      </li>
-      {%- for tag in blog.all_tags -%}
-        {%- if current_tags contains tag -%}
-          <li class="1-blog-filters__pill 1-blog-filters__pill--active">
-            {{ tag | link_to_remove_tag: tag }}
-          </li>
-        {%- else -%}
-          <li class="1-blog-filters__pill">
-            {{ tag | link_to_add_tag: tag }}
-          </li>
-        {%- endif -%}
-      {%- endfor -%}
-    </ul>
-  </nav>
+        <li>
+          <a
+            href="{{ blog.url }}"
+            class="1-blog-filters__pill {% if is_all_active %}1-blog-filters__pill--active{% endif %}"
+            {% if is_all_active %}
+              aria-current="page"
+            {% endif %}
+          >
+            {{- 'blogs.1_all_tags' | t -}}
+          </a>
+        </li>
+        {%- for tag in blog.all_tags -%}
+          {%- if current_tags contains tag -%}
+            <li class="1-blog-filters__pill 1-blog-filters__pill--active">
+              {{ tag | link_to_remove_tag: tag }}
+            </li>
+          {%- else -%}
+            <li class="1-blog-filters__pill">
+              {{ tag | link_to_add_tag: tag }}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </nav>
+  </scroll-hint>
 {%- endif -%}
 
 {% stylesheet %}
@@ -71,7 +76,6 @@
     text-transform: uppercase;
     white-space: nowrap;
     color: var(--color-foreground-heading);
-    overflow: hidden;
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
 
@@ -85,15 +89,14 @@
   }
 
   .\31-blog-filters__pill--active {
-    background-color: var(--color-foreground-heading);
-    color: var(--color-background);
-    border-style: solid;
-    border-color: var(--color-foreground-heading);
+    background-color: var(--color-primary-button-background);
+    color: var(--color-primary-button-text);
+    border-color: transparent;
     box-shadow: inset 0 -2px 2px 0 rgb(0 0 0 / 0.25), inset 0 2px 2px 0 rgb(255 255 255 / 0.5);
   }
 
   .\31-blog-filters__pill--active:hover {
-    background-color: var(--color-foreground-heading);
+    background-color: var(--color-primary-button-background);
   }
 
   @media screen and (max-width: 749px) {
