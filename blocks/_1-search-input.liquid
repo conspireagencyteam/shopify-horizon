@@ -14,10 +14,14 @@
   action="{{ routes.search_url }}"
   method="get"
   role="search"
-  class="search-page-input__parent"
+  class="search-page-input__parent size-style"
+  style="{% render 'size-style', settings: block_settings %}"
 >
   <search-page-input-component
-    style="{% render 'size-style', settings: block_settings %}{% render 'spacing-style', settings: block_settings %}"
+    style="
+      --size-style-width: 100%;
+      {% render 'spacing-style', settings: block_settings %}
+    "
     {{ block.shopify_attributes }}
   >
     <label
@@ -26,9 +30,18 @@
     >
       {{ 'content.search_input_label' | t }}
     </label>
-    <span class="svg-wrapper search__icon{{ color_scheme }}"> {{ 'icon-search.svg' | inline_asset_content }} </span>
+    <span class="svg-wrapper search__icon{{ color_scheme }}">
+      {{ '1-icon-search.svg' | inline_asset_content }}
+    </span>
+    {% if request.page_type == 'blog' %}
+      <input
+        name="type"
+        value="article"
+        type="hidden"
+      >
+    {% endif %}
     <input
-      class="search-page-input{{ color_scheme }}"
+      class="search-page-input{% if request.page_type == 'blog' %} search-page-input--no-reset{% endif %} {{ color_scheme }}"
       id="SearchPageInput--{{ block.id }}"
       type="search"
       name="q"
@@ -37,18 +50,20 @@
       value="{{ search.terms | escape }}"
       placeholder="{{ 'content.search_input_placeholder' | t }}"
     >
-    <a
-      href="{{ routes.search_url }}?type=product,article&q="
-      class="search__reset-button{{ color_scheme }}"
-      aria-label="{{ 'accessibility.reset_search' | t }}"
-    >
-      <span class="svg-wrapper search__reset-button-icon">
-        {{ 'icon-reset.svg' | inline_asset_content }}
-      </span>
-      <span class="search__reset-button-text">
-        {{ 'actions.clear' | t }}
-      </span>
-    </a>
+    {% if request.page_type == 'search' %}
+      <a
+        href="{{ routes.search_url }}?type=product,article&q="
+        class="search__reset-button{{ color_scheme }}"
+        aria-label="{{ 'accessibility.reset_search' | t }}"
+      >
+        <span class="svg-wrapper search__reset-button-icon">
+          {{ 'icon-reset.svg' | inline_asset_content }}
+        </span>
+        <span class="search__reset-button-text">
+          {{ 'actions.clear' | t }}
+        </span>
+      </a>
+    {% endif %}
   </search-page-input-component>
 
   {% if search.results.size == 0 and search.terms != blank %}
@@ -187,6 +202,15 @@
   search-page-input-component .search__reset-button-text {
     display: none;
   }
+
+  .search-page-input.search-page-input--no-reset {
+    padding-inline-start: var(--margin-xl);
+  }
+
+  /* CUSTOM */
+  .search-page-input__parent search-page-input-component {
+    margin: 0;
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -220,6 +244,33 @@
       "unit": "%",
       "default": 50,
       "visible_if": "{{ block.settings.width == \"custom\" }}"
+    },
+    {
+      "type": "select",
+      "id": "width_mobile",
+      "label": "t:settings.width_mobile",
+      "options": [
+        {
+          "value": "fill",
+          "label": "t:options.fill"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "t:settings.custom_width",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width_mobile == 'custom' }}"
     },
     {
       "type": "checkbox",

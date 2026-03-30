@@ -17,39 +17,72 @@
   <div
     class="collection-wrapper grid gap-style text-{{ section.settings.alignment }}"
   >
-    {% paginate search.results by 24 %}
-      {% if search.results_count > 0 %}
-        {% content_for 'block', type: '1-filters', id: 'filters', results: search, results_size: search.results_count %}
+    {% liquid
+      assign search_types = search.types | join: ','
+      assign show_products = false
+      if search_types contains 'product' or search.types.size == 0
+        assign show_products = true
+      endif
+    %}
+
+    {% if show_products %}
+      {% paginate search.results by 24 %}
         {% assign products = search.results | where: 'object_type', 'product' %}
-      {% else %}
-        {% assign collection = settings.empty_state_collection | default: collections.all %}
-        {% assign default_title = 'content.search_results_resource_products' | t %}
-        {% assign title = settings.empty_state_collection.title | default: default_title %}
-        {% assign products = collection.products %}
-      {% endif %}
 
-      {% capture children %}
-        {% for product in products %}
-          <li
-            id="{{ section.id }}-{{ product.id }}"
-            class="product-grid__item product-grid__item--{{ forloop.index0 }}"
-            data-page="{{ paginate.current_page }}"
-            data-product-id="{{ product.id }}"
-            ref="cards[]"
-          >
-            {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
-          </li>
-        {% endfor %}
-      {% endcapture %}
+        {% if products.size > 0 %}
+          {% content_for 'block', type: '1-filters', id: 'filters', results: search, results_size: search.results_count %}
 
-      {% render '1-product-grid',
-        section: section,
-        children: children,
-        products: products,
-        paginate: paginate,
-        title: title
-      %}
-    {% endpaginate %}
+          {% capture children %}
+            {% for product in products %}
+              <li
+                id="{{ section.id }}-{{ product.id }}"
+                class="product-grid__item product-grid__item--{{ forloop.index0 }}"
+                data-page="{{ paginate.current_page }}"
+                data-product-id="{{ product.id }}"
+                ref="cards[]"
+              >
+                {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
+              </li>
+            {% endfor %}
+          {% endcapture %}
+
+          {% render '1-product-grid',
+            section: section,
+            children: children,
+            products: products,
+            paginate: paginate,
+            title: title
+          %}
+        {% elsif search.performed and search.terms != blank %}
+          {% assign collection = settings.empty_state_collection | default: collections.all %}
+          {% assign default_title = 'content.search_results_resource_products' | t %}
+          {% assign title = settings.empty_state_collection.title | default: default_title %}
+          {% assign products = collection.products %}
+
+          {% capture children %}
+            {% for product in products %}
+              <li
+                id="{{ section.id }}-{{ product.id }}"
+                class="product-grid__item product-grid__item--{{ forloop.index0 }}"
+                data-page="{{ paginate.current_page }}"
+                data-product-id="{{ product.id }}"
+                ref="cards[]"
+              >
+                {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
+              </li>
+            {% endfor %}
+          {% endcapture %}
+
+          {% render '1-product-grid',
+            section: section,
+            children: children,
+            products: products,
+            paginate: paginate,
+            title: title
+          %}
+        {% endif %}
+      {% endpaginate %}
+    {% endif %}
   </div>
 </results-list>
 
