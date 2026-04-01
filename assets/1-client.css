@@ -36,6 +36,10 @@
 .\31-header {
   --header-padding: var(--padding-2xl);
 
+  .header__underlay-closed {
+    border-bottom: 1px dashed rgb(var(--color-border-rgb));
+  }
+
   .header__column--left {
     gap: var(--gap-3xl);
   }
