@@ -1,0 +1,249 @@
+{%- liquid
+  assign product = article.metafields.blog_post_details.featured_product.value
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div class="section color-{{ section.settings.color_scheme }}">
+  <div
+    class="1-client-blog-post spacing-style"
+    style="{% render 'spacing-style', settings: section.settings %}"
+  >
+    {%- comment -%}
+      LEFT COLUMN: Article content
+      .section handles page-width via 3-column grid (margin|content|margin).
+      .1-client-blog-post sits in column 2 and creates a sub-grid (content | divider | sidebar).
+    {%- endcomment -%}
+    <article class="1-client-blog-post__content">
+      {%- content_for 'block', type: '1-blog-post-tag', id: 'blog-post-tag', closest.article: article -%}
+
+      {%- content_for 'block', type: '1-text', id: 'blog-post-title' -%}
+
+      <div class="1-client-blog-post__mobile-only">
+        {%- content_for 'block', type: '_1-client-written-by', id: 'written-by-mobile', closest.article: article -%}
+      </div>
+
+      {%- if article.image -%}
+        {%- content_for 'block', type: '_1-blog-post-featured-image', id: 'featured-image', closest.article: article -%}
+      {%- endif -%}
+
+      {%- content_for 'block', type: '1-text', id: 'blog-post-excerpt' -%}
+
+      {%- if product != blank -%}
+        <h3 class="1-client-blog-post__mobile-only 1-client-blog-post__sticky-product-heading h4">Featured Product</h3>
+        <div class="1-client-blog-post__mobile-only 1-client-blog-post__sticky-product">
+          {%- content_for 'block', type: '_1-client-product-card', id: 'product-mobile', closest.product: product -%}
+        </div>
+      {%- endif -%}
+
+      {%- content_for 'block', type: '_1-blog-post-description', id: 'blog-post-body' -%}
+
+      {%- content_for 'block', type: '_1-client-article-footer', id: 'article-footer', closest.article: article -%}
+    </article>
+
+    <div class="1-client-blog-post__divider" aria-hidden="true"></div>
+
+    <aside class="1-client-blog-post__sidebar">
+      {%- content_for 'block', type: '_1-client-written-by', id: 'written-by-desktop', closest.article: article -%}
+
+      {%- if product != blank -%}
+        <div class="1-client-blog-post-product">
+          <div class="1-client-blog-post-product__header">
+            <h3 class="1-client-blog-post-product__heading h4">Featured Product</h3>
+            {%- content_for 'block', type: '_1-divider', id: 'divider-product' -%}
+          </div>
+          {%- content_for 'block', type: '_1-client-product-card', id: 'product-desktop', closest.product: product -%}
+        </div>
+      {%- endif -%}
+    </aside>
+  </div>
+</div>
+
+<script type="application/ld+json">
+  {{ article | structured_data }}
+</script>
+
+{% stylesheet %}
+  .\31-client-blog-post {
+    display: grid;
+    grid-template-columns: 1fr 1px clamp(280px, 25%, 360px);
+    gap: 0 24px;
+    width: 100%;
+  }
+
+  .\31-client-blog-post__content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .\31-client-blog-post__divider {
+    width: 0;
+    border-inline-start: 1px dashed rgb(var(--color-border-rgb));
+    align-self: stretch;
+  }
+
+  .\31-client-blog-post__sidebar {
+    position: sticky;
+    top: var(--header-height, 80px);
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .\31-client-blog-post__mobile-only {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .\31-client-blog-post {
+      grid-template-columns: 1fr;
+      gap: 24px 0;
+    }
+
+    .\31-client-blog-post__divider,
+    .\31-client-blog-post__sidebar {
+      display: none;
+    }
+
+    .\31-client-blog-post__mobile-only {
+      display: block;
+    }
+
+    .\31-client-blog-post__sticky-product {
+      position: sticky;
+      top: var(--sticky-height, 0);
+      z-index: 1;
+      background-color: var(--color-background);
+    }
+  }
+
+  /* Heading downsizing: h2→h3, h3→h4, h4→h5, h5→h6, h6→h6 */
+  .\31-client-blog-post .blog-post-content h2 {
+    font-family: var(--font-h3--family);
+    font-style: var(--font-h3--style);
+    font-weight: var(--font-h3--weight);
+    font-size: var(--font-h3--size);
+    line-height: var(--font-h3--line-height);
+    letter-spacing: var(--font-h3--letter-spacing);
+    text-transform: var(--font-h3--case);
+  }
+
+  .\31-client-blog-post .blog-post-content h3 {
+    font-family: var(--font-h4--family);
+    font-style: var(--font-h4--style);
+    font-weight: var(--font-h4--weight);
+    font-size: var(--font-h4--size);
+    line-height: var(--font-h4--line-height);
+    letter-spacing: var(--font-h4--letter-spacing);
+    text-transform: var(--font-h4--case);
+  }
+
+  .\31-client-blog-post .blog-post-content h4 {
+    font-family: var(--font-h5--family);
+    font-style: var(--font-h5--style);
+    font-weight: var(--font-h5--weight);
+    font-size: var(--font-h5--size);
+    line-height: var(--font-h5--line-height);
+    letter-spacing: var(--font-h5--letter-spacing);
+    text-transform: var(--font-h5--case);
+  }
+
+  .\31-client-blog-post .blog-post-content h5,
+  .\31-client-blog-post .blog-post-content h6 {
+    font-family: var(--font-h6--family);
+    font-style: var(--font-h6--style);
+    font-weight: var(--font-h6--weight);
+    font-size: var(--font-h6--size);
+    line-height: var(--font-h6--line-height);
+    letter-spacing: var(--font-h6--letter-spacing);
+    text-transform: var(--font-h6--case);
+  }
+
+  .\31-client-blog-post .blog-post-content img {
+    border-radius: 16px;
+  }
+
+  .\31-client-blog-post-product {
+    display: grid;
+    gap: 24px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Client Blog Post",
+  "enabled_on": {
+    "templates": ["article"]
+  },
+  "blocks": [
+    {
+      "type": "_1-client-written-by"
+    },
+    {
+      "type": "_1-client-product-card"
+    },
+    {
+      "type": "_1-client-article-footer"
+    },
+    {
+      "type": "_1-blog-post-description"
+    },
+    {
+      "type": "_1-blog-post-featured-image"
+    },
+    {
+      "type": "1-blog-post-tag"
+    },
+    {
+      "type": "1-text"
+    },
+    {
+      "type": "1-social-share"
+    },
+    {
+      "type": "1-icon"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "class": "section-wrapper",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": []
+}
+{% endschema %}

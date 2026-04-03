@@ -1,0 +1,99 @@
+<div class="1-client-article-footer" {{ block.shopify_attributes }}>
+  <div class="1-client-article-footer__divider"></div>
+
+  <div class="1-client-article-footer__row">
+    <a href="{{ blog.url }}" class="1-client-article-footer__back-link">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to blog list
+    </a>
+
+    <div class="1-client-article-footer__share">
+      {%- content_for 'block', type: '1-social-share', id: 'social-share' -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .\31-client-article-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-block-start: 24px;
+  }
+
+  .\31-client-article-footer__divider {
+    border-block-end: 1px dashed rgb(var(--color-border-rgb));
+  }
+
+  .\31-client-article-footer__row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .\31-client-article-footer__back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--color-foreground-heading);
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: -0.48px;
+  }
+
+  .\31-client-article-footer__back-link:hover {
+    opacity: 0.7;
+  }
+
+  .\31-client-article-footer__back-link svg {
+    flex-shrink: 0;
+  }
+
+  .\31-client-article-footer__share {
+    display: flex;
+    align-items: center;
+  }
+
+  @media screen and (max-width: 749px) {
+    .\31-client-article-footer__row {
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .\31-client-article-footer__share {
+      order: -1;
+    }
+
+    .\31-client-article-footer__back-link {
+      align-self: flex-start;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Client Article Footer",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "1-social-share"
+    },
+    {
+      "type": "1-icon"
+    },
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "_divider"
+    }
+  ],
+  "settings": [],
+  "presets": []
+}
+{% endschema %}

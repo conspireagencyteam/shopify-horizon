@@ -19,6 +19,18 @@ textarea,
   overflow-x: clip;
 }
 
+:root {
+  --header-sticky: 0;
+
+  :has(header-component[data-sticky-state="active"]) {
+    --header-sticky: 1;
+  }
+}
+
+body {
+  --sticky-height: calc(var(--header-height) * var(--header-sticky));
+}
+
 /* ==============================================
    LAYOUT
    ============================================== */

@@ -7,7 +7,7 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
- {
+{
   "sections": {
     "search": {
       "type": "1-search-header",
@@ -48,7 +48,6 @@
         }
       },
       "settings": {
-        "alignment": "flex-start",
         "color_scheme": "scheme-1",
         "padding-block-start": 40,
         "padding-block-end": 0

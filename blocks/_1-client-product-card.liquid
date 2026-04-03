@@ -1,0 +1,131 @@
+{% liquid
+  assign product = closest.product
+%}
+
+{% if product != blank %}
+  {% liquid
+    assign layout = block.settings.layout
+    assign mobile_layout = layout
+    if block.settings.custom_mobile_layout
+      assign mobile_layout = block.settings.mobile_layout
+    endif
+  %}
+
+  <div
+    class="1-client-product-card 1-client-product-card--{{ layout }}{% if block.settings.custom_mobile_layout %} 1-client-product-card--mobile-{{ mobile_layout }}{% endif %}"
+    {{ block.shopify_attributes }}
+  >
+    <a href="{{ product.url }}" class="1-client-product-card__link">
+      <div class="1-client-product-card__inner">
+        <div class="1-client-product-card__image-wrapper">
+          {%- content_for 'block', type: '_product-card-gallery', id: 'gallery', closest.product: product %}
+        </div>
+
+        <div class="1-client-product-card__info">
+          {% if product.type != blank %}
+            <span class="1-client-product-card__category">{{ product.type }}</span>
+          {% endif %}
+
+          <div class="1-client-product-card__title">
+            {%- content_for 'block', type: 'product-title', id: 'title', closest.product: product -%}
+          </div>
+
+          <div class="1-client-product-card__price-row">
+            {%- content_for 'block', type: 'price', id: 'price', closest.product: product -%}
+          </div>
+
+          <span class="1-client-product-card__shop-btn">
+            {%- content_for 'block', type: '1-button', id: 'button', closest.product: product -%}
+          </span>
+        </div>
+      </div>
+    </a>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+.\31-client-product-card__info {
+  display: grid;
+  gap: var(--gap-sm);
+}
+  .\31-client-product-card__shop-btn {
+    display: flex;
+    justify-content: center;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Client Product Card",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "minimal",
+          "label": "Minimal"
+        },
+        {
+          "value": "full",
+          "label": "Full"
+        }
+      ],
+      "default": "minimal"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_mobile_layout",
+      "label": "Custom mobile layout",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile layout",
+      "options": [
+        {
+          "value": "minimal",
+          "label": "Minimal"
+        },
+        {
+          "value": "full",
+          "label": "Full"
+        },
+        {
+          "value": "horizontal_minimal",
+          "label": "Horizontal Minimal"
+        },
+        {
+          "value": "horizontal_full",
+          "label": "Horizontal Full"
+        }
+      ],
+      "default": "horizontal_minimal",
+      "visible_if": "{{ block.settings.custom_mobile_layout }}"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop"
+    },
+    {
+      "type": "checkbox",
+      "id": "inherit_color_scheme",
+      "label": "t:settings.inherit_color_scheme",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
+    }
+  ],
+  "presets": []
+}
+{% endschema %}
