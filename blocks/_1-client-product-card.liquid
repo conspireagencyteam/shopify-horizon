@@ -9,48 +9,184 @@
     if block.settings.custom_mobile_layout
       assign mobile_layout = block.settings.mobile_layout
     endif
+
+    assign variant = product.selected_or_first_available_variant
+    assign on_sale = false
+    if variant.compare_at_price > variant.price
+      assign on_sale = true
+      assign savings = variant.compare_at_price | minus: variant.price
+      assign discount_pct = savings | times: 100.0 | divided_by: variant.compare_at_price | round
+    endif
   %}
 
   <div
     class="1-client-product-card 1-client-product-card--{{ layout }}{% if block.settings.custom_mobile_layout %} 1-client-product-card--mobile-{{ mobile_layout }}{% endif %}"
     {{ block.shopify_attributes }}
   >
-    <a href="{{ product.url }}" class="1-client-product-card__link">
-      <div class="1-client-product-card__inner">
-        <div class="1-client-product-card__image-wrapper">
-          {%- content_for 'block', type: '_product-card-gallery', id: 'gallery', closest.product: product %}
+    <a href="{{ product.url }}" class="1-client-product-card__link"> </a>
+    <div class="1-client-product-card__inner">
+      {%- if product.type != blank -%}
+        <div class="1-client-product-card__type{% if block.settings.mobile_layout == 'horizontal-minimal' %} hidden--mobile{% endif %}">
+          {%- capture product_type_content -%}
+              {%- content_for 'block', type: '_1-client-product-type', id: 'type', closest.product: product %}
+            {%- endcapture -%}
+          {{- product_type_content -}}
         </div>
-
-        <div class="1-client-product-card__info">
-          {% if product.type != blank %}
-            <span class="1-client-product-card__category">{{ product.type }}</span>
-          {% endif %}
-
-          <div class="1-client-product-card__title">
-            {%- content_for 'block', type: 'product-title', id: 'title', closest.product: product -%}
-          </div>
-
-          <div class="1-client-product-card__price-row">
-            {%- content_for 'block', type: 'price', id: 'price', closest.product: product -%}
-          </div>
-
-          <span class="1-client-product-card__shop-btn">
-            {%- content_for 'block', type: '1-button', id: 'button', closest.product: product -%}
-          </span>
-        </div>
+      {%- endif -%}
+      <div class="1-client-product-card__image-wrapper">
+        {%- content_for 'block', type: '_product-card-gallery', id: 'gallery', closest.product: product %}
       </div>
-    </a>
+
+      <div class="1-client-product-card__info">
+        {%- if product.type != blank -%}
+          <div class="1-client-product-card__type hidden--desktop">
+            {% if block.settings.mobile_layout == 'horizontal-minimal' %}
+              {{- product_type_content -}}
+            {% endif %}
+          </div>
+        {%- endif -%}
+
+        <div class="1-client-product-card__title">
+          {%- content_for 'block', type: 'product-title', id: 'title', closest.product: product -%}
+        </div>
+
+        <div class="1-client-product-card__price-row">
+          {%- content_for 'block', type: 'price', id: 'price', closest.product: product -%}
+          {% if on_sale %}
+            <span class="1-client-product-card__discount-badge"> {{ discount_pct }}% Off </span>
+          {% endif %}
+        </div>
+
+        <span class="1-client-product-card__shop-btn">
+          {%- content_for 'block', type: '1-button', id: 'button', closest.product: product -%}
+        </span>
+      </div>
+    </div>
   </div>
 {% endif %}
 
 {% stylesheet %}
-.\31-client-product-card__info {
-  display: grid;
-  gap: var(--gap-sm);
-}
+  /* =============================================================================
+     Product Card — Base
+     ============================================================================= */
+
+  .\31-client-product-card__link {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .\31-client-product-card__inner {
+    display: grid;
+  }
+
+  .\31-client-product-card__type {
+    display: inline-flex;
+    margin-inline: auto;
+  }
+
+  .\31-client-product-card__info {
+    display: grid;
+    gap: var(--gap-sm);
+  }
+
+  .\31-client-product-card__price-row {
+    display: grid;
+    grid-auto-flow: dense column;
+    place-content: center;
+    gap: var(--gap-sm);
+  }
+
+  .\31-client-product-card__price-row product-price {
+    justify-content: center;
+  }
+
   .\31-client-product-card__shop-btn {
     display: flex;
     justify-content: center;
+  }
+
+  /* =============================================================================
+     Product Card — Discount badge
+     ============================================================================= */
+
+  .\31-client-product-card__discount-badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    overflow: clip;
+    padding: 8px;
+    border-radius: 128px;
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
+    background-color: var(--color-secondary-button-background);
+    color: var(--color-secondary-button-text);
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0px -1px 1px 0px rgba(0, 0, 0, 0.25), inset 0px 1px 2px 0px rgba(255, 255, 255, 1);
+      pointer-events: none;
+    }
+  }
+
+  /* =============================================================================
+     Product Card — Mobile horizontal minimal
+     ============================================================================= */
+
+  @media screen and (max-width: 749px) {
+    .\31-client-product-card--mobile-horizontal-minimal {
+      .\31-client-product-card__link {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .\31-client-product-card__inner {
+        position: relative;
+        display: grid;
+        grid-template-columns: clamp(80px, 33.333333%, var(--product-card-image-max-width, 250px)) 1fr;
+        align-items: center;
+        gap: var(--gap-lg);
+      }
+
+      .\31-client-product-card__image-wrapper {
+        padding: var(--padding-md);
+      }
+
+      .\31-client-product-card__type {
+        margin-inline: 0;
+      }
+
+      .\31-client-product-card__info {
+        align-items: start;
+        gap: var(--gap-xs);
+      }
+
+      .\31-client-product-card__title div.text-block > * {
+        font-size: 16px;
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+        margin-inline-start: 0;
+      }
+
+      .\31-client-product-card__title .text-block > *,
+      .\31-client-product-card__price-row .text-block > * {
+        text-align: left;
+      }
+
+      .\31-client-product-card__price-row {
+        place-content: start;
+        gap: var(--gap-sm);
+      }
+
+      .\31-client-product-card__shop-btn {
+        display: none;
+      }
+    }
   }
 {% endstylesheet %}
 
@@ -95,15 +231,15 @@
           "label": "Full"
         },
         {
-          "value": "horizontal_minimal",
+          "value": "horizontal-minimal",
           "label": "Horizontal Minimal"
         },
         {
-          "value": "horizontal_full",
+          "value": "horizontal-full",
           "label": "Horizontal Full"
         }
       ],
-      "default": "horizontal_minimal",
+      "default": "horizontal-minimal",
       "visible_if": "{{ block.settings.custom_mobile_layout }}"
     },
     {

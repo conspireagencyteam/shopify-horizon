@@ -1,0 +1,41 @@
+{% liquid
+  assign product = closest.product
+%}
+
+{% if product.type != blank %}
+  <span
+    class="1-client-product-type"
+    {{ block.shopify_attributes }}
+  >
+    {{- product.type -}}
+  </span>
+{% endif %}
+
+{% stylesheet %}
+  .\31-client-product-type {
+    --product-type-padding: 6px 12px;
+    display: inline-flex;
+    align-items: center;
+    overflow: clip;
+    padding: var(--product-type-padding);
+    border: 1px dashed rgb(var(--color-border-rgb));
+    border-radius: 128px;
+    font-size: 13px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    white-space: nowrap;
+    @media screen and (max-width: 749px) {
+      --product-type-padding: 5px 8px;
+      font-size: 10px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Client Product Type",
+  "tag": null,
+  "settings": [],
+  "presets": []
+}
+{% endschema %}

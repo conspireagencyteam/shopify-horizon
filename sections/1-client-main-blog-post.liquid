@@ -19,7 +19,10 @@
       {%- content_for 'block', type: '1-text', id: 'blog-post-title' -%}
 
       <div class="1-client-blog-post__mobile-only">
-        {%- content_for 'block', type: '_1-client-written-by', id: 'written-by-mobile', closest.article: article -%}
+        {%- capture written_by_content %}
+          {%- content_for 'block', type: '_1-client-written-by', id: 'written-by-mobile', closest.article: article -%}
+        {% endcapture -%}
+        {{- written_by_content -}}
       </div>
 
       {%- if article.image -%}
@@ -29,10 +32,21 @@
       {%- content_for 'block', type: '1-text', id: 'blog-post-excerpt' -%}
 
       {%- if product != blank -%}
-        <h3 class="1-client-blog-post__mobile-only 1-client-blog-post__sticky-product-heading h4">Featured Product</h3>
-        <div class="1-client-blog-post__mobile-only 1-client-blog-post__sticky-product">
-          {%- content_for 'block', type: '_1-client-product-card', id: 'product-mobile', closest.product: product -%}
-        </div>
+        <sticky-product-observer class="1-client-blog-post__mobile-only">
+          <div data-sticky-sentinel>
+            <h3 class="1-client-blog-post__sticky-product-heading h4">Featured Product</h3>
+            {%- capture divider -%}
+              {%- content_for 'block', type: '_1-divider', id: 'divider-product' -%}
+            {%- endcapture -%}
+            {{- divider -}}
+          </div>
+          <div class="1-client-blog-post__sticky-product" data-sticky-target>
+            {%- capture product_content -%}
+              {%- content_for 'block', type: '_1-client-product-card', id: 'product-mobile', closest.product: product -%}
+            {%- endcapture -%}
+            {{- product_content -}}
+          </div>
+        </sticky-product-observer>
       {%- endif -%}
 
       {%- content_for 'block', type: '_1-blog-post-description', id: 'blog-post-body' -%}
@@ -43,26 +57,32 @@
     <div class="1-client-blog-post__divider" aria-hidden="true"></div>
 
     <aside class="1-client-blog-post__sidebar">
-      {%- content_for 'block', type: '_1-client-written-by', id: 'written-by-desktop', closest.article: article -%}
+      {{- written_by_content -}}
 
       {%- if product != blank -%}
         <div class="1-client-blog-post-product">
           <div class="1-client-blog-post-product__header">
             <h3 class="1-client-blog-post-product__heading h4">Featured Product</h3>
-            {%- content_for 'block', type: '_1-divider', id: 'divider-product' -%}
+            {{- divider -}}
           </div>
-          {%- content_for 'block', type: '_1-client-product-card', id: 'product-desktop', closest.product: product -%}
+          {{- product_content -}}
         </div>
       {%- endif -%}
     </aside>
   </div>
 </div>
 
+<script src="{{ '1-client-sticky-product.js' | asset_url }}" type="module" defer></script>
+
 <script type="application/ld+json">
   {{ article | structured_data }}
 </script>
 
 {% stylesheet %}
+  /* =============================================================================
+     Blog Post — Base layout
+     ============================================================================= */
+
   .\31-client-blog-post {
     display: grid;
     grid-template-columns: 1fr 1px clamp(280px, 25%, 360px);
@@ -77,14 +97,14 @@
   }
 
   .\31-client-blog-post__divider {
+    align-self: stretch;
     width: 0;
     border-inline-start: 1px dashed rgb(var(--color-border-rgb));
-    align-self: stretch;
   }
 
   .\31-client-blog-post__sidebar {
     position: sticky;
-    top: var(--header-height, 80px);
+    top: var(--sticky-height);
     align-self: start;
     display: flex;
     flex-direction: column;
@@ -95,30 +115,19 @@
     display: none;
   }
 
-  @media screen and (max-width: 749px) {
-    .\31-client-blog-post {
-      grid-template-columns: 1fr;
-      gap: 24px 0;
-    }
+  /* =============================================================================
+     Blog Post — Sidebar product
+     ============================================================================= */
 
-    .\31-client-blog-post__divider,
-    .\31-client-blog-post__sidebar {
-      display: none;
-    }
-
-    .\31-client-blog-post__mobile-only {
-      display: block;
-    }
-
-    .\31-client-blog-post__sticky-product {
-      position: sticky;
-      top: var(--sticky-height, 0);
-      z-index: 1;
-      background-color: var(--color-background);
-    }
+  .\31-client-blog-post-product {
+    display: grid;
+    gap: 24px;
   }
 
-  /* Heading downsizing: h2→h3, h3→h4, h4→h5, h5→h6, h6→h6 */
+  /* =============================================================================
+     Blog Post — Content typography (heading downsizing: h2→h3, h3→h4, etc.)
+     ============================================================================= */
+
   .\31-client-blog-post .blog-post-content h2 {
     font-family: var(--font-h3--family);
     font-style: var(--font-h3--style);
@@ -164,9 +173,67 @@
     border-radius: 16px;
   }
 
-  .\31-client-blog-post-product {
-    display: grid;
-    gap: 24px;
+  /* =============================================================================
+     Blog Post — Mobile
+     ============================================================================= */
+
+  @media screen and (max-width: 749px) {
+    .\31-client-blog-post {
+      grid-template-columns: 1fr;
+      gap: 24px 0;
+    }
+
+    .\31-client-blog-post__divider,
+    .\31-client-blog-post__sidebar {
+      display: none;
+    }
+
+    /* --- Mobile-only visibility --- */
+
+    .\31-client-blog-post__mobile-only {
+      display: contents;
+    }
+
+    /* --- Sticky product --- */
+
+    .\31-client-blog-post__sticky-product {
+      position: sticky;
+      top: var(--sticky-height, 0);
+      z-index: 1;
+      overflow: hidden;
+      margin-inline: calc(-1 * var(--page-margin));
+      padding-inline: var(--page-margin);
+      background-color: var(--color-background);
+    }
+
+    .\31-client-blog-post__sticky-product.is-stuck {
+      --product-card-image-max-width: 86px;
+      padding-block: 8px;
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0px 5px 20px 0px var(--color-shadow);
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        box-shadow: inset 0px -2px 20px 0px rgba(255, 255, 255, 0.5);
+        pointer-events: none;
+        z-index: 1;
+      }
+      .product-badges {
+        display: none;
+      }
+
+      /* Compact product card when stuck */
+      .\31-client-product-card__image-wrapper {
+        padding: 10px;
+      }
+
+      .\31-client-product-card__info {
+        gap: 6px;
+      }
+    }
   }
 {% endstylesheet %}
 
