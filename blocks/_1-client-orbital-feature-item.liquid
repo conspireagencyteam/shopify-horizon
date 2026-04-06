@@ -1,0 +1,103 @@
+{% capture children %}
+  {% content_for 'blocks' %}
+{% endcapture %}
+
+<div class="1-client-orbital-feature-item" {{ block.shopify_attributes }}>
+  {{ children }}
+</div>
+
+{% stylesheet %}
+  .\31-client-orbital-feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: clamp(12px, 1.5vw, 16px);
+    overflow: hidden;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Orbital Feature Item",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "settings": [],
+  "presets": [
+    {
+      "name": "Orbital Feature Item",
+      "category": "t:categories.storytelling",
+      "blocks": {
+        "icon-group": {
+          "type": "1-group",
+          "settings": {
+            "content_direction": "column",
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 0,
+            "width": "fit-content",
+            "width_mobile": "fit-content",
+            "height": "fit",
+            "inherit_color_scheme": true,
+            "border": "dashed",
+            "border_width": 1,
+            "border_opacity": 50,
+            "border_radius": 100,
+            "padding-block-start": 20,
+            "padding-block-end": 20,
+            "padding-inline-start": 20,
+            "padding-inline-end": 20,
+            "use_mobile_padding": true,
+            "padding-block-start-mobile": 14,
+            "padding-block-end-mobile": 14,
+            "padding-inline-start-mobile": 14,
+            "padding-inline-end-mobile": 14
+          },
+          "blocks": {
+            "icon": {
+              "type": "1-icon",
+              "settings": {
+                "icon": "heart",
+                "width": 28,
+                "width_mobile": 28
+              }
+            }
+          },
+          "block_order": ["icon"]
+        },
+        "title": {
+          "type": "1-text",
+          "settings": {
+            "text": "<p>Feature Title</p>",
+            "width": "100%",
+            "alignment": "center",
+            "type_preset": "custom",
+            "font": "var(--font-heading--family)",
+            "font_size": "1.25rem",
+            "line_height": "tight",
+            "letter_spacing": "tight"
+          }
+        },
+        "description": {
+          "type": "1-text",
+          "settings": {
+            "text": "<p>Feature description goes here</p>",
+            "width": "100%",
+            "alignment": "center",
+            "type_preset": "rte"
+          }
+        }
+      },
+      "block_order": ["icon-group", "title", "description"]
+    }
+  ]
+}
+{% endschema %}

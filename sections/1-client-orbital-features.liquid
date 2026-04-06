@@ -1,0 +1,111 @@
+{% capture header %}
+  {%- content_for 'block', type: '_content', id: 'static-header' -%}
+{% endcapture %}
+
+{% capture items %}
+  {%- content_for 'blocks' -%}
+{% endcapture %}
+
+{% capture footer %}
+  {%- content_for 'block', type: '_content', id: 'static-footer' -%}
+{% endcapture %}
+
+<div class="1-client-orbital-features-section-wrapper">
+  {% render '1-client-orbital-features', header: header, items: items, settings: section.settings, footer: footer %}
+</div>
+
+{% schema %}
+{
+  "name": "1 Orbital Features",
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "_1-client-orbital-feature-item"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Center Image"
+    },
+    {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "select",
+      "id": "padding_scale",
+      "label": "t:settings.1_padding_scale",
+      "options": [
+        { "value": "1", "label": "1x" },
+        { "value": "2", "label": "2x" },
+        { "value": "3", "label": "3x" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "1 Orbital Features",
+      "category": "t:categories.storytelling",
+      "settings": {
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding_scale": "1",
+        "padding-block-start": 80,
+        "padding-block-end": 80
+      }
+    }
+  ]
+}
+{% endschema %}
