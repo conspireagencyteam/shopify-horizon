@@ -1,0 +1,208 @@
+{%- doc -%}
+  Renders the hero split icon text section.
+
+  @param {string} children - The header content (heading, text, button)
+  @param {string} list_items - The icon-text card items
+  @param {object} settings - The section settings
+  @param {number} slide_count - Number of card items
+
+  @example
+  {% render '1-client-hero-split-icon-text', children: children, list_items: list_items, settings: section.settings, slide_count: 3 %}
+{%- enddoc -%}
+
+{% liquid
+  assign list_items_array = list_items | strip | split: '<!--@hero-split/split-->'
+%}
+
+<div
+  class="1-client-hero-split spacing-style color-{{ settings.color_scheme }}"
+  style="
+    --hero-split-gap: {{ settings.content_gap | default: 80 }}px;
+    --hero-split-cards-width: {{ settings.cards_column_width | default: 421 }}px;
+    --hero-split-cards-gap: {{ settings.cards_gap | default: 16 }}px;
+    {% if settings.section_height == 'custom' %}
+      --section-min-height: {{ settings.section_height_custom }}svh;
+    {% elsif settings.section_height == 'full-screen' %}
+      --section-min-height: 100svh;
+    {% elsif settings.section_height != 'auto' and settings.section_height != blank %}
+      --section-min-height: var(--section-height-{{ settings.section_height }});
+    {% endif %}
+    {% render '1-spacing-style', settings: settings %}
+  "
+>
+  {%- comment -%} Background image {%- endcomment -%}
+  <div class="1-client-hero-split__bg" aria-hidden="true">
+    {%- if settings.custom_mobile_image and settings.image_mobile != blank -%}
+      <picture>
+        <source media="(max-width: 749px)" srcset="{{ settings.image_mobile | image_url: width: 800 }}">
+        <source media="(min-width: 750px)" srcset="{{ settings.image | image_url: width: 1920 }}">
+        <img
+          src="{{ settings.image | image_url: width: 1920 }}"
+          alt="{{ settings.image.alt | escape }}"
+          loading="lazy"
+          width="{{ settings.image.width }}"
+          height="{{ settings.image.height }}"
+        >
+      </picture>
+    {%- elsif settings.image != blank -%}
+      <img
+        src="{{ settings.image | image_url: width: 1920 }}"
+        alt="{{ settings.image.alt | escape }}"
+        loading="lazy"
+        width="{{ settings.image.width }}"
+        height="{{ settings.image.height }}"
+      >
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Gradient overlays {%- endcomment -%}
+  {%- if settings.overlay_gradient_1 != blank -%}
+    <div
+      class="1-client-hero-split__overlay"
+      aria-hidden="true"
+      style="background: {{ settings.overlay_gradient_1 }};"
+    ></div>
+  {%- endif -%}
+  {%- if settings.overlay_gradient_2 != blank -%}
+    <div
+      class="1-client-hero-split__overlay"
+      aria-hidden="true"
+      style="background: {{ settings.overlay_gradient_2 }};"
+    ></div>
+  {%- endif -%}
+
+  {%- comment -%} Content {%- endcomment -%}
+  <div class="1-client-hero-split__content">
+    {%- if children != blank -%}
+      <div class="1-client-hero-split__header">
+        {{ children }}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Desktop: vertical card stack {%- endcomment -%}
+    {%- if list_items != blank -%}
+      <div class="1-client-hero-split__cards hidden--mobile">
+        {{ list_items }}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Mobile: carousel {%- endcomment -%}
+    {%- if slide_count > 0 -%}
+      <div class="1-client-hero-split__carousel hidden--desktop">
+        {% render '1-list-carousel',
+          ref: 'heroSplitCarousel',
+          slides: list_items_array,
+          slide_count: slide_count,
+          settings: settings
+        %}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  /* HERO SPLIT ICON TEXT */
+  .\31-client-hero-split {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    min-height: var(--section-min-height, auto);
+  }
+
+  .\31-client-hero-split__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .\31-client-hero-split__bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .\31-client-hero-split__overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .\31-client-hero-split__content {
+    position: relative;
+    display: flex;
+    gap: var(--hero-split-gap, 80px);
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  .\31-client-hero-split__header {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .\31-client-hero-split__cards {
+    width: var(--hero-split-cards-width, 421px);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--hero-split-cards-gap, 16px);
+  }
+
+  .\31-client-hero-split__card {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    background: rgb(var(--color-background-rgb) / 0.2);
+    border-radius: 8px;
+    overflow: clip;
+  }
+
+  .\31-client-hero-split__carousel {
+    width: 100%;
+  }
+
+  .\31-client-hero-split__carousel .resource-list__carousel {
+    --slide-width--mobile: 100%;
+  }
+
+  .\31-client-hero-split__carousel .slideshow-controls__dots {
+    mix-blend-mode: unset;
+  }
+
+  .\31-client-hero-split__carousel .slideshow-controls__dots button {
+    --color: rgb(var(--color-foreground-heading-rgb) / 0.2);
+    --width: 24px;
+    --height: 6px;
+    width: calc(var(--width) * 2);
+    height: calc(var(--height) * 2);
+    margin: calc(var(--height) / 2) calc(var(--width) / -2);
+  }
+
+  .\31-client-hero-split__carousel .slideshow-controls__dots button::after {
+    width: var(--width);
+    height: var(--height);
+  }
+
+  .\31-client-hero-split__carousel .slideshow-controls__dots button[aria-selected='true'] {
+    --color: var(--color-foreground-heading);
+  }
+
+  @media screen and (max-width: 749px) {
+    .\31-client-hero-split {
+      --padding-block-start: var(--mobile-padding-block-start, 32px);
+      --padding-block-end: var(--mobile-padding-block-end, 32px);
+      --padding-inline-start: var(--mobile-padding-inline-start, 16px);
+      --padding-inline-end: var(--mobile-padding-inline-end, 16px);
+    }
+
+    .\31-client-hero-split__content {
+      flex-direction: column;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .\31-client-hero-split__cards {
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
