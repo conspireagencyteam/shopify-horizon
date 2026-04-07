@@ -1,40 +1,40 @@
 {%- comment -%} z-index 1: halo SVG — behind everything {%- endcomment -%}
 <svg
-  class="1-why-gut__svg-halo"
+  class="1-client-why-gut__svg-halo"
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 1314 900"
   preserveAspectRatio="xMidYMid meet"
 >
   <defs>
-    <filter id="hfSmall" x="-600%" y="-600%" width="1300%" height="1300%"
+    <filter id="hfSmall-{{ uid }}" x="-600%" y="-600%" width="1300%" height="1300%"
       filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
       <feGaussianBlur stdDeviation="12"/>
     </filter>
-    <filter id="hfFull" x="-150%" y="-150%" width="400%" height="400%"
+    <filter id="hfFull-{{ uid }}" x="-150%" y="-150%" width="400%" height="400%"
       filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
       <feGaussianBlur stdDeviation="125"/>
     </filter>
   </defs>
 
-  <path id="motionPath" fill="none" stroke="none"
+  <path data-ref="motion-path" fill="none" stroke="none"
     d="M202,77.5 H1095.75 Q1292,77.5 1292,273.75 Q1292,470 1095.75,470 H172 Q0,470 0,641.5 Q0,813 172,813 H1114"/>
 
-  <g id="haloA">
-    <circle cx="0" cy="0" r="35" fill="#DBBDFF" filter="url(#hfSmall)"/>
+  <g data-ref="halo-a" class="1-client-why-gut__halo-spark">
+    <circle cx="0" cy="0" r="35" fill="#DBBDFF" filter="url(#hfSmall-{{ uid }})"/>
   </g>
-  <g id="haloB">
-    <circle cx="0" cy="0" r="35" fill="#DBBDFF" filter="url(#hfSmall)"/>
+  <g data-ref="halo-b" class="1-client-why-gut__halo-spark">
+    <circle cx="0" cy="0" r="35" fill="#DBBDFF" filter="url(#hfSmall-{{ uid }})"/>
   </g>
 
-  <path id="haloMerged"
+  <path data-ref="halo-merged"
     d="M 658,440 C 661,440 663,442 663,445 C 663,448 661,450 658,450 C 655,450 653,448 653,445 C 653,442 655,440 658,440 Z"
     fill="#DBBDFF"
-    filter="url(#hfFull)"
+    filter="url(#hfFull-{{ uid }})"
     opacity="0"/>
 </svg>
 {%- comment -%} z-index 2: base SVG — path, pills, text labels on top of halo {%- endcomment -%}
 <svg
-  class="1-why-gut__svg-base"
+  class="1-client-why-gut__svg-base"
   xmlns="http://www.w3.org/2000/svg"
   fill="none"
   viewBox="0 0 1314 900"

@@ -14,28 +14,42 @@
   assign list_items_array = list_items | strip | split: '<!--@hero-split/split-->'
 %}
 
+<div class="section-background color-{{ settings.color_scheme }}"></div>
 <div
-  class="1-client-hero-split spacing-style color-{{ settings.color_scheme }}"
+  class="1-client-hero-split section section--{{ settings.section_width }} spacing-style color-{{ settings.color_scheme }}"
   style="
-    --hero-split-gap: {{ settings.content_gap | default: 80 }}px;
+    --hero-split-gap: {{ settings.gap | default: 80 }}px;
     --hero-split-cards-width: {{ settings.cards_column_width | default: 421 }}px;
     --hero-split-cards-gap: {{ settings.cards_gap | default: 16 }}px;
     {% if settings.section_height == 'custom' %}
       --section-min-height: {{ settings.section_height_custom }}svh;
     {% elsif settings.section_height == 'full-screen' %}
       --section-min-height: 100svh;
-    {% elsif settings.section_height != 'auto' and settings.section_height != blank %}
+    {% elsif settings.section_height != '' %}
       --section-min-height: var(--section-height-{{ settings.section_height }});
     {% endif %}
-    {% render '1-spacing-style', settings: settings %}
+
+    {% if settings.section_height != '' %}
+     --section-preview-height: 600px;
+     {% endif %}
   "
 >
-  {%- comment -%} Background image {%- endcomment -%}
-  <div class="1-client-hero-split__bg" aria-hidden="true">
-    {%- if settings.custom_mobile_image and settings.image_mobile != blank -%}
-      <picture>
-        <source media="(max-width: 749px)" srcset="{{ settings.image_mobile | image_url: width: 800 }}">
-        <source media="(min-width: 750px)" srcset="{{ settings.image | image_url: width: 1920 }}">
+  <div class="custom-section-background">
+    {%- comment -%} Background image {%- endcomment -%}
+    <div class="1-client-hero-split__bg background-image-container" aria-hidden="true">
+      {%- if settings.custom_mobile_image and settings.image_mobile != blank -%}
+        <picture>
+          <source media="(max-width: 749px)" srcset="{{ settings.image_mobile | image_url: width: 800 }}">
+          <source media="(min-width: 750px)" srcset="{{ settings.image | image_url: width: 1920 }}">
+          <img
+            src="{{ settings.image | image_url: width: 1920 }}"
+            alt="{{ settings.image.alt | escape }}"
+            loading="lazy"
+            width="{{ settings.image.width }}"
+            height="{{ settings.image.height }}"
+          >
+        </picture>
+      {%- elsif settings.image != blank -%}
         <img
           src="{{ settings.image | image_url: width: 1920 }}"
           alt="{{ settings.image.alt | escape }}"
@@ -43,102 +57,108 @@
           width="{{ settings.image.width }}"
           height="{{ settings.image.height }}"
         >
-      </picture>
-    {%- elsif settings.image != blank -%}
-      <img
-        src="{{ settings.image | image_url: width: 1920 }}"
-        alt="{{ settings.image.alt | escape }}"
-        loading="lazy"
-        width="{{ settings.image.width }}"
-        height="{{ settings.image.height }}"
-      >
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Gradient overlays {%- endcomment -%}
+    {%- if settings.overlay_gradient_1 != blank -%}
+      <div
+        class="1-client-hero-split__overlay overlay"
+        aria-hidden="true"
+        style="background: {{ settings.overlay_gradient_1 }};"
+      ></div>
+    {%- endif -%}
+    {%- if settings.overlay_gradient_2 != blank -%}
+      <div
+        class="1-client-hero-split__overlay overlay"
+        aria-hidden="true"
+        style="background: {{ settings.overlay_gradient_2 }};"
+      ></div>
     {%- endif -%}
   </div>
 
-  {%- comment -%} Gradient overlays {%- endcomment -%}
-  {%- if settings.overlay_gradient_1 != blank -%}
-    <div
-      class="1-client-hero-split__overlay"
-      aria-hidden="true"
-      style="background: {{ settings.overlay_gradient_1 }};"
-    ></div>
-  {%- endif -%}
-  {%- if settings.overlay_gradient_2 != blank -%}
-    <div
-      class="1-client-hero-split__overlay"
-      aria-hidden="true"
-      style="background: {{ settings.overlay_gradient_2 }};"
-    ></div>
-  {%- endif -%}
-
   {%- comment -%} Content {%- endcomment -%}
-  <div class="1-client-hero-split__content">
-    {%- if children != blank -%}
-      <div class="1-client-hero-split__header">
-        {{ children }}
-      </div>
-    {%- endif -%}
+  <div class="custom-section-content">
+    <div
+      class="
+        1-client-hero-split__content
+        spacing-style
+        layout-panel-flex
+        layout-panel-flex--row
+        section-content-wrapper
+        mobile-column
+      "
+      style="
+        {% render 'layout-panel-style', settings: settings %}
+        {% render 'spacing-style', settings: settings %}
+      "
+    >
+      {%- if children != blank -%}
+        <div class="1-client-hero-split__header">
+          {{ children }}
+        </div>
+      {%- endif -%}
 
-    {%- comment -%} Desktop: vertical card stack {%- endcomment -%}
-    {%- if list_items != blank -%}
-      <div class="1-client-hero-split__cards hidden--mobile">
-        {{ list_items }}
-      </div>
-    {%- endif -%}
-
-    {%- comment -%} Mobile: carousel {%- endcomment -%}
-    {%- if slide_count > 0 -%}
-      <div class="1-client-hero-split__carousel hidden--desktop">
-        {% render '1-list-carousel',
-          ref: 'heroSplitCarousel',
-          slides: list_items_array,
-          slide_count: slide_count,
-          settings: settings
-        %}
-      </div>
-    {%- endif -%}
+      {%- comment -%} Desktop: vertical card stack {%- endcomment -%}
+      {%- if list_items != blank -%}
+        <div class="1-client-hero-split__cards hidden--mobile">
+          {{ list_items }}
+        </div>
+      {%- endif -%}
+      {%- comment -%} Mobile: carousel {%- endcomment -%}
+      {%- if slide_count > 0 -%}
+        <div class="1-client-hero-split__carousel hidden--desktop" style="--resource-list-column-gap: 8px">
+          {% render '1-list-carousel',
+            ref: 'heroSplitCarousel',
+            slides: list_items_array,
+            slide_count: slide_count,
+            settings: settings
+          %}
+        </div>
+      {%- endif -%}
+    </div>
   </div>
 </div>
 
 {% stylesheet %}
+  .section-wrapper {
+    --section-height-offset: 0px;
+  }
+
+  .section[data-shopify-visual-preview] {
+    min-height: var(--section-preview-height);
+    padding-top: 0;
+  }
+
+  .section[data-shopify-visual-preview] .custom-section-background {
+    display: none;
+  }
+
+  body:has(> #header-group > .header-section > #header-component[transparent]):not(
+      :has(> #header-group > .header-section + .shopify-section)
+    )
+    > main
+    > .section-wrapper:first-child {
+    --section-height-offset: var(--header-group-height, 0);
+  }
+
+  .custom-section-background {
+    grid-column: 1 / -1;
+  }
+
+  .custom-section-content {
+    z-index: var(--layer-flat);
+  }
   /* HERO SPLIT ICON TEXT */
   .\31-client-hero-split {
     position: relative;
     overflow: hidden;
-    display: flex;
-    align-items: flex-end;
-    min-height: var(--section-min-height, auto);
-  }
-
-  .\31-client-hero-split__bg {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
   }
 
   .\31-client-hero-split__bg img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-
-  .\31-client-hero-split__overlay {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  .\31-client-hero-split__content {
-    position: relative;
-    display: flex;
-    gap: var(--hero-split-gap, 80px);
-    align-items: flex-end;
-    width: 100%;
-  }
-
-  .\31-client-hero-split__header {
-    flex: 1;
-    min-width: 0;
   }
 
   .\31-client-hero-split__cards {
@@ -152,57 +172,32 @@
   .\31-client-hero-split__card {
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    background: rgb(var(--color-background-rgb) / 0.2);
+    background: rgb(var(--color-foreground-rgb) / 0.2);
     border-radius: 8px;
     overflow: clip;
   }
-
   .\31-client-hero-split__carousel {
     width: 100%;
-  }
-
-  .\31-client-hero-split__carousel .resource-list__carousel {
-    --slide-width--mobile: 100%;
-  }
-
-  .\31-client-hero-split__carousel .slideshow-controls__dots {
-    mix-blend-mode: unset;
-  }
-
-  .\31-client-hero-split__carousel .slideshow-controls__dots button {
-    --color: rgb(var(--color-foreground-heading-rgb) / 0.2);
-    --width: 24px;
-    --height: 6px;
-    width: calc(var(--width) * 2);
-    height: calc(var(--height) * 2);
-    margin: calc(var(--height) / 2) calc(var(--width) / -2);
-  }
-
-  .\31-client-hero-split__carousel .slideshow-controls__dots button::after {
-    width: var(--width);
-    height: var(--height);
-  }
-
-  .\31-client-hero-split__carousel .slideshow-controls__dots button[aria-selected='true'] {
-    --color: var(--color-foreground-heading);
-  }
-
-  @media screen and (max-width: 749px) {
-    .\31-client-hero-split {
-      --padding-block-start: var(--mobile-padding-block-start, 32px);
-      --padding-block-end: var(--mobile-padding-block-end, 32px);
-      --padding-inline-start: var(--mobile-padding-inline-start, 16px);
-      --padding-inline-end: var(--mobile-padding-inline-end, 16px);
+    --gutter-slide-width: 0;
+    slideshow-container {
+      backdrop-filter: blur(5px);
     }
-
-    .\31-client-hero-split__content {
-      flex-direction: column;
-      gap: 24px;
-      align-items: stretch;
-    }
-
-    .\31-client-hero-split__cards {
+    .\31-resource-list__carousel {
       width: 100%;
+      --dot-width: 10px;
+      --dot-height: 10px;
+      --gap: 0;
+      .slideshow-controls__dots {
+        margin-block: 0;
+      }
+    }
+    slideshow-slides {
+      padding-inline: 0;
+    }
+    .resource-list__slide {
+      --slide-width--mobile: 100%;
     }
   }
+
+  /* Carousel dot styles live in assets/1-client.css */
 {% endstylesheet %}

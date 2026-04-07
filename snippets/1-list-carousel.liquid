@@ -48,6 +48,11 @@
   if settings.slideshow_controls_style == 'tabs' or settings.slideshow_mobile_controls_style == 'tabs'
     assign slideshow_class = slideshow_class | append: ' 1-resource-list__carousel--tabs'
   endif
+
+  assign show_arrows = true
+  if settings.icons_style == 'none' or slide_count <= 1
+    assign show_arrows = false
+  endif
 %}
 
 {% capture slides %}
@@ -60,10 +65,11 @@
   {% endfor %}
 {% endcapture %}
 
-{% comment %} {% capture slideshow_arrows %}
-  {% render 'slideshow-arrows', icon_style: settings.icons_style, icon_shape: settings.icons_shape %}
-{% endcapture %} {% endcomment %}
-
+{% comment %}
+  {% capture slideshow_arrows %}
+    {% render 'slideshow-arrows', icon_style: settings.icons_style, icon_shape: settings.icons_shape %}
+  {% endcapture %}
+{% endcomment %}
 
 <div
   class="1-resource-list__carousel resource-list__carousel"
@@ -79,7 +85,6 @@
     {% endif %}
   "
 >
-
   {% if slide_count > 1 %}
     {% capture controls %}
       {% if render_slideshow_controls %}
@@ -128,21 +133,26 @@
     controls: controls,
     autoplay: settings.autoplay,
     autoplay_speed: settings.autoplay_speed,
-    controls_position: controls_position
+    controls_position: controls_position,
+    show_arrows: show_arrows
   %}
 </div>
 {% stylesheet %}
   slideshow-component:has(slideshow-arrows[position='bottom']) {
     gap: var(--gap);
   }
-  slideshow-arrows[position="bottom"] .slideshow-control {
+  slideshow-arrows[position='bottom'] .slideshow-control {
     opacity: 1;
   }
-  
+
   @container resource-list-carousel (width < 750px) {
     .resource-list__carousel .resource-list__slide {
       --slide-width: var(--slide-width--mobile, clamp(150px, var(--mobile-card-size, 60cqw), var(--slide-width-max)));
     }
+  }
+  .\31-resource-list__carousel {
+    --dot-width: 24px;
+    --dot-height: 6px;
   }
   .\31-resource-list__carousel slideshow-controls:has(.slideshow-controls__dots) {
     mix-blend-mode: unset;
@@ -152,17 +162,14 @@
   }
   .\31-resource-list__carousel .slideshow-controls__dots button {
     --color: rgb(var(--color-foreground-heading-rgb) / 0.2);
-    --width: 24px;
-    --height: 6px;
-    width: calc(var(--width) * 2);
-    height: calc(var(--height) * 2);
-    margin: calc(var(--height) / 2) calc(var(--width) / -2);
+    width: calc(var(--dot-width, 24px) * 2);
+    height: calc(var(--dot-height, 6px) * 2);
+    margin: calc(var(--dot-height, 6px) / 2) calc(var(--dot-width, 24px) / -2);
   }
 
-
   .\31-resource-list__carousel .slideshow-controls__dots button:after {
-    width: var(--width);
-    height: var(--height);
+    width: var(--dot-width, 24px);
+    height: var(--dot-height, 6px);
   }
 
   .\31-resource-list__carousel .slideshow-controls__dots button[aria-selected='true'] {

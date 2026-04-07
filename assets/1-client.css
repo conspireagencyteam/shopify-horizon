@@ -1,3 +1,8 @@
+.gap-style,
+.layout-panel-flex {
+  --gap-scale: var(--spacing-scale-sm);
+}
+
 /* BUTTON */
 .button {
   position: relative;
