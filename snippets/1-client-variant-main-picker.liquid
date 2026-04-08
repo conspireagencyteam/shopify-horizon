@@ -1,0 +1,239 @@
+{%- doc -%}
+  Custom variant picker for the Knowbody product page. Cloned from
+  snippets/variant-main-picker.liquid. Renders option values as dashed pills
+  with optional images sourced from a variant metafield (default
+  variant_details.flavor_image, configurable on the parent block).
+
+  @param {object} product_resource - The product object.
+  @param {object} [block] - The block object
+{%- enddoc -%}
+
+{% assign block_settings = block.settings %}
+{% assign image_namespace = block_settings.image_metafield_namespace | default: 'variant_details' %}
+{% assign image_key = block_settings.image_metafield_key | default: 'flavor_image' %}
+
+{% unless product_resource.has_only_default_variant %}
+  {% liquid
+    assign button_background_brightness = section.settings.color_scheme.settings.foreground | color_brightness
+    if button_background_brightness < 105
+      assign strikethrough_color_mix = '#000'
+    else
+      assign strikethrough_color_mix = '#fff'
+    endif
+  %}
+  <variant-picker
+    class="variant-picker 1-client-variant-picker spacing-style"
+    style="
+      --color-strikethrough-mix: {{ strikethrough_color_mix }};
+      padding-block-start: {{ block_settings.padding-block-start }}px;
+      padding-block-end: {{ block_settings.padding-block-end }}px;
+      padding-inline-start: {{ block_settings.padding-inline-start }}px;
+      padding-inline-end: {{ block_settings.padding-inline-end }}px;
+    "
+    data-section-id="{{ section.id }}"
+    data-product-id="{{ product_resource.id }}"
+    data-block-id="{{ block.id }}"
+    data-product-url="{{ product_resource.url }}"
+    ref="mainVariantPicker"
+    {% if product.id == product_resource.id %}
+      data-template-product-match="true"
+    {% endif %}
+    {{ block.shopify_attributes }}
+    {% if request.visual_preview_mode %}
+      data-shopify-visual-preview
+    {% endif %}
+  >
+    <form class="variant-picker__form 1-client-variant-picker__form">
+      {%- for product_option in product_resource.options_with_values -%}
+        {%- if product_option.values.size == 1 -%}
+          <div class="variant-option" data-testid="variant-option-single">
+            {{- product_option.name | escape -}}
+            <span class="variant-option__swatch-value" data-testid="variant-option-single-value">
+              {{- product_option.selected_value -}}
+            </span>
+          </div>
+        {%- else -%}
+          {%- assign fieldset_index = forloop.index0 -%}
+          <fieldset
+            class="1-client-variant-picker__fieldset"
+            data-fieldset-index="{{ fieldset_index }}"
+            ref="fieldsets[]"
+          >
+            {%- if block_settings.show_option_label -%}
+              <legend class="1-client-variant-picker__legend">
+                {{- product_option.name | escape -}}
+              </legend>
+            {%- else -%}
+              <legend class="visually-hidden">{{ product_option.name | escape }}</legend>
+            {%- endif -%}
+
+            <div class="1-client-variant-picker__pills">
+              {%- for product_option_value in product_option.values -%}
+                {%- liquid
+                  assign value_variant = product_option_value.variant
+                  assign value_image = null
+                  if value_variant != blank
+                    assign value_image = value_variant.metafields[image_namespace][image_key].value
+                  endif
+                -%}
+                <label class="1-client-variant-picker__pill">
+                  <input
+                    type="radio"
+                    name="{{ product_option.name | escape }}-{{ block.id }}-{{ product_resource.id }}"
+                    value="{{ product_option_value | escape }}"
+                    aria-label="{{ product_option_value.name }}"
+                    {% if product_option_value.available == false %}
+                      aria-disabled="true"
+                    {% endif %}
+                    data-previous-checked="false"
+                    data-fieldset-index="{{ fieldset_index }}"
+                    data-input-index="{{ forloop.index0 }}"
+                    data-input-id="{{ product_option.position }}-{{ forloop.index0 }}"
+                    data-option-value-id="{{ product_option_value.id }}"
+                    data-option-available="{{ product_option_value.available }}"
+                    data-connected-product-url="{{ product_option_value.product_url }}"
+                    {% if product_option_value.variant.id %}
+                      data-variant-id="{{ product_option_value.variant.id }}"
+                    {% endif %}
+                    {% if product_option_value.selected %}
+                      data-current-checked="true"
+                      checked
+                    {% else %}
+                      data-current-checked="false"
+                    {% endif %}
+                  >
+                  <span class="1-client-variant-picker__radio" aria-hidden="true">
+                    <span class="1-client-variant-picker__radio-dot"></span>
+                  </span>
+                  <span class="1-client-variant-picker__pill-text">
+                    {{- product_option_value | escape -}}
+                  </span>
+                  {%- if value_image != blank -%}
+                    <img
+                      class="1-client-variant-picker__pill-image"
+                      src="{{ value_image | image_url: width: 96 }}"
+                      alt=""
+                      width="24"
+                      height="24"
+                      loading="lazy"
+                    >
+                  {%- endif -%}
+                  {% render 'strikethrough-variant', product_option: product_option_value %}
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <script type="application/json">
+        {{ product_resource.selected_or_first_available_variant | json }}
+      </script>
+    </form>
+  </variant-picker>
+{% endunless %}
+
+{% stylesheet %}
+  .\31-client-variant-picker {
+    width: 100%;
+    display: block;
+  }
+
+  .\31-client-variant-picker__form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .\31-client-variant-picker__fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .\31-client-variant-picker__legend {
+    font-family: var(--font-subheading--family, var(--font-body--family));
+    font-size: 20px;
+    line-height: 1.2;
+    color: var(--color-foreground-heading);
+    padding: 0;
+    margin: 0;
+  }
+
+  .\31-client-variant-picker__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .\31-client-variant-picker__pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border: 1px dashed rgb(var(--color-border-rgb));
+    border-radius: 100px;
+    color: var(--color-foreground-heading);
+    font-size: 16px;
+    line-height: 1.5;
+    cursor: pointer;
+    background: transparent;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .\31-client-variant-picker__pill:hover {
+    border-style: solid;
+  }
+
+  .\31-client-variant-picker__pill input[type='radio'] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .\31-client-variant-picker__radio {
+    width: 16px;
+    height: 16px;
+    border: 1.25px solid var(--color-foreground-heading);
+    border-radius: 100px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .\31-client-variant-picker__radio-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 100px;
+    background: transparent;
+    transition: background-color 0.15s ease;
+  }
+
+  .\31-client-variant-picker__pill:has(input[type='radio']:checked) .\31-client-variant-picker__radio-dot {
+    background: var(--color-foreground-heading);
+  }
+
+  .\31-client-variant-picker__pill-text {
+    white-space: nowrap;
+  }
+
+  .\31-client-variant-picker__pill-image {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+{% endstylesheet %}

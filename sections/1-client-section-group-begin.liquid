@@ -1,0 +1,32 @@
+<!-- BEGIN: section-group -->
+<one-section-group-begin
+  style="--group-color: {{ section.settings.bg_color }};"
+  hidden
+></one-section-group-begin>
+
+<script
+  src="{{ '1-client-section-group.js' | asset_url }}"
+  type="module"
+  defer
+></script>
+{% stylesheet %}
+  .\31-section-group {
+    background: linear-gradient(180deg, var(--group-color) 0%, rgba(var(--group-color) / 0) 100%);
+    background-size: 100% 100svh;
+    background-attachment: fixed;
+  }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Section group: BEGIN",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#DBBDFF"
+    }
+  ],
+  "presets": [{ "name": "Section group: BEGIN" }]
+}
+{% endschema %}

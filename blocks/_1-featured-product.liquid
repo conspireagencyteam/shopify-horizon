@@ -1,4 +1,3 @@
-
 {% liquid
   if block.settings.desktop_media_position == 'left'
     assign render_order = 'media,product-details'
@@ -35,7 +34,6 @@
     when 'content-full-width'
       assign content_width = 'full-width'
   endcase
-
 %}
 
 <script src="{{ '1-recharge-horizon.js' | asset_url }}" type="module" defer></script>
@@ -47,8 +45,8 @@
 <recharge-product
   class="1-product-information 1-product-information--featured product-information section section--{{ content_width }} spacing-style color-{{ block.settings.color_scheme }} relative{% if block.settings.border != 'none' %} border-style{% if block.settings.use_individual_borders %} border-style--individual{% endif %}{% endif %}"
   style="
-    {% render 'spacing-style', settings: block.settings %} 
-    --gap: {{ block.settings.gap }}px; 
+    {% render 'spacing-style', settings: block.settings %}
+    --gap: {{ block.settings.gap }}px;
     {% if block.settings.use_individual_borders %}
       {% render '1-border-override', settings: block.settings %}
     {% else %}
@@ -71,7 +69,7 @@
         data-testid="product-information-media"
       >
         {%- content_for 'block',
-          type: '_1-product-media-gallery',
+          type: '_product-media-gallery',
           id: 'media-gallery',
           closest.product: closest.product
         -%}
@@ -526,7 +524,7 @@
       "category": "t:categories.products",
       "blocks": {
         "media-gallery": {
-          "type": "_1-product-media-gallery",
+          "type": "_product-media-gallery",
           "static": true,
           "settings": {
             "media_presentation": "carousel",
@@ -537,11 +535,11 @@
             "slideshow_controls_style": "thumbnails",
             "slideshow_mobile_controls_style": "thumbnails",
             "thumbnail_position": "bottom",
-            "thumbnail_width": 148,
+            "thumbnail_width": 72,
             "aspect_ratio": "1",
             "constrain_to_viewport": true,
             "media_fit": "contain",
-            "media_radius": 40,
+            "media_radius": 32,
             "extend_media": false,
             "zoom": true,
             "video_loop": true,
@@ -781,9 +779,7 @@
                           "blocks": {}
                         }
                       },
-                      "block_order": [
-                        "text_ArW8i6"
-                      ]
+                      "block_order": ["text_ArW8i6"]
                     },
                     "product_inventory_RbcEYy": {
                       "type": "1-product-inventory",
@@ -799,10 +795,7 @@
                       "blocks": {}
                     }
                   },
-                  "block_order": [
-                    "1_group_ckpAgw",
-                    "product_inventory_RbcEYy"
-                  ]
+                  "block_order": ["1_group_ckpAgw", "product_inventory_RbcEYy"]
                 },
                 "okendo_star_rating_PMeipK": {
                   "type": "shopify://apps/okendo/blocks/star-rating/bb689e69-ea70-4661-8fb7-ad24a2e23c29",
@@ -1435,10 +1428,7 @@
                       "blocks": {}
                     }
                   },
-                  "block_order": [
-                    "1_text_neMy4g",
-                    "1_part_number_7FQpzV"
-                  ]
+                  "block_order": ["1_text_neMy4g", "1_part_number_7FQpzV"]
                 },
                 "1_group_fqaAhT": {
                   "type": "1-group",
@@ -1550,16 +1540,10 @@
                       "blocks": {}
                     }
                   },
-                  "block_order": [
-                    "1_text_wyDCHz",
-                    "1_variant_barcode_RRCtYy"
-                  ]
+                  "block_order": ["1_text_wyDCHz", "1_variant_barcode_RRCtYy"]
                 }
               },
-              "block_order": [
-                "1_group_GwyFTn",
-                "1_group_fqaAhT"
-              ]
+              "block_order": ["1_group_GwyFTn", "1_group_fqaAhT"]
             },
             "1_accordion_wXTiXe": {
               "type": "1-accordion",
@@ -1634,9 +1618,7 @@
                       "blocks": {}
                     }
                   },
-                  "block_order": [
-                    "text_LnBRYR"
-                  ]
+                  "block_order": ["text_LnBRYR"]
                 },
                 "1_accordion_row_aLhwJQ": {
                   "type": "_1-accordion-row",
@@ -1680,9 +1662,7 @@
                       "blocks": {}
                     }
                   },
-                  "block_order": [
-                    "text_YtcwMf"
-                  ]
+                  "block_order": ["text_YtcwMf"]
                 },
                 "1_accordion_row_JGtC3H": {
                   "type": "_1-accordion-row",
@@ -1726,9 +1706,7 @@
                       "blocks": {}
                     }
                   },
-                  "block_order": [
-                    "text_ABrEi3"
-                  ]
+                  "block_order": ["text_ABrEi3"]
                 },
                 "1_accordion_row_4mgDUa": {
                   "type": "_1-accordion-row",
@@ -1772,9 +1750,7 @@
                       "blocks": {}
                     }
                   },
-                  "block_order": [
-                    "text_qa6Bw7"
-                  ]
+                  "block_order": ["text_qa6Bw7"]
                 }
               },
               "block_order": [

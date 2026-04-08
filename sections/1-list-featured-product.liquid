@@ -11,16 +11,16 @@
 
   capture styles
     echo '--resource-list-column-gap-desktop: ' | append: section.settings.columns_gap | append: 'px;'
-    
+
     if section.settings.layout_type == 'grid'
       echo '--resource-list-row-gap-desktop: ' | append: section.settings.rows_gap | append: 'px;'
       echo '--resource-list-columns: repeat(' | append: section.settings.columns | append: ', 1fr);'
     endif
-    
+
     if section.settings.layout_type == 'carousel'
       echo '--column-count: ' | append: section.settings.columns | append: ';'
     endif
-    
+
     if section.settings.layout_type_mobile == 'grid'
       echo '--resource-list-columns-mobile: repeat(' | append: section.settings.mobile_columns | append: ', 1fr);'
     endif
@@ -84,7 +84,6 @@
     # Create an array from the list items to be used for different layout types
     assign list_items_array = list_items | strip | split: '<!--@list/split-->'
   %}
-  
 
   <div
     class="
@@ -98,9 +97,7 @@
       {% endif %}
       {{ classes }}
     "
-    style="
-      {{ styles }}
-    "
+    style="      {{ styles }}"
     {% if section.settings.layout_type == 'grid' %}
       data-testid="resource-list-grid"
     {% endif %}
@@ -173,7 +170,7 @@
     /* transition: opacity 0.2s ease; */
   }
 
-  .\31-list-featured-product:not([transitioning]) .resource-list__slide[aria-hidden="true"] {
+  .\31-list-featured-product:not([transitioning]) .resource-list__slide[aria-hidden='true'] {
     /* opacity: 0; */
   }
 
@@ -278,7 +275,7 @@
       "min": 1,
       "max": 8,
       "step": 1,
-      "default":1
+      "default": 1
     },
     {
       "type": "select",
@@ -719,9 +716,7 @@
                       "blocks": {}
                     }
                   },
-                  "block_order": [
-                    "1_text_6PQexC"
-                  ]
+                  "block_order": ["1_text_6PQexC"]
                 },
                 "1_text_qMc3zp": {
                   "type": "1-text",
@@ -834,21 +829,13 @@
                       "blocks": {}
                     }
                   },
-                  "block_order": [
-                    "1_text_RMnwh4"
-                  ]
+                  "block_order": ["1_text_RMnwh4"]
                 }
               },
-              "block_order": [
-                "1_group_9jHTnQ",
-                "1_text_qMc3zp",
-                "1_group_rUGhbw"
-              ]
+              "block_order": ["1_group_9jHTnQ", "1_text_qMc3zp", "1_group_rUGhbw"]
             }
           },
-          "block_order": [
-            "1_group_tJBxc6"
-          ]
+          "block_order": ["1_group_tJBxc6"]
         },
         "list-item-featured-product": {
           "type": "_1-list-item-featured-product",
@@ -919,7 +906,7 @@
               },
               "blocks": {
                 "media-gallery": {
-                  "type": "_1-product-media-gallery",
+                  "type": "_product-media-gallery",
                   "static": true,
                   "settings": {
                     "media_presentation": "carousel",
@@ -930,11 +917,11 @@
                     "slideshow_controls_style": "thumbnails",
                     "slideshow_mobile_controls_style": "thumbnails",
                     "thumbnail_position": "bottom",
-                    "thumbnail_width": 148,
+                    "thumbnail_width": 72,
                     "aspect_ratio": "1",
                     "constrain_to_viewport": true,
                     "media_fit": "contain",
-                    "media_radius": 40,
+                    "media_radius": 32,
                     "extend_media": false,
                     "zoom": false,
                     "video_loop": false,
@@ -1174,9 +1161,7 @@
                                   "blocks": {}
                                 }
                               },
-                              "block_order": [
-                                "text_JBnaEx"
-                              ]
+                              "block_order": ["text_JBnaEx"]
                             },
                             "1_product_inventory_aVQCK4": {
                               "type": "1-product-inventory",
@@ -1192,10 +1177,7 @@
                               "blocks": {}
                             }
                           },
-                          "block_order": [
-                            "1_group_36RYkT",
-                            "1_product_inventory_aVQCK4"
-                          ]
+                          "block_order": ["1_group_36RYkT", "1_product_inventory_aVQCK4"]
                         },
                         "text_zxE4qc": {
                           "type": "text",
@@ -1817,10 +1799,7 @@
                               "blocks": {}
                             }
                           },
-                          "block_order": [
-                            "1_text_zjwW8b",
-                            "1_part_number_7rPTaU"
-                          ]
+                          "block_order": ["1_text_zjwW8b", "1_part_number_7rPTaU"]
                         },
                         "1_group_gtiHi7": {
                           "type": "1-group",
@@ -1932,16 +1911,10 @@
                               "blocks": {}
                             }
                           },
-                          "block_order": [
-                            "1_text_mP3FBm",
-                            "1_variant_barcode_rRkDCr"
-                          ]
+                          "block_order": ["1_text_mP3FBm", "1_variant_barcode_rRkDCr"]
                         }
                       },
-                      "block_order": [
-                        "1_group_khNbGp",
-                        "1_group_gtiHi7"
-                      ]
+                      "block_order": ["1_group_khNbGp", "1_group_gtiHi7"]
                     },
                     "1_accordion_FT9pWB": {
                       "type": "1-accordion",
@@ -2016,9 +1989,7 @@
                               "blocks": {}
                             }
                           },
-                          "block_order": [
-                            "text_43jnXj"
-                          ]
+                          "block_order": ["text_43jnXj"]
                         },
                         "1_accordion_row_QTnKFh": {
                           "type": "_1-accordion-row",
@@ -2062,9 +2033,7 @@
                               "blocks": {}
                             }
                           },
-                          "block_order": [
-                            "text_RdRbFk"
-                          ]
+                          "block_order": ["text_RdRbFk"]
                         },
                         "1_accordion_row_T3eApV": {
                           "type": "_1-accordion-row",
@@ -2108,9 +2077,7 @@
                               "blocks": {}
                             }
                           },
-                          "block_order": [
-                            "text_dCMzKw"
-                          ]
+                          "block_order": ["text_dCMzKw"]
                         },
                         "1_accordion_row_PYH33n": {
                           "type": "_1-accordion-row",
@@ -2154,9 +2121,7 @@
                               "blocks": {}
                             }
                           },
-                          "block_order": [
-                            "text_fLATmM"
-                          ]
+                          "block_order": ["text_fLATmM"]
                         }
                       },
                       "block_order": [

@@ -1,0 +1,302 @@
+{%- liquid
+  assign product = closest.product
+  assign namespace = block.settings.metafield_namespace | default: 'product_details'
+  assign key = block.settings.metafield_key | default: 'benefits'
+  assign benefits = product.metafields[namespace][key].value
+-%}
+
+{%- if benefits != blank and benefits.size > 0 -%}
+  <ul
+    class="1-product-benefits-list {{ block.settings.type_preset }}{% if block.settings.type_preset == 'custom' %} custom-typography{% endif %}"
+    style="
+      --benefits-icon-color: {{ block.settings.icon_color }};
+      --benefits-text-color: {{ block.settings.text_color }};
+      --color: {{ block.settings.text_color }};
+      --benefits-gap: {{ block.settings.gap }}px;
+      --benefits-font-size: 16px;
+      --benefits-text-align: {{ block.settings.text_alignment }};
+      {% render '1-typography-style', settings: block.settings %}
+      padding-block-start: {{ block.settings.padding-block-start }}px;
+      padding-block-end: {{ block.settings.padding-block-end }}px;
+      padding-inline-start: {{ block.settings.padding-inline-start }}px;
+      padding-inline-end: {{ block.settings.padding-inline-end }}px;
+    "
+    {{ block.shopify_attributes }}
+  >
+    {%- for benefit in benefits -%}
+      <li class="1-product-benefits-list__item">
+        <span class="1-product-benefits-list__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M6.66675 10.4167L8.75008 12.5L13.3334 7.91669" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="1-product-benefits-list__label">{{ benefit }}</span>
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+{% stylesheet %}
+  /* Product benefits list */
+  .\31-product-benefits-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--benefits-gap);
+    text-align: var(--benefits-text-align);
+    color: var(--color, var(--benefits-text-color));
+  }
+
+  .\31-product-benefits-list__item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    line-height: 1.5;
+  }
+
+  .\31-product-benefits-list:not(.custom-typography) .\31-product-benefits-list__item {
+    font-size: var(--benefits-font-size);
+  }
+
+  .\31-product-benefits-list__icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    color: var(--benefits-icon-color);
+  }
+
+  .\31-product-benefits-list__label {
+    flex: 1;
+  }
+
+  .\31-product-benefits-list.custom-typography,
+  .\31-product-benefits-list.custom-typography .\31-product-benefits-list__item {
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    letter-spacing: var(--letter-spacing);
+    text-transform: var(--text-transform);
+    text-wrap: var(--text-wrap);
+    line-height: var(--line-height);
+  }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Product benefits list",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Renders a checklist of benefits read from a product metafield (list of single-line text)."
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace",
+      "label": "Metafield namespace",
+      "default": "product_details"
+    },
+    {
+      "type": "text",
+      "id": "metafield_key",
+      "label": "Metafield key",
+      "default": "benefits",
+      "info": "Reads product.metafields.<namespace>.<key>. Expects a List of single-line text."
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon colour",
+      "default": "#5d3f0d"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#362408"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between rows",
+      "min": 4,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "t:content.typography"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "t:settings.preset",
+      "options": [
+        { "value": "rte", "label": "t:options.default" },
+        { "value": "paragraph", "label": "t:options.paragraph" },
+        { "value": "h1", "label": "t:options.h1" },
+        { "value": "h2", "label": "t:options.h2" },
+        { "value": "h3", "label": "t:options.h3" },
+        { "value": "h4", "label": "t:options.h4" },
+        { "value": "h5", "label": "t:options.h5" },
+        { "value": "h6", "label": "t:options.h6" },
+        { "value": "custom", "label": "t:options.custom" }
+      ],
+      "default": "paragraph",
+      "info": "t:info.edit_presets_in_theme_settings"
+    },
+    {
+      "type": "select",
+      "id": "font",
+      "label": "t:settings.font",
+      "options": [
+        { "value": "var(--font-body--family)", "label": "t:options.body" },
+        { "value": "var(--font-subheading--family)", "label": "t:options.subheading" },
+        { "value": "var(--font-heading--family)", "label": "t:options.heading" },
+        { "value": "var(--font-accent--family)", "label": "t:options.accent" }
+      ],
+      "default": "var(--font-body--family)",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "font_size",
+      "label": "t:settings.size",
+      "options": [
+        { "value": "", "label": "t:options.default" },
+        { "value": "0.625rem", "label": "10px" },
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.125rem", "label": "18px" },
+        { "value": "1.25rem", "label": "20px" },
+        { "value": "1.5rem", "label": "24px" },
+        { "value": "1.75rem", "label": "28px" },
+        { "value": "2rem", "label": "32px" }
+      ],
+      "default": "1rem",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "line_height",
+      "label": "t:settings.line_height",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "letter_spacing",
+      "label": "t:settings.letter_spacing",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "case",
+      "label": "t:settings.case",
+      "options": [
+        { "value": "none", "label": "t:options.default" },
+        { "value": "uppercase", "label": "t:options.uppercase" }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "wrap",
+      "label": "t:settings.wrap",
+      "options": [
+        { "value": "pretty", "label": "t:options.pretty" },
+        { "value": "balance", "label": "t:options.balance" },
+        { "value": "nowrap", "label": "t:options.none" }
+      ],
+      "default": "pretty",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product benefits list",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,271 @@
+{%- comment -%}
+  Subscription disclaimer with [X frequency] and [price] tokens.
+
+  TODO (Recharge integration): Once Recharge is wired up, replace the static
+  frequency_text setting / metafield read with live data from Recharge's
+  selling-plan API. Until then, merchants can either use the per-block text
+  setting or set a per-product metafield key (configured below) so authors can
+  manage frequency without code changes.
+{%- endcomment -%}
+
+{%- liquid
+  assign product = closest.product
+  assign variant = product.selected_or_first_available_variant
+
+  assign frequency = block.settings.frequency_text
+  assign frequency_metafield_key = block.settings.frequency_metafield_key
+  if frequency_metafield_key != blank
+    assign mf_value = product.metafields.product_details[frequency_metafield_key]
+    if mf_value != blank
+      assign frequency = mf_value
+    endif
+  endif
+
+  assign price_string = variant.price | money
+
+  assign body = block.settings.disclaimer_text
+  assign body = body | replace: '[X frequency]', frequency
+  assign body = body | replace: '[price]', price_string
+-%}
+
+{%- if body != blank -%}
+  <div
+    class="1-product-subscription-disclaimer {{ block.settings.type_preset }}{% if block.settings.type_preset == 'custom' %} custom-typography{% endif %}"
+    style="
+      --disclaimer-font-size: 13px;
+      --disclaimer-text-align: {{ block.settings.text_alignment }};
+      {% render '1-typography-style', settings: block.settings %}
+      padding-block-start: {{ block.settings.padding-block-start }}px;
+      padding-block-end: {{ block.settings.padding-block-end }}px;
+      padding-inline-start: {{ block.settings.padding-inline-start }}px;
+      padding-inline-end: {{ block.settings.padding-inline-end }}px;
+    "
+    {{ block.shopify_attributes }}
+  >
+    {{ body }}
+  </div>
+{%- endif -%}
+{% stylesheet %}
+  /* Subscription disclaimer */
+  .\31-product-subscription-disclaimer {
+    text-align: var(--disclaimer-text-align);
+    width: 100%;
+    line-height: 1.5;
+  }
+
+  .\31-product-subscription-disclaimer:not(.custom-typography) {
+    font-size: var(--disclaimer-font-size);
+  }
+
+  .\31-product-subscription-disclaimer p {
+    margin: 0;
+  }
+
+  .\31-product-subscription-disclaimer.custom-typography {
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    letter-spacing: var(--letter-spacing);
+    text-transform: var(--text-transform);
+    text-wrap: var(--text-wrap);
+    line-height: var(--line-height);
+  }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Subscription disclaimer",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Renders the subscription disclaimer below the buy button. Use [X frequency] and [price] tokens in the body — they are replaced automatically. The price token uses the currently selected variant's price."
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "disclaimer_text",
+      "label": "Disclaimer text",
+      "default": "<p>By purchasing, you agree to receive recurring shipments every [X frequency] at [price]. Your payment method will be charged automatically. You can cancel, skip, or modify your subscription anytime through your account portal or by contacting support.</p>"
+    },
+    {
+      "type": "text",
+      "id": "frequency_text",
+      "label": "Default frequency",
+      "default": "month",
+      "info": "Replaces [X frequency] in the body. Will be wired to Recharge once that integration ships."
+    },
+    {
+      "type": "text",
+      "id": "frequency_metafield_key",
+      "label": "Frequency metafield key",
+      "info": "Optional. If set, reads frequency from product.metafields.product_details.<key> instead of the field above."
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "t:content.typography"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "t:settings.preset",
+      "options": [
+        { "value": "rte", "label": "t:options.default" },
+        { "value": "paragraph", "label": "t:options.paragraph" },
+        { "value": "h1", "label": "t:options.h1" },
+        { "value": "h2", "label": "t:options.h2" },
+        { "value": "h3", "label": "t:options.h3" },
+        { "value": "h4", "label": "t:options.h4" },
+        { "value": "h5", "label": "t:options.h5" },
+        { "value": "h6", "label": "t:options.h6" },
+        { "value": "custom", "label": "t:options.custom" }
+      ],
+      "default": "paragraph",
+      "info": "t:info.edit_presets_in_theme_settings"
+    },
+    {
+      "type": "select",
+      "id": "font",
+      "label": "t:settings.font",
+      "options": [
+        { "value": "var(--font-body--family)", "label": "t:options.body" },
+        { "value": "var(--font-subheading--family)", "label": "t:options.subheading" },
+        { "value": "var(--font-heading--family)", "label": "t:options.heading" },
+        { "value": "var(--font-accent--family)", "label": "t:options.accent" }
+      ],
+      "default": "var(--font-body--family)",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "font_size",
+      "label": "t:settings.size",
+      "options": [
+        { "value": "", "label": "t:options.default" },
+        { "value": "0.625rem", "label": "10px" },
+        { "value": "0.6875rem", "label": "11px" },
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.8125rem", "label": "13px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" }
+      ],
+      "default": "0.8125rem",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "line_height",
+      "label": "t:settings.line_height",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "letter_spacing",
+      "label": "t:settings.letter_spacing",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "case",
+      "label": "t:settings.case",
+      "options": [
+        { "value": "none", "label": "t:options.default" },
+        { "value": "uppercase", "label": "t:options.uppercase" }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "wrap",
+      "label": "t:settings.wrap",
+      "options": [
+        { "value": "pretty", "label": "t:options.pretty" },
+        { "value": "balance", "label": "t:options.balance" },
+        { "value": "nowrap", "label": "t:options.none" }
+      ],
+      "default": "pretty",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Subscription disclaimer",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

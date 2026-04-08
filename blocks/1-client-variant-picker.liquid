@@ -1,0 +1,97 @@
+{% liquid
+  assign product_resource = closest.product
+  if request.visual_preview_mode and product_resource == blank
+    assign product_resource = collections.all.products.first
+  endif
+-%}
+
+{% unless product_resource == blank %}
+  {% render '1-client-variant-main-picker', product_resource: product_resource, block: block %}
+{% endunless %}
+
+{% schema %}
+{
+  "name": "Variant picker (client)",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Custom variant picker for the Knowbody product page. Renders option values as dashed pills with optional images sourced from the variant metafield product_details.option_image."
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_option_label",
+      "label": "Show option label",
+      "default": true,
+      "info": "Renders the option name (e.g. \"Flavor\") above the pills."
+    },
+    {
+      "type": "text",
+      "id": "image_metafield_namespace",
+      "label": "Variant image metafield namespace",
+      "default": "variant_details"
+    },
+    {
+      "type": "text",
+      "id": "image_metafield_key",
+      "label": "Variant image metafield key",
+      "default": "flavor_image",
+      "info": "Reads variant.metafields.<namespace>.<key>. Expects a file reference (image)."
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Variant picker (client)",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

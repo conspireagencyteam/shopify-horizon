@@ -1,0 +1,321 @@
+{%- liquid
+  assign product = closest.product
+  assign namespace = block.settings.metafield_namespace | default: 'product_details'
+  assign key = block.settings.metafield_key | default: 'badges'
+  assign badges = product.metafields[namespace][key].value
+-%}
+
+{%- if badges != blank and badges.size > 0 -%}
+  <ul
+    class="1-product-badges-list {{ block.settings.type_preset }}{% if block.settings.type_preset == 'custom' %} custom-typography{% endif %}"
+    style="
+      --badge-bg: {{ block.settings.pill_background }};
+      --badge-color: {{ block.settings.pill_text_color }};
+      --color: {{ block.settings.pill_text_color }};
+      --badge-radius: {{ block.settings.pill_radius }}px;
+      --badge-gap: {{ block.settings.gap }}px;
+      --badge-icon-size: {{ block.settings.icon_size }}px;
+      {% render '1-typography-style', settings: block.settings %}
+      padding-block-start: {{ block.settings.padding-block-start }}px;
+      padding-block-end: {{ block.settings.padding-block-end }}px;
+      padding-inline-start: {{ block.settings.padding-inline-start }}px;
+      padding-inline-end: {{ block.settings.padding-inline-end }}px;
+    "
+    {{ block.shopify_attributes }}
+  >
+    {%- for badge in badges -%}
+      <li class="1-product-badges-list__item">
+        {%- if badge.image != blank -%}
+          {%- assign badge_image = badge.image.value | default: badge.image -%}
+          <img
+            class="1-product-badges-list__icon"
+            src="{{ badge_image | image_url: width: 64 }}"
+            alt="{{ badge.title.value | default: badge.title | escape }}"
+            width="{{ block.settings.icon_size }}"
+            height="{{ block.settings.icon_size }}"
+            loading="lazy"
+          >
+        {%- endif -%}
+        <span class="1-product-badges-list__label">
+          {{- badge.title.value | default: badge.title -}}
+        </span>
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+{% stylesheet %}
+  /* Product badges list */
+  .\31-product-badges-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--badge-gap);
+    align-items: center;
+  }
+
+  .\31-product-badges-list__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: var(--badge-bg);
+    color: var(--color, var(--badge-color));
+    border-radius: var(--badge-radius);
+    line-height: 1.2;
+    position: relative;
+    box-shadow: inset 0 -1px 1px 0 rgb(0 0 0 / 25%), inset 0 1px 2px 0 rgb(255 255 255 / 100%);
+  }
+
+  .\31-product-badges-list:not(.custom-typography) .\31-product-badges-list__item {
+    font-size: 13px;
+  }
+
+  .\31-product-badges-list__icon {
+    width: var(--badge-icon-size);
+    height: var(--badge-icon-size);
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+
+  .\31-product-badges-list__label {
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+  }
+
+  .\31-product-badges-list.custom-typography .\31-product-badges-list__label {
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    letter-spacing: var(--letter-spacing);
+    text-transform: var(--text-transform);
+    text-wrap: var(--text-wrap);
+    line-height: var(--line-height);
+  }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Product badges list",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Renders a row of trust pills (e.g. Third-Party Tested, Made in USA) read from a product metafield (list of metaobjects with title + image fields)."
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "metafield_namespace",
+      "label": "Metafield namespace",
+      "default": "product_details"
+    },
+    {
+      "type": "text",
+      "id": "metafield_key",
+      "label": "Metafield key",
+      "default": "badges",
+      "info": "Reads product.metafields.<namespace>.<key>. Expects a List of metaobjects, each with a `title` (single-line text) and `image` (file) field."
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "pill_background",
+      "label": "Pill background",
+      "default": "#e1dccc"
+    },
+    {
+      "type": "color",
+      "id": "pill_text_color",
+      "label": "Pill text colour",
+      "default": "#362408"
+    },
+    {
+      "type": "range",
+      "id": "pill_radius",
+      "label": "Pill corner radius",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between pills",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "t:content.typography"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "t:settings.preset",
+      "options": [
+        { "value": "rte", "label": "t:options.default" },
+        { "value": "paragraph", "label": "t:options.paragraph" },
+        { "value": "h1", "label": "t:options.h1" },
+        { "value": "h2", "label": "t:options.h2" },
+        { "value": "h3", "label": "t:options.h3" },
+        { "value": "h4", "label": "t:options.h4" },
+        { "value": "h5", "label": "t:options.h5" },
+        { "value": "h6", "label": "t:options.h6" },
+        { "value": "custom", "label": "t:options.custom" }
+      ],
+      "default": "paragraph",
+      "info": "t:info.edit_presets_in_theme_settings"
+    },
+    {
+      "type": "select",
+      "id": "font",
+      "label": "t:settings.font",
+      "options": [
+        { "value": "var(--font-body--family)", "label": "t:options.body" },
+        { "value": "var(--font-subheading--family)", "label": "t:options.subheading" },
+        { "value": "var(--font-heading--family)", "label": "t:options.heading" },
+        { "value": "var(--font-accent--family)", "label": "t:options.accent" }
+      ],
+      "default": "var(--font-body--family)",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "font_size",
+      "label": "t:settings.size",
+      "options": [
+        { "value": "", "label": "t:options.default" },
+        { "value": "0.625rem", "label": "10px" },
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.8125rem", "label": "13px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.125rem", "label": "18px" },
+        { "value": "1.25rem", "label": "20px" }
+      ],
+      "default": "0.8125rem",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "line_height",
+      "label": "t:settings.line_height",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "tight",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "letter_spacing",
+      "label": "t:settings.letter_spacing",
+      "options": [
+        { "value": "tight", "label": "t:options.tight" },
+        { "value": "normal", "label": "t:options.normal" },
+        { "value": "loose", "label": "t:options.loose" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "case",
+      "label": "t:settings.case",
+      "options": [
+        { "value": "none", "label": "t:options.default" },
+        { "value": "uppercase", "label": "t:options.uppercase" }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "wrap",
+      "label": "t:settings.wrap",
+      "options": [
+        { "value": "pretty", "label": "t:options.pretty" },
+        { "value": "balance", "label": "t:options.balance" },
+        { "value": "nowrap", "label": "t:options.none" }
+      ],
+      "default": "nowrap",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product badges list",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}
