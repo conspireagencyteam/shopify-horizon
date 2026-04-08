@@ -24,20 +24,18 @@
   if settings.vertical_on_mobile and vertical_alignment == 'last baseline'
     assign vertical_alignment_mobile = 'flex-end'
   endif
-  
+
   assign flex_wrap = settings.flex_wrap | default: 'nowrap'
 -%}
 
 --flex-direction: {{ settings.content_direction | default: 'column' }}; --flex-wrap: {{ flex_wrap }};
 
 {% render 'gap-style', value: settings.gap %}
-{%  if settings.use_mobile_layout %}
+{% if settings.use_mobile_layout or settings.gap_mobile != null %}
   {% render 'gap-style', value: settings.gap_mobile, name: 'gap-mobile' %}
 {% endif %}
 
 --horizontal-alignment: {{ horizontal_alignment }}; --vertical-alignment: {{ vertical_alignment }};
-
-
 
 {%- liquid
   if settings.use_mobile_layout
@@ -52,7 +50,7 @@
       assign horizontal_alignment_mobile = settings.horizontal_alignment_flex_direction_column_mobile
       assign vertical_alignment_mobile = settings.vertical_alignment_flex_direction_column_mobile
     endunless
-    
+
     assign flex_wrap_mobile = settings.flex_wrap_mobile
     if flex_wrap_mobile == 'inherit'
       assign flex_wrap_mobile = 'var(--flex-wrap, nowrap)'
@@ -63,13 +61,12 @@
 -%}
 
 {% if settings.use_mobile_layout %}
-  --flex-wrap-mobile: {{ flex_wrap_mobile }};
-  --horizontal-alignment-mobile: {{ horizontal_alignment_mobile }}; --vertical-alignment-mobile: {{ vertical_alignment_mobile }};
+  --flex-wrap-mobile: {{ flex_wrap_mobile }}; --horizontal-alignment-mobile: {{ horizontal_alignment_mobile }};
+  --vertical-alignment-mobile: {{ vertical_alignment_mobile }};
 {% else %}
-  --flex-wrap-mobile: {{ flex_wrap }};
-  --horizontal-alignment-mobile: {{ horizontal_alignment }}; --vertical-alignment-mobile: {{ vertical_alignment_mobile }};
-{%  endif %}
-
+  --flex-wrap-mobile: {{ flex_wrap }}; --horizontal-alignment-mobile: {{ horizontal_alignment }};
+  --vertical-alignment-mobile: {{ vertical_alignment_mobile }};
+{% endif %}
 
 {%- liquid
   if settings.reverse_order_on_mobile

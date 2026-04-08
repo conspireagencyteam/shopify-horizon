@@ -3,7 +3,7 @@
 {% endcapture %}
 
 <div class="resource-list__item">
-  {% render 'group', children: children, settings: block.settings, shopify_attributes: block.shopify_attributes %}
+  {% render '1-group', children: children, settings: block.settings, shopify_attributes: block.shopify_attributes %}
 </div>
 <!-- @medical-advisors/split -->
 
@@ -170,6 +170,16 @@
       "type": "range",
       "id": "gap",
       "label": "t:settings.gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "t:settings.1_gap_mobile",
       "min": 0,
       "max": 100,
       "step": 1,
