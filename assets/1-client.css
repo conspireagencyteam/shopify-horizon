@@ -1,6 +1,43 @@
+/* ==============================================
+   LAYOUT
+   ============================================== */
+
+/* Page widths & margins */
+.page-width-wide,
+.page-width-normal,
+.page-width-narrow,
+.page-width-content {
+  --page-margin: 16px;
+}
+
+@media screen and (min-width: 750px) {
+
+  .page-width-wide,
+  .page-width-normal,
+  .page-width-narrow,
+  .page-width-content {
+    --page-margin: 64px;
+  }
+}
+
+/* Spacing style */
+.spacing-style {
+  @media screen and (max-width: 989px) {
+    --spacing-scale: var(--spacing-scale-sm);
+  }
+}
+
 .gap-style,
 .layout-panel-flex {
   --gap-scale: var(--spacing-scale-sm);
+}
+
+@media screen and (min-width: 990px) {
+
+  .gap-style,
+  .layout-panel-flex {
+    --gap-scale: var(--spacing-scale-default);
+  }
 }
 
 /* BUTTON */
@@ -234,4 +271,20 @@ search-page-input-component {
       inset 0px -2px 2px 0px rgba(0, 0, 0, 0.25),
       inset 0px 2px 2px 0px rgba(255, 255, 255, 0.5);
   }
+}
+
+
+/* TEXT BLOCK — custom font-size fluid overrides
+   Overrides the inline --font-size from 1-typography-style.liquid for the
+   two custom sizes that need bespoke scaling (375px → 1400px viewport).
+   !important is required because the snippet writes --font-size inline. */
+
+/* 64px desktop → 32px mobile (custom font_size: 4rem) */
+.\31-text-block.custom-font-size[style*="4rem)"] {
+  --font-size: clamp(2rem, calc(2rem + 32 * (100vw - 375px) / 1025), 4rem) !important;
+}
+
+/* 28px desktop → 24px mobile (custom font_size: 1.75rem) */
+.\31-text-block.custom-font-size[style*="--font-size: 1.75rem"] {
+  --font-size: clamp(1.5rem, calc(1.5rem + 4 * (100vw - 375px) / 1025), 1.75rem) !important;
 }

@@ -1,39 +1,5 @@
-{%- liquid
-  assign blur_id = 'cnHaloBlurMobile-' | append: uid
-  assign grad_id = 'cnHaloGradientMobile-' | append: uid
--%}
-
-{%- comment -%} z-index 1: yellow halo glow — mobile {%- endcomment -%}
-<svg
-  class="1-client-newsletter__svg-halo"
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 375 800"
-  preserveAspectRatio="xMidYMid meet"
-  aria-hidden="true"
->
-  <defs>
-    <filter
-      id="{{ blur_id }}"
-      x="-150%"
-      y="-150%"
-      width="400%"
-      height="400%"
-      filterUnits="userSpaceOnUse"
-      color-interpolation-filters="sRGB"
-    >
-      <feGaussianBlur stdDeviation="80"/>
-    </filter>
-    <radialGradient id="{{ grad_id }}" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#FFE45C" stop-opacity="0.95"/>
-      <stop offset="60%" stop-color="#FFE45C" stop-opacity="0.4"/>
-      <stop offset="100%" stop-color="#FFE45C" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-
-  <g class="1-client-newsletter__halo-group">
-    <circle cx="187.5" cy="400" r="140" fill="url(#{{ grad_id }})" filter="url(#{{ blur_id }})"/>
-  </g>
-</svg>
+{%- comment -%} yellow halo glow — mobile {%- endcomment -%}
+{%- render '1-halo', color: 'yellow', blur: '80px' -%}
 
 {%- comment -%} z-index 2: dashed path + dots + labels (figma-exported) {%- endcomment -%}
 {%- render '1-client-newsletter-path-mobile', uid: uid -%}

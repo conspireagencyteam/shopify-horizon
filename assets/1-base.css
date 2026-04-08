@@ -31,35 +31,6 @@ body {
   --sticky-height: calc(var(--header-height) * var(--header-sticky));
 }
 
-/* ==============================================
-   LAYOUT
-   ============================================== */
-
-/* Page widths & margins */
-.page-width-wide,
-.page-width-normal,
-.page-width-narrow,
-.page-width-content {
-  --page-margin: 16px;
-}
-
-@media screen and (min-width: 750px) {
-
-  .page-width-wide,
-  .page-width-normal,
-  .page-width-narrow,
-  .page-width-content {
-    --page-margin: 32px;
-  }
-}
-
-/* Spacing style */
-.spacing-style {
-  @media screen and (max-width: 989px) {
-    --spacing-scale: var(--spacing-scale-sm);
-  }
-}
-
 /* Position utilities */
 .position-relative {
   position: relative !important;

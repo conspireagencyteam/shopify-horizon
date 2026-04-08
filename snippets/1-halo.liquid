@@ -1,0 +1,54 @@
+{%- liquid
+  assign halo_color = color | default: 'yellow'
+  assign halo_size = size | default: '30%'
+  assign halo_blur = blur | default: '120px'
+  case halo_color
+    when 'purple'
+      assign halo_rgb = '139, 92, 246'
+    else
+      assign halo_rgb = '255, 228, 92'
+  endcase
+-%}
+
+<div
+  class="1-halo 1-halo--{{ halo_color }}"
+  style="--halo-rgb: {{ halo_rgb }}; --halo-size: {{ halo_size }}; --halo-blur: {{ halo_blur }};"
+  aria-hidden="true"
+></div>
+{%- stylesheet -%}
+  .\31-halo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: var(--halo-size, 30%);
+    aspect-ratio: 1;
+    pointer-events: none;
+    background: radial-gradient(
+      circle,
+      rgba(var(--halo-rgb), 0.95) 0%,
+      rgba(var(--halo-rgb), 0.4) 60%,
+      rgba(var(--halo-rgb), 0) 100%
+    );
+    filter: blur(var(--halo-blur, 120px));
+    animation: one-halo-breathe 5.5s ease-in-out infinite;
+    will-change: transform, opacity;
+    z-index: var(--layer-lowest);
+  }
+  @keyframes one-halo-breathe {
+    0%,
+    100% {
+      transform: scale(0.92);
+      opacity: 0.85;
+    }
+    50% {
+      transform: scale(1.08);
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .\31-halo {
+      animation: none;
+    }
+  }
+{%- endstylesheet -%}

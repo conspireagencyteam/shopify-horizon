@@ -46,7 +46,7 @@
       </div>
 
       <div class="1-client-orbital-features__image">
-        <div class="1-client-orbital-features__glow"></div>
+        {%- render '1-halo', color: 'yellow', size: 'clamp(300px, 60vw, 874px)' -%}
         {% if image != blank %}
           {{
             image
@@ -81,9 +81,9 @@
   /* 3-column grid: left items | center image | right items */
   .\31-client-orbital-features__grid {
     display: grid;
-    grid-template-columns: 1fr clamp(200px, 30vw, 400px) 1fr;
+    grid-template-columns: 1fr clamp(200px, 37vw, 535px) 1fr;
     grid-template-rows: repeat(3, auto);
-    column-gap: clamp(16px, 2vw, 24px);
+    column-gap: 0;
     row-gap: clamp(16px, 2vw, 24px);
     align-items: center;
   }
@@ -136,10 +136,10 @@
   /* All items base styling */
   .\31-client-orbital-features__items > * {
     min-height: clamp(150px, 15vw, 200px);
-    padding: clamp(16px, 2.5vw, 32px);
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-block: 12px;
   }
 
   /* Left column alignment */
@@ -154,28 +154,16 @@
 
   /* Arc: items 1,3 (left top/bottom) indent toward center */
   .\31-client-orbital-features__items > :nth-child(1),
-  .\31-client-orbital-features__items > :nth-child(3) {
+  .\31-client-orbital-features__items > :nth-child(3),
+  .\31-client-orbital-features__items > :nth-child(5) {
     padding-inline-start: clamp(32px, 7vw, 96px);
   }
 
   /* Arc: items 4,6 (right top/bottom) indent toward center */
+  .\31-client-orbital-features__items > :nth-child(2),
   .\31-client-orbital-features__items > :nth-child(4),
   .\31-client-orbital-features__items > :nth-child(6) {
     padding-inline-end: clamp(32px, 7vw, 96px);
-  }
-
-  /* Glow behind image */
-  .\31-client-orbital-features__glow {
-    position: absolute;
-    width: clamp(300px, 60vw, 874px);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-secondary-button-background) 80%, transparent) 0%,
-      transparent 70%
-    );
-    pointer-events: none;
   }
 
   .\31-client-orbital-features__product-image {
@@ -245,10 +233,6 @@
 
     .\31-client-orbital-features__product-image {
       width: min(350px, 90vw);
-    }
-
-    .\31-client-orbital-features__glow {
-      width: min(320px, 80vw);
     }
   }
 {% endstylesheet %}

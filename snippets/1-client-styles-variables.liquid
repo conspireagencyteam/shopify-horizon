@@ -70,81 +70,35 @@
     {% endfor %}
 
 
-    /* Typography presets */
+    /* Typography presets
+
+       Knowbody fluid scaling:
+       - Sizes >= fluid_size_cutoff get a calc-based clamp that interpolates
+         linearly from mobile_floor_px at mobile_viewport to the configured
+         size at desktop_viewport.
+       - Sizes < cutoff (or equal to/below the floor) emit static rem.
+       With current settings only H1 (80) and H2 (48) cross the cutoff. */
     {% liquid
       assign font_sizes = "paragraph, h1, h2, h3, h4, h5, h6" | split: ", "
       assign fluid_size_cutoff = 48
-      assign absolute_font_size_min = 10
+      assign mobile_floor_px = 32
+      assign mobile_viewport = 375
+      assign desktop_viewport = 1400
+      assign viewport_range = desktop_viewport | minus: mobile_viewport
+      assign floor_rem = mobile_floor_px | divided_by: 16.0
 
-      comment
-        Build an array of font sizes and sort it
-      endcomment
-      assign font_size_values = ''
-      for font_size in font_sizes
-        assign size_setting = 'type_size_[font_size]' | replace: '[font_size]', font_size
-        assign size_setting_value = settings[size_setting] | times: 1
-
-        comment
-          If the font size is less than 100, pad it with a 0
-          This is because we end up with an array of strings, which | sort filter can't order "correctly")
-        endcomment
-        if size_setting_value < 100
-          assign size_setting_value = '0[size_setting_value]' | replace: '[size_setting_value]', size_setting_value
-        endif
-
-        assign font_size_values = font_size_values | append: '[size_setting_value],' | replace: '[size_setting_value]', size_setting_value
-      endfor
-
-      assign font_size_values = font_size_values | split: ',' | uniq | sort_natural
-
-      comment
-        For each font size S, find the next smaller size S-1, and determine the minimum for S
-        The calculation depends on the size of S-1 (over or under the cutoff)
-      endcomment
       for font_size in font_sizes
         assign size_setting = 'type_size_[font_size]' | replace: '[font_size]', font_size
         assign font_size_value = settings[size_setting] | times: 1
-        assign font_size_string = '[font_size_value]' | replace: '[font_size_value]', font_size_value
-        assign index = font_size_values | find_index: font_size_string
 
-        if font_size_value >= fluid_size_cutoff
+        if font_size_value >= fluid_size_cutoff and font_size_value > mobile_floor_px
+          assign max_rem = font_size_value | divided_by: 16.0
+          assign delta_px = font_size_value | minus: mobile_floor_px
 
-          comment
-            Calculate the minimum size for each font size
-          endcomment
-          assign fluid_font_size_min = font_size_value
-
-          if index == 0
-            assign fluid_font_size_min = absolute_font_size_min
-          else
-            assign next_font_size_index = index | minus: 1
-            assign next_font_size_value = font_size_values[next_font_size_index]
-            assign next_font_size_value_number = next_font_size_value | times: 1
-
-            comment
-              If the next bigger font size under the fluid cutoff, we use keep a 4px buffer
-            endcomment
-            if next_font_size_value_number < fluid_size_cutoff
-              assign fluid_font_size_min = next_font_size_value_number | plus: 4
-              if font_size_value < fluid_font_size_min
-                assign fluid_font_size_min = font_size_value
-              endif
-            else
-              assign fluid_font_size_min = next_font_size_value | times: 1
-            endif
-          endif
-
-          comment
-            Calculate the fluid and maximum size for each font size
-          endcomment
-          assign fluid_size_min_rem = fluid_font_size_min | divided_by: 16.0
-          assign fluid_size = font_size_value | times: 0.1
-          assign fluid_size_max_rem = font_size_value | divided_by: 16.0
-
-          echo '--font-size--[font_size]: clamp([fluid_size_min_rem]rem, [fluid_size]vw, [fluid_size_max_rem]rem);' | replace: '[font_size]', font_size | replace: '[fluid_size_min_rem]', fluid_size_min_rem | replace: '[fluid_size]', fluid_size | replace: '[fluid_size_max_rem]', fluid_size_max_rem
+          echo '--font-size--[font_size]: clamp([floor_rem]rem, calc([floor_rem]rem + [delta_px] * (100vw - [mobile_viewport]px) / [viewport_range]), [max_rem]rem);' | replace: '[font_size]', font_size | replace: '[floor_rem]', floor_rem | replace: '[delta_px]', delta_px | replace: '[mobile_viewport]', mobile_viewport | replace: '[viewport_range]', viewport_range | replace: '[max_rem]', max_rem
         else
-          assign fluid_size_rem = font_size_value | divided_by: 16.0
-          echo '--font-size--[font_size]: [fluid_size_rem]rem;' | replace: '[font_size]', font_size | replace: '[fluid_size_rem]', fluid_size_rem
+          assign static_rem = font_size_value | divided_by: 16.0
+          echo '--font-size--[font_size]: [static_rem]rem;' | replace: '[font_size]', font_size | replace: '[static_rem]', static_rem
         endif
       endfor
     %}

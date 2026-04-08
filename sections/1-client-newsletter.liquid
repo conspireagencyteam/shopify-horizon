@@ -48,7 +48,6 @@
     display: none;
   }
 
-  .\31-client-newsletter__svg-halo,
   .\31-client-newsletter__svg-base {
     position: absolute;
     top: 0;
@@ -61,29 +60,6 @@
     position: relative;
     width: 100%;
     z-index: 2;
-  }
-
-  .\31-client-newsletter__halo-group {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: cn-breathe 5.5s ease-in-out infinite;
-  }
-
-  @keyframes cn-breathe {
-    0%, 100% {
-      transform: scale(0.92);
-      opacity: 0.85;
-    }
-    50% {
-      transform: scale(1.08);
-      opacity: 1;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .\31-client-newsletter__halo-group {
-      animation: none;
-    }
   }
 
   @media screen and (max-width: 749px) {
