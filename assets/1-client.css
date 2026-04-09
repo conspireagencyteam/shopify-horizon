@@ -439,6 +439,7 @@ search-page-input-component {
 
     .slideshow-control {
       padding: 4px;
+      width: clamp(57px, 7vw, var(--thumbnail-width));
 
       &:is([aria-selected='true']) {
         outline-style: dashed;
@@ -466,4 +467,62 @@ search-page-input-component {
     }
   }
 
+}
+
+/* ==============================================
+   MOBILE PDP REORDER
+   Product type, title & price above gallery on mobile.
+   Uses display:contents to flatten .product-details
+   so individual blocks join the parent grid.
+   ============================================== */
+@media screen and (max-width: 749px) {
+
+  /* 1. Flatten the product-details wrapper chain */
+  .product-information .product-details {
+    display: contents;
+  }
+
+  .product-information .product-details>.group-block {
+    display: contents;
+  }
+
+  .product-information .product-details>.group-block>.group-block-content {
+    display: contents;
+  }
+
+  /* 2. Hide the background-media wrapper exposed by display:contents */
+  .product-information .product-details>.group-block>.group-block__media-wrapper {
+    display: none;
+  }
+
+  /* 3. All exposed blocks: full-width column, default below gallery */
+  .product-information .product-details>.group-block>.group-block-content>* {
+    grid-column: 2 / 3;
+    order: 1;
+  }
+
+  /* 4. Gallery in the middle */
+  .product-information .product-information__media {
+    order: 0;
+  }
+
+  /* 5. Product type pill — above gallery */
+  .product-information .product-details>.group-block>.group-block-content>.\31-product-type-pill {
+    order: -3;
+  }
+
+  /* 6. Title — above gallery */
+  .product-information .product-details>.group-block>.group-block-content>.text-block:has(h1) {
+    order: -2;
+  }
+
+  /* 7. Price — above gallery */
+  .product-information .product-details>.group-block>.group-block-content>product-price {
+    order: -1;
+  }
+
+  /* 8. Restore gap lost from .group-block-content's flex gap */
+  .product-information .product-information__grid {
+    row-gap: 12px;
+  }
 }
