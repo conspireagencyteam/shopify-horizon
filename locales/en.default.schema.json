@@ -221,6 +221,7 @@
     "work_quickly_to_ship": "<p>We will work quickly to ship your order as soon as possible. Once your order has shipped, you will receive an email with further information. Delivery times vary depending on your location.</p>"
   },
   "info": {
+    "1_heading_check": "Connect to a dynamic source. If value exists, shows heading. If empty, shows fallback.",
     "1_free_shipping_threshold": "Enter the minimum order amount (in your store currency) required for free shipping. Example: 50",
     "1_menu_item_info": "Enter the exact menu item title to apply this mega menu to.",
     "1_allow_transparent_header_info": "This setting only applies when this section is the first one.",
@@ -991,6 +992,8 @@
     "1_brand_special_features": "Brand special features",
     "1_metafield_namespace_key": "Metafield namespace and key",
     "1_open_row_invert_color_scheme": "Open row invert color scheme",
+    "1_heading_fallback": "Heading fallback",
+    "1_heading_check": "Metafield check",
     "1_hide_add_to_cart_text": "Hide add to cart text",
     "1_hide_add_to_cart_icon": "Hide add to cart icon",
     "1_layout_type_mobile": "Mobile type",

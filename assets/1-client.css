@@ -432,3 +432,38 @@ search-page-input-component {
   background-size: 100% 100svh;
   background-attachment: fixed;
 }
+
+.product-information {
+  .slideshow-controls__thumbnails {
+    --slideshow-thumbnails-padding-block: var(--padding-2xl);
+
+    .slideshow-control {
+      padding: 4px;
+
+      &:is([aria-selected='true']) {
+        outline-style: dashed;
+        outline-color: var(--color-border);
+      }
+    }
+  }
+}
+
+.\31-accordion {
+  &.accordion--dividers {
+    border-block-end-width: 0;
+
+    accordion-custom {
+      &:first-child .details {
+        border-block-start-style: dashed;
+
+      }
+
+      &:not(:first-child) .details {
+        border-block-start-style: dashed;
+
+      }
+
+    }
+  }
+
+}

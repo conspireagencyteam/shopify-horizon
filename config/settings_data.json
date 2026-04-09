@@ -94,7 +94,7 @@
           "background": "#fffff5",
           "background_gradient": "",
           "foreground_heading": "#362407",
-          "foreground": "#362407",
+          "foreground": "#362408de",
           "primary": "#362407",
           "primary_hover": "#5d3f0d",
           "border": "#aca38a",
