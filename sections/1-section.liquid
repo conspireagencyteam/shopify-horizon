@@ -1,9 +1,7 @@
 {% capture children %}
   {% content_for 'blocks' %}
 {% endcapture %}
-
 {% render '1-section', section: section, children: children %}
-
 {% schema %}
 {
   "name": "t:names.1_section",

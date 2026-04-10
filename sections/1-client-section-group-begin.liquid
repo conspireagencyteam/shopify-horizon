@@ -1,6 +1,6 @@
 <!-- BEGIN: section-group -->
 <one-section-group-begin
-  style="--group-color: {{ section.settings.bg_color }};"
+  style="--group-color: {{ section.settings.bg_color.rgb }};"
   hidden
 ></one-section-group-begin>
 
@@ -11,7 +11,7 @@
 ></script>
 {% stylesheet %}
   .\31-section-group {
-    background: linear-gradient(180deg, var(--group-color) 0%, rgba(var(--group-color) / 0) 100%);
+    background: linear-gradient(180deg, rgb(var(--group-color)) 0%, rgba(var(--group-color) / 0) 100%);
     background-size: 100% 100svh;
     background-attachment: fixed;
   }
