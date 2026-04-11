@@ -1,0 +1,157 @@
+<div class="1-client-step-item" {{ block.shopify_attributes }} data-step-item>
+  {%- if block.settings.image != blank -%}
+    <div class="1-client-step-item__image-wrapper">
+      <img
+        class="1-client-step-item__image"
+        src="{{ block.settings.image | image_url: width: 1200 }}"
+        alt="{{ block.settings.title | escape }}"
+        loading="lazy"
+      >
+    </div>
+  {%- endif -%}
+
+  <div class="1-client-step-item__content">
+    <div class="1-client-step-item__meta">
+      <div class="1-client-step-item__label-row">
+        <span class="1-client-step-item__label">{{ block.settings.step_label }}</span>
+        <h3 class="1-client-step-item__title">{{ block.settings.title }}</h3>
+      </div>
+      <hr class="1-client-step-item__divider">
+    </div>
+    <p class="1-client-step-item__description">{{ block.settings.description }}</p>
+  </div>
+</div>
+
+{% stylesheet %}
+  .\31-client-step-item {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .\31-client-step-item__image-wrapper {
+    flex: 1;
+    min-width: 0;
+    height: 499px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .\31-client-step-item__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .\31-client-step-item__content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+  }
+
+  .\31-client-step-item__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .\31-client-step-item__label-row {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .\31-client-step-item__label {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 128px;
+    background: #FFFB56;
+    font-size: 13px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    box-shadow:
+      inset 0px -1px 1px rgba(0, 0, 0, 0.25),
+      inset 0px 1px 2px white;
+  }
+
+  .\31-client-step-item__title {
+    font-size: 2rem;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground-heading);
+    margin: 0;
+  }
+
+  .\31-client-step-item__divider {
+    width: 100%;
+    border: none;
+    border-top: 1px dashed var(--color-border);
+    margin: 0;
+  }
+
+  .\31-client-step-item__description {
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground);
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .\31-client-step-item {
+      flex-direction: column;
+    }
+
+    .\31-client-step-item__image-wrapper {
+      width: 100%;
+      height: 400px;
+    }
+
+    .\31-client-step-item__content {
+      padding: 0;
+    }
+
+    .\31-client-step-item__title {
+      font-size: 1.5rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Step Item",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "step_label",
+      "label": "t:settings.label",
+      "default": "STEP 1"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:settings.title",
+      "default": "Measure"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "t:settings.description",
+      "default": "One scoop (included) into 8-12oz of your preferred liquid"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:settings.image"
+    }
+  ]
+}
+{% endschema %}

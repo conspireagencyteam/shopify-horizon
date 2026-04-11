@@ -1,0 +1,129 @@
+<div class="1-client-timeline-phase" {{ block.shopify_attributes }}
+  style="--phase-pill-color: {{ block.settings.pill_color }};"
+  data-timeline-phase
+>
+  <div class="1-client-timeline-phase__pill">
+    {{ block.settings.period }}
+  </div>
+  <h3 class="1-client-timeline-phase__title">{{ block.settings.title }}</h3>
+
+  <div class="1-client-timeline-phase__details">
+    {%- if block.settings.detail_1 != blank -%}
+      <div class="1-client-timeline-phase__detail-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>{{ block.settings.detail_1 }}</span>
+      </div>
+    {%- endif -%}
+    {%- if block.settings.detail_2 != blank -%}
+      <div class="1-client-timeline-phase__detail-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>{{ block.settings.detail_2 }}</span>
+      </div>
+    {%- endif -%}
+    {%- if block.settings.detail_3 != blank -%}
+      <div class="1-client-timeline-phase__detail-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>{{ block.settings.detail_3 }}</span>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .\31-client-timeline-phase {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .\31-client-timeline-phase__pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 128px;
+    background: var(--phase-pill-color, #DBBDFF);
+    font-size: 13px;
+    line-height: 1.2;
+    color: var(--color-foreground);
+    white-space: nowrap;
+    box-shadow:
+      inset 0px -1px 1px rgba(0, 0, 0, 0.25),
+      inset 0px 1px 2px white;
+  }
+
+  .\31-client-timeline-phase__title {
+    font-size: 1.25rem;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground-heading);
+    margin: 0;
+  }
+
+  .\31-client-timeline-phase__details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px dashed var(--color-border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .\31-client-timeline-phase__detail-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-foreground);
+  }
+
+  .\31-client-timeline-phase__detail-item svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Timeline Phase",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "period",
+      "label": "t:settings.label",
+      "default": "Weeks 1-2"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:settings.title",
+      "default": "Initial Adaptation"
+    },
+    {
+      "type": "color",
+      "id": "pill_color",
+      "label": "t:settings.color",
+      "default": "#DBBDFF"
+    },
+    {
+      "type": "text",
+      "id": "detail_1",
+      "label": "t:settings.text",
+      "default": "Initial digestive adaptation and energy changes"
+    },
+    {
+      "type": "text",
+      "id": "detail_2",
+      "label": "t:settings.text",
+      "default": "When gut comfort improvements typically begin"
+    },
+    {
+      "type": "text",
+      "id": "detail_3",
+      "label": "t:settings.text"
+    }
+  ]
+}
+{% endschema %}

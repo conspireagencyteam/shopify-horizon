@@ -1,0 +1,260 @@
+{%- liquid
+  assign icons = 'check,x,question,text' | split: ','
+-%}
+
+<div class="1-client-comparison-row" {{ block.shopify_attributes }}>
+  <div class="1-client-comparison-row__criteria">
+    {{ block.settings.criteria }}
+  </div>
+
+  {%- comment -%} Knowbody column {%- endcomment -%}
+  <div class="1-client-comparison-row__cell 1-client-comparison-row__cell--knowbody">
+    {%- if block.settings.knowbody_icon == 'check' -%}
+      <span class="1-client-comparison-row__icon-wrapper 1-client-comparison-row__icon-wrapper--check" {% if block.settings.knowbody_tooltip != blank %}data-tooltip="{{ block.settings.knowbody_tooltip }}" tabindex="0"{% endif %}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="#362408" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="#362408" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    {%- elsif block.settings.knowbody_icon == 'x' -%}
+      <span class="1-client-comparison-row__icon-wrapper 1-client-comparison-row__icon-wrapper--x" {% if block.settings.knowbody_tooltip != blank %}data-tooltip="{{ block.settings.knowbody_tooltip }}" tabindex="0"{% endif %}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="#362408" stroke-width="1.5"/><path d="M7 7L13 13M13 7L7 13" stroke="#362408" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </span>
+    {%- elsif block.settings.knowbody_icon == 'question' -%}
+      <span class="1-client-comparison-row__icon-wrapper 1-client-comparison-row__icon-wrapper--question" {% if block.settings.knowbody_tooltip != blank %}data-tooltip="{{ block.settings.knowbody_tooltip }}" tabindex="0"{% endif %}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="#362408" stroke-width="1.5"/><path d="M8 7.5C8 6.67 8.9 6 10 6C11.1 6 12 6.67 12 7.5C12 8.33 11.1 9 10 9V10.5" stroke="#362408" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13" r="0.75" fill="#362408"/></svg>
+      </span>
+    {%- endif -%}
+    {%- if block.settings.knowbody_value != blank -%}
+      <span class="1-client-comparison-row__value">{{ block.settings.knowbody_value }}</span>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Competitor 1 column {%- endcomment -%}
+  <div class="1-client-comparison-row__cell 1-client-comparison-row__cell--competitor">
+    {%- if block.settings.comp1_icon == 'check' -%}
+      <span class="1-client-comparison-row__icon-wrapper" {% if block.settings.comp1_tooltip != blank %}data-tooltip="{{ block.settings.comp1_tooltip }}" tabindex="0"{% endif %}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    {%- elsif block.settings.comp1_icon == 'x' -%}
+      <span class="1-client-comparison-row__icon-wrapper" {% if block.settings.comp1_tooltip != blank %}data-tooltip="{{ block.settings.comp1_tooltip }}" tabindex="0"{% endif %}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M7 7L13 13M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </span>
+    {%- elsif block.settings.comp1_icon == 'question' -%}
+      <span class="1-client-comparison-row__icon-wrapper" {% if block.settings.comp1_tooltip != blank %}data-tooltip="{{ block.settings.comp1_tooltip }}" tabindex="0"{% endif %}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M8 7.5C8 6.67 8.9 6 10 6C11.1 6 12 6.67 12 7.5C12 8.33 11.1 9 10 9V10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13" r="0.75" fill="currentColor"/></svg>
+      </span>
+    {%- endif -%}
+    {%- if block.settings.comp1_value != blank -%}
+      <span class="1-client-comparison-row__value">{{ block.settings.comp1_value }}</span>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Competitor 2 column {%- endcomment -%}
+  <div class="1-client-comparison-row__cell 1-client-comparison-row__cell--competitor">
+    {%- if block.settings.comp2_icon == 'check' -%}
+      <span class="1-client-comparison-row__icon-wrapper" {% if block.settings.comp2_tooltip != blank %}data-tooltip="{{ block.settings.comp2_tooltip }}" tabindex="0"{% endif %}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    {%- elsif block.settings.comp2_icon == 'x' -%}
+      <span class="1-client-comparison-row__icon-wrapper" {% if block.settings.comp2_tooltip != blank %}data-tooltip="{{ block.settings.comp2_tooltip }}" tabindex="0"{% endif %}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M7 7L13 13M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </span>
+    {%- elsif block.settings.comp2_icon == 'question' -%}
+      <span class="1-client-comparison-row__icon-wrapper" {% if block.settings.comp2_tooltip != blank %}data-tooltip="{{ block.settings.comp2_tooltip }}" tabindex="0"{% endif %}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M8 7.5C8 6.67 8.9 6 10 6C11.1 6 12 6.67 12 7.5C12 8.33 11.1 9 10 9V10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13" r="0.75" fill="currentColor"/></svg>
+      </span>
+    {%- endif -%}
+    {%- if block.settings.comp2_value != blank -%}
+      <span class="1-client-comparison-row__value">{{ block.settings.comp2_value }}</span>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .\31-client-comparison-row {
+    display: contents;
+  }
+
+  .\31-client-comparison-row__criteria {
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    font-size: 1rem;
+    line-height: 1.2;
+    color: var(--color-foreground);
+  }
+
+  .\31-client-comparison-row__cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 16px;
+    font-size: 1rem;
+    line-height: 1.2;
+    color: var(--color-foreground);
+    text-align: center;
+  }
+
+  .\31-client-comparison-row__icon-wrapper {
+    position: relative;
+    display: inline-flex;
+    cursor: default;
+  }
+
+  .\31-client-comparison-row__icon-wrapper--check {
+    background: #DBBDFF;
+    border-radius: 100px;
+    box-shadow:
+      inset 0px -2px 2px 0px rgba(0, 0, 0, 0.25),
+      inset 0px 2px 2px 0px rgba(255, 255, 255, 0.5);
+  }
+
+  /* Tooltip */
+  .\31-client-comparison-row__icon-wrapper[data-tooltip] {
+    cursor: help;
+  }
+
+  .\31-client-comparison-row__icon-wrapper[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-foreground);
+    color: var(--color-background);
+    font-size: 12px;
+    line-height: 1.4;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    max-width: 200px;
+    white-space: normal;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 10;
+  }
+
+  .\31-client-comparison-row__icon-wrapper[data-tooltip]:hover::after,
+  .\31-client-comparison-row__icon-wrapper[data-tooltip]:focus::after {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media screen and (max-width: 749px) {
+    .\31-client-comparison-row__criteria {
+      padding: 0 8px;
+      font-size: 11px;
+    }
+
+    .\31-client-comparison-row__cell {
+      padding: 0 4px;
+      font-size: 11px;
+    }
+
+    .\31-client-comparison-row__value {
+      display: none;
+    }
+
+    .\31-client-comparison-row__cell--knowbody .\31-client-comparison-row__value {
+      display: inline;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Comparison Row",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "criteria",
+      "label": "t:settings.title",
+      "default": "Colostrum Content"
+    },
+    {
+      "type": "header",
+      "content": "Knowbody"
+    },
+    {
+      "type": "select",
+      "id": "knowbody_icon",
+      "label": "t:settings.icon",
+      "options": [
+        { "value": "check", "label": "Check" },
+        { "value": "x", "label": "X" },
+        { "value": "question", "label": "t:options.question_mark" },
+        { "value": "text", "label": "t:options.none" }
+      ],
+      "default": "check"
+    },
+    {
+      "type": "text",
+      "id": "knowbody_value",
+      "label": "t:settings.text",
+      "default": "3g pure bovine colostrum"
+    },
+    {
+      "type": "text",
+      "id": "knowbody_tooltip",
+      "label": "t:settings.description"
+    },
+    {
+      "type": "header",
+      "content": "Competitor 1"
+    },
+    {
+      "type": "select",
+      "id": "comp1_icon",
+      "label": "t:settings.icon",
+      "options": [
+        { "value": "check", "label": "Check" },
+        { "value": "x", "label": "X" },
+        { "value": "question", "label": "t:options.question_mark" },
+        { "value": "text", "label": "t:options.none" }
+      ],
+      "default": "check"
+    },
+    {
+      "type": "text",
+      "id": "comp1_value",
+      "label": "t:settings.text",
+      "default": "1-3g bovine colostrum"
+    },
+    {
+      "type": "text",
+      "id": "comp1_tooltip",
+      "label": "t:settings.description"
+    },
+    {
+      "type": "header",
+      "content": "Competitor 2"
+    },
+    {
+      "type": "select",
+      "id": "comp2_icon",
+      "label": "t:settings.icon",
+      "options": [
+        { "value": "check", "label": "Check" },
+        { "value": "x", "label": "X" },
+        { "value": "question", "label": "t:options.question_mark" },
+        { "value": "text", "label": "t:options.none" }
+      ],
+      "default": "x"
+    },
+    {
+      "type": "text",
+      "id": "comp2_value",
+      "label": "t:settings.text",
+      "default": "No colostrum"
+    },
+    {
+      "type": "text",
+      "id": "comp2_tooltip",
+      "label": "t:settings.description"
+    }
+  ]
+}
+{% endschema %}

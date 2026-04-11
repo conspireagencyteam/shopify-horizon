@@ -1,0 +1,51 @@
+<div class="1-client-floating-pill" {{ block.shopify_attributes }}
+  style="--pill-bg: {{ block.settings.bg_color }};"
+>
+  <span class="1-client-floating-pill__text">{{ block.settings.text }}</span>
+</div>
+
+{% stylesheet %}
+  .\31-client-floating-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 128px;
+    background: var(--pill-bg, #DBBDFF);
+    font-size: 13px;
+    line-height: 1.2;
+    color: var(--color-foreground);
+    white-space: nowrap;
+    position: relative;
+    box-shadow:
+      inset 0px -1px 1px 0px rgba(0, 0, 0, 0.25),
+      inset 0px 1px 2px 0px white;
+  }
+
+  @media screen and (max-width: 749px) {
+    .\31-client-floating-pill {
+      font-size: 11px;
+      padding: 6px 8px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Floating Pill",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:settings.text",
+      "default": "Pill text"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "t:settings.background_color",
+      "default": "#DBBDFF"
+    }
+  ]
+}
+{% endschema %}

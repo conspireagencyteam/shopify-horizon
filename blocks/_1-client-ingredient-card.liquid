@@ -1,0 +1,234 @@
+<div class="1-client-ingredient-card" {{ block.shopify_attributes }}>
+  {%- if block.settings.image != blank -%}
+    <div class="1-client-ingredient-card__image-wrapper">
+      <img
+        class="1-client-ingredient-card__image"
+        src="{{ block.settings.image | image_url: width: 800 }}"
+        alt="{{ block.settings.name | escape }}"
+        loading="lazy"
+      >
+      {%- if block.settings.detail_text_1 != blank -%}
+        <button class="1-client-ingredient-card__info-btn" aria-label="View details" data-ingredient-toggle>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M10 9V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="6.5" r="0.75" fill="currentColor"/></svg>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.detail_text_1 != blank -%}
+        <div class="1-client-ingredient-card__overlay" data-ingredient-overlay>
+          <div class="1-client-ingredient-card__overlay-content">
+            {%- if block.settings.detail_text_1 != blank -%}
+              <div class="1-client-ingredient-card__detail-item">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>{{ block.settings.detail_text_1 }}</span>
+              </div>
+            {%- endif -%}
+            {%- if block.settings.detail_text_2 != blank -%}
+              <div class="1-client-ingredient-card__detail-item">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>{{ block.settings.detail_text_2 }}</span>
+              </div>
+            {%- endif -%}
+            {%- if block.settings.detail_text_3 != blank -%}
+              <div class="1-client-ingredient-card__detail-item">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>{{ block.settings.detail_text_3 }}</span>
+              </div>
+            {%- endif -%}
+            {%- if block.settings.detail_text_4 != blank -%}
+              <div class="1-client-ingredient-card__detail-item">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>{{ block.settings.detail_text_4 }}</span>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="1-client-ingredient-card__pill">
+    <span>{{ block.settings.name }}{%- if block.settings.dosage != blank %} ({{ block.settings.dosage }}){%- endif -%}</span>
+  </div>
+</div>
+
+{% stylesheet %}
+  .\31-client-ingredient-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .\31-client-ingredient-card__image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .\31-client-ingredient-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .\31-client-ingredient-card__info-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 8px;
+    background: #DBBDFF;
+    border: none;
+    cursor: pointer;
+    color: var(--color-foreground);
+    box-shadow:
+      0px 2px 2px rgba(0, 0, 0, 0.25),
+      inset 0px -2px 2px rgba(0, 0, 0, 0.25),
+      inset 0px 2px 2px rgba(255, 255, 255, 0.5);
+  }
+
+  .\31-client-ingredient-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(7.5px);
+    -webkit-backdrop-filter: blur(7.5px);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+
+  .\31-client-ingredient-card__overlay.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .\31-client-ingredient-card__overlay-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .\31-client-ingredient-card__detail-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-foreground);
+  }
+
+  .\31-client-ingredient-card__detail-item svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .\31-client-ingredient-card__pill {
+    position: absolute;
+    top: -17px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 128px;
+    background: var(--1-formula-accent, #DBBDFF);
+    font-size: 13px;
+    line-height: 1.2;
+    color: var(--color-foreground);
+    white-space: nowrap;
+    box-shadow:
+      inset 0px -1px 1px rgba(0, 0, 0, 0.25),
+      inset 0px 1px 2px white;
+  }
+
+  /* Desktop: overlay on hover */
+  @media screen and (min-width: 750px) {
+    .\31-client-ingredient-card__image-wrapper:hover .\31-client-ingredient-card__overlay {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  /* Mobile: info button + tap toggle */
+  @media screen and (max-width: 749px) {
+    .\31-client-ingredient-card__image-wrapper {
+      height: 162px;
+      border-radius: 12px;
+    }
+
+    .\31-client-ingredient-card__info-btn {
+      display: flex;
+    }
+
+    .\31-client-ingredient-card__pill {
+      top: -11px;
+      font-size: 11px;
+      padding: 6px 8px;
+    }
+
+    .\31-client-ingredient-card__detail-item {
+      font-size: 14px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Ingredient Card",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "name",
+      "label": "t:settings.title",
+      "default": "Pure Bovine Colostrum"
+    },
+    {
+      "type": "text",
+      "id": "dosage",
+      "label": "t:settings.label",
+      "default": "3g"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:settings.image"
+    },
+    {
+      "type": "header",
+      "content": "Detail Items"
+    },
+    {
+      "type": "text",
+      "id": "detail_text_1",
+      "label": "t:settings.text"
+    },
+    {
+      "type": "text",
+      "id": "detail_text_2",
+      "label": "t:settings.text"
+    },
+    {
+      "type": "text",
+      "id": "detail_text_3",
+      "label": "t:settings.text"
+    },
+    {
+      "type": "text",
+      "id": "detail_text_4",
+      "label": "t:settings.text"
+    }
+  ]
+}
+{% endschema %}

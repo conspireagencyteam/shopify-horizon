@@ -1,0 +1,340 @@
+{%- liquid
+  assign product = product | default: collection.products.first
+  assign heading = product.metafields.product_details.problem_heading.value | default: section.settings.heading
+  assign body = product.metafields.product_details.problem_body.value | default: section.settings.body
+  assign image = product.metafields.product_details.problem_image.value | default: section.settings.image
+-%}
+
+{% capture children %}
+  <div class="1-client-problem-statement">
+    <div class="1-client-problem-statement__text-row">
+      <div class="1-client-problem-statement__heading">
+        <h2 class="1-client-problem-statement__heading-text">{{ heading }}</h2>
+      </div>
+      <div class="1-client-problem-statement__body">
+        <p class="1-client-problem-statement__body-text">{{ body }}</p>
+      </div>
+    </div>
+
+    <div class="1-client-problem-statement__image-wrapper">
+      {%- if image != blank -%}
+        {%- if image.media_type == 'image' -%}
+          <img
+            class="1-client-problem-statement__image"
+            src="{{ image | image_url: width: 1400 }}"
+            alt="{{ image.alt | escape }}"
+            width="{{ image.width }}"
+            height="{{ image.height }}"
+            loading="lazy"
+          >
+        {%- else -%}
+          <img
+            class="1-client-problem-statement__image"
+            src="{{ image | image_url: width: 1400 }}"
+            alt="{{ heading | escape }}"
+            loading="lazy"
+          >
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- comment -%} Decorative SVG line art {%- endcomment -%}
+      <svg class="1-client-problem-statement__svg-line" viewBox="0 0 1180 508" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M2 506C2 506 150 2 590 2C1030 2 1178 506 1178 506" stroke="currentColor" stroke-width="2" stroke-opacity="0.15" stroke-linecap="round"/>
+      </svg>
+
+      {%- comment -%} Floating pill badges {%- endcomment -%}
+      <div class="1-client-problem-statement__pills">
+        {%- content_for 'blocks' -%}
+      </div>
+    </div>
+  </div>
+{% endcapture %}
+
+{% render '1-section', section: section, children: children %}
+
+{% stylesheet %}
+  .\31-client-problem-statement {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    width: 100%;
+  }
+
+  .\31-client-problem-statement__text-row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .\31-client-problem-statement__heading {
+    flex: 0 0 50%;
+    min-width: 0;
+  }
+
+  .\31-client-problem-statement__heading-text {
+    font-size: 3rem;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground-heading);
+    margin: 0;
+  }
+
+  .\31-client-problem-statement__body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .\31-client-problem-statement__body-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground);
+    margin: 0;
+  }
+
+  .\31-client-problem-statement__image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    border-radius: 32px;
+    overflow: hidden;
+  }
+
+  .\31-client-problem-statement__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 32px;
+  }
+
+  .\31-client-problem-statement__svg-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: auto;
+    pointer-events: none;
+    color: var(--color-foreground);
+  }
+
+  .\31-client-problem-statement__pills {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 32px;
+  }
+
+  .\31-client-problem-statement__pills > :first-child {
+    align-self: flex-start;
+  }
+
+  .\31-client-problem-statement__pills > :last-child {
+    align-self: flex-end;
+    margin-left: auto;
+  }
+
+  @media screen and (max-width: 749px) {
+    .\31-client-problem-statement {
+      gap: 32px;
+    }
+
+    .\31-client-problem-statement__text-row {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .\31-client-problem-statement__heading {
+      flex: none;
+      width: 100%;
+    }
+
+    .\31-client-problem-statement__heading-text {
+      font-size: 2rem;
+    }
+
+    .\31-client-problem-statement__image-wrapper {
+      border-radius: 16px;
+    }
+
+    .\31-client-problem-statement__image {
+      border-radius: 16px;
+    }
+
+    .\31-client-problem-statement__pills {
+      padding: 16px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "1 Problem Statement",
+  "class": "section-wrapper",
+  "blocks": [
+    { "type": "_1-client-floating-pill" }
+  ],
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "Most immune supplements only treat symptoms",
+      "info": "Overridden by product metafield product_details.problem_heading"
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "t:settings.description",
+      "default": "Most immune products are built around quick-response ingredients that address symptoms after they appear, rather than supporting the underlying immune processes that determine how your body responds in the first place.",
+      "info": "Overridden by product metafield product_details.problem_body"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:settings.image",
+      "info": "Overridden by product metafield product_details.problem_image"
+    },
+    {
+      "type": "header",
+      "content": "t:content.size"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        { "value": "page-width", "label": "t:options.page" },
+        { "value": "full-width", "label": "t:options.full" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "select",
+      "id": "section_height",
+      "label": "t:settings.height",
+      "options": [
+        { "value": "", "label": "t:options.auto" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "background_media",
+      "label": "t:settings.background_media",
+      "options": [
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "t:settings.borders",
+      "options": [
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "t:settings.border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "select",
+      "id": "padding_scale",
+      "label": "t:settings.1_padding_scale",
+      "options": [
+        { "value": "1", "label": "1x" },
+        { "value": "2", "label": "2x" },
+        { "value": "3", "label": "3x" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "1 Problem Statement",
+      "category": "t:categories.storytelling",
+      "blocks": {
+        "pill_1": {
+          "type": "_1-client-floating-pill",
+          "settings": {
+            "text": "Your body already knows colostrum",
+            "bg_color": "#DBBDFF"
+          }
+        },
+        "pill_2": {
+          "type": "_1-client-floating-pill",
+          "settings": {
+            "text": "We're helping you remember",
+            "bg_color": "#FFFB56"
+          }
+        }
+      },
+      "block_order": ["pill_1", "pill_2"],
+      "settings": {
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding_scale": "2",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
+    }
+  ]
+}
+{% endschema %}

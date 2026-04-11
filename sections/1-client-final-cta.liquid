@@ -1,0 +1,413 @@
+{%- liquid
+  assign product = product | default: collection.products.first
+  assign cta_image = section.settings.product_image | default: product.featured_image
+-%}
+
+{% capture children %}
+  <div class="1-client-final-cta">
+    {%- comment -%} Decorative SVG background line {%- endcomment -%}
+    <svg class="1-client-final-cta__svg-line" viewBox="0 0 1292 736" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M2 734C2 734 200 2 646 2C1092 2 1290 734 1290 734" stroke="currentColor" stroke-width="2" stroke-opacity="0.08" stroke-linecap="round"/>
+    </svg>
+
+    {%- comment -%} Decorative gradient circle {%- endcomment -%}
+    <div class="1-client-final-cta__gradient-circle"></div>
+
+    {%- comment -%} Corner text {%- endcomment -%}
+    {%- if section.settings.top_corner_text != blank -%}
+      <p class="1-client-final-cta__corner-text 1-client-final-cta__corner-text--top">{{ section.settings.top_corner_text }}</p>
+    {%- endif -%}
+    {%- if section.settings.bottom_corner_text != blank -%}
+      <p class="1-client-final-cta__corner-text 1-client-final-cta__corner-text--bottom">{{ section.settings.bottom_corner_text }}</p>
+    {%- endif -%}
+
+    {%- comment -%} Main centered content {%- endcomment -%}
+    <div class="1-client-final-cta__center">
+      <div class="1-client-final-cta__text">
+        <h2 class="1-client-final-cta__heading">{{ section.settings.heading }}</h2>
+        <p class="1-client-final-cta__subheading">{{ section.settings.subheading }}</p>
+      </div>
+
+      {%- if cta_image != blank -%}
+        <div class="1-client-final-cta__product-wrapper">
+          <img
+            class="1-client-final-cta__product-image"
+            src="{{ cta_image | image_url: width: 600 }}"
+            alt="{{ cta_image.alt | default: product.title | escape }}"
+            loading="lazy"
+            width="281"
+            height="331"
+          >
+          <div class="1-client-final-cta__product-shadow"></div>
+          {%- comment -%} Floating badges {%- endcomment -%}
+          {%- content_for 'blocks' -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.cta_text != blank -%}
+        <a href="{{ section.settings.cta_url | default: product.url }}" class="1-client-final-cta__button button">
+          {{ section.settings.cta_text }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+{% endcapture %}
+
+{% render '1-section', section: section, children: children %}
+
+{% stylesheet %}
+  .\31-client-final-cta {
+    position: relative;
+    width: 100%;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 0 0 32px 32px;
+    box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  .\31-client-final-cta__svg-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 1292px;
+    height: auto;
+    pointer-events: none;
+    color: var(--color-foreground);
+  }
+
+  .\31-client-final-cta__gradient-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(219, 189, 255, 0.3) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .\31-client-final-cta__corner-text {
+    position: absolute;
+    font-size: 1.5rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground);
+    margin: 0;
+  }
+
+  .\31-client-final-cta__corner-text--top {
+    top: 70px;
+    left: 64px;
+  }
+
+  .\31-client-final-cta__corner-text--bottom {
+    bottom: 64px;
+    right: 64px;
+    text-align: right;
+  }
+
+  .\31-client-final-cta__center {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 755px;
+    text-align: center;
+  }
+
+  .\31-client-final-cta__text {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .\31-client-final-cta__heading {
+    font-size: 3rem;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground-heading);
+    text-transform: capitalize;
+    margin: 0;
+  }
+
+  .\31-client-final-cta__subheading {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-foreground);
+    margin: 0;
+  }
+
+  .\31-client-final-cta__product-wrapper {
+    position: relative;
+    width: 340px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .\31-client-final-cta__product-image {
+    position: relative;
+    z-index: 1;
+    max-width: 281px;
+    max-height: 331px;
+    object-fit: contain;
+  }
+
+  .\31-client-final-cta__product-shadow {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 230px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.15) 0%, transparent 70%);
+  }
+
+  .\31-client-final-cta__button {
+    margin-top: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .\31-client-final-cta {
+      min-height: auto;
+      padding: 64px 16px;
+    }
+
+    .\31-client-final-cta__corner-text {
+      font-size: 1rem;
+    }
+
+    .\31-client-final-cta__corner-text--top {
+      top: 34px;
+      left: 16px;
+    }
+
+    .\31-client-final-cta__corner-text--bottom {
+      bottom: 64px;
+      right: 16px;
+    }
+
+    .\31-client-final-cta__heading {
+      font-size: 2rem;
+    }
+
+    .\31-client-final-cta__product-wrapper {
+      width: 100%;
+      height: 234px;
+    }
+
+    .\31-client-final-cta__product-image {
+      max-width: 200px;
+      max-height: 235px;
+    }
+
+    .\31-client-final-cta__gradient-circle {
+      width: 280px;
+      height: 280px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "1 Final CTA",
+  "class": "section-wrapper",
+  "blocks": [
+    { "type": "_1-client-cta-badge" }
+  ],
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "Ready to feel less bloated and take fewer sick days?"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:settings.subheading",
+      "default": "Join thousands who've made colostrum their daily immune and gut health foundation"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "t:settings.image",
+      "info": "Falls back to product featured image"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "t:settings.button_label",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "t:settings.video_external_url"
+    },
+    {
+      "type": "text",
+      "id": "top_corner_text",
+      "label": "t:settings.text",
+      "default": "Start here",
+      "info": "Top-left corner text"
+    },
+    {
+      "type": "text",
+      "id": "bottom_corner_text",
+      "label": "t:settings.text",
+      "default": "Feel it Everywhere",
+      "info": "Bottom-right corner text"
+    },
+    {
+      "type": "header",
+      "content": "t:content.size"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        { "value": "page-width", "label": "t:options.page" },
+        { "value": "full-width", "label": "t:options.full" }
+      ],
+      "default": "full-width"
+    },
+    {
+      "type": "select",
+      "id": "section_height",
+      "label": "t:settings.height",
+      "options": [
+        { "value": "", "label": "t:options.auto" },
+        { "value": "full-screen", "label": "t:options.full_screen" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "background_media",
+      "label": "t:settings.background_media",
+      "options": [
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "t:settings.borders",
+      "options": [
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "t:settings.border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "select",
+      "id": "padding_scale",
+      "label": "t:settings.1_padding_scale",
+      "options": [
+        { "value": "1", "label": "1x" },
+        { "value": "2", "label": "2x" },
+        { "value": "3", "label": "3x" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "1 Final CTA",
+      "category": "t:categories.storytelling",
+      "blocks": {
+        "badge_1": {
+          "type": "_1-client-cta-badge",
+          "settings": {
+            "text": "Subscribe & save 15%",
+            "bg_color": "#DBBDFF",
+            "text_color": "#362408",
+            "position": "top-left"
+          }
+        },
+        "badge_2": {
+          "type": "_1-client-cta-badge",
+          "settings": {
+            "text": "30-day money-back guarantee",
+            "bg_color": "#FFFB56",
+            "text_color": "#362408",
+            "position": "bottom-left"
+          }
+        },
+        "badge_3": {
+          "type": "_1-client-cta-badge",
+          "settings": {
+            "text": "Free shipping on all orders",
+            "bg_color": "#5D3F0D",
+            "text_color": "#FFFFFF",
+            "position": "top-right"
+          }
+        }
+      },
+      "block_order": ["badge_1", "badge_2", "badge_3"],
+      "settings": {
+        "section_width": "full-width"
+      }
+    }
+  ]
+}
+{% endschema %}

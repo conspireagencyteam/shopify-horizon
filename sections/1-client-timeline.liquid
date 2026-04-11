@@ -1,0 +1,398 @@
+{%- liquid
+  assign product = product | default: collection.products.first
+  assign timeline_group = product.metafields.product_details.timeline_phases.value
+  assign phases = timeline_group.phases.value
+  assign has_metafield_data = false
+  if phases != blank and phases.size > 0
+    assign has_metafield_data = true
+  endif
+-%}
+
+{% capture children %}
+  <div class="1-client-timeline">
+    <div class="1-client-timeline__header">
+      <h2 class="1-client-timeline__heading">{{ section.settings.heading }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="1-client-timeline__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if has_metafield_data -%}
+      <div class="1-client-timeline__phases" data-timeline-container>
+        {%- for phase in phases -%}
+          <div class="1-client-timeline__phase{% if forloop.first %} is-active{% endif %}"
+            style="--phase-pill-color: {{ phase.pill_color.value }};"
+            data-timeline-phase="{{ forloop.index0 }}"
+          >
+            <div class="1-client-timeline__phase-pill">
+              {{ phase.period.value }}
+            </div>
+            <h3 class="1-client-timeline__phase-title">{{ phase.title.value }}</h3>
+
+            <div class="1-client-timeline__phase-details">
+              {%- for detail in phase.details.value -%}
+                <div class="1-client-timeline__detail-item">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>{{ detail }}</span>
+                </div>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      {%- comment -%} Fallback: render from blocks {%- endcomment -%}
+      <div class="1-client-timeline__phases" data-timeline-container>
+        {%- content_for 'blocks' -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.cta_text != blank -%}
+      <a href="{{ section.settings.cta_url }}" class="1-client-timeline__cta button">
+        {{ section.settings.cta_text }}
+      </a>
+    {%- endif -%}
+  </div>
+
+  <script>
+    document.addEventListener('click', function(e) {
+      var phase = e.target.closest('[data-timeline-phase]');
+      if (!phase) return;
+      var container = phase.closest('[data-timeline-container]');
+      if (!container) return;
+      if (window.innerWidth < 750) return;
+      container.querySelectorAll('[data-timeline-phase]').forEach(function(p) {
+        p.classList.remove('is-active');
+      });
+      phase.classList.add('is-active');
+    });
+  </script>
+{% endcapture %}
+
+{% render '1-section', section: section, children: children %}
+
+{% stylesheet %}
+  .\31-client-timeline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    width: 100%;
+  }
+
+  .\31-client-timeline__header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .\31-client-timeline__heading {
+    font-size: 3rem;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground-heading);
+    margin: 0;
+  }
+
+  .\31-client-timeline__subheading {
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground);
+    margin: 0;
+    max-width: 700px;
+    margin-inline: auto;
+  }
+
+  .\31-client-timeline__phases {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border: 1px dashed var(--color-border);
+    border-radius: 16px;
+    padding: 32px;
+    gap: 24px;
+  }
+
+  .\31-client-timeline__phase {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+    flex: 0 0 auto;
+    width: 220px;
+    opacity: 0.7;
+    cursor: pointer;
+    transition: opacity 0.3s;
+  }
+
+  .\31-client-timeline__phase.is-active {
+    opacity: 1;
+  }
+
+  .\31-client-timeline__phase-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 128px;
+    background: var(--phase-pill-color, #DBBDFF);
+    font-size: 13px;
+    line-height: 1.2;
+    color: var(--color-foreground);
+    white-space: nowrap;
+    box-shadow:
+      inset 0px -1px 1px rgba(0, 0, 0, 0.25),
+      inset 0px 1px 2px white;
+  }
+
+  .\31-client-timeline__phase-title {
+    font-size: 1.25rem;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground-heading);
+    margin: 0;
+  }
+
+  .\31-client-timeline__phase-details {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px dashed var(--color-border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .\31-client-timeline__phase.is-active .\31-client-timeline__phase-details {
+    display: flex;
+  }
+
+  .\31-client-timeline__detail-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-foreground);
+  }
+
+  .\31-client-timeline__detail-item svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .\31-client-timeline__cta {
+    align-self: center;
+  }
+
+  /* Mobile: stacked, all expanded */
+  @media screen and (max-width: 749px) {
+    .\31-client-timeline {
+      gap: 32px;
+    }
+
+    .\31-client-timeline__heading {
+      font-size: 2rem;
+    }
+
+    .\31-client-timeline__phases {
+      flex-direction: column;
+      padding: 0;
+      border: none;
+      gap: 32px;
+    }
+
+    .\31-client-timeline__phase {
+      width: 100%;
+      opacity: 1;
+      cursor: default;
+      border: 1px dashed var(--color-border);
+      border-radius: 12px;
+      padding: 28px 24px 16px;
+      position: relative;
+    }
+
+    .\31-client-timeline__phase-pill {
+      position: absolute;
+      top: -15px;
+      left: 23px;
+    }
+
+    .\31-client-timeline__phase-details {
+      display: flex;
+      border: none;
+      padding: 0;
+    }
+
+    .\31-client-timeline__cta {
+      width: 100%;
+      text-align: center;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "1 Timeline",
+  "class": "section-wrapper",
+  "blocks": [
+    { "type": "_1-client-timeline-phase" }
+  ],
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "What to Expect"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:settings.subheading",
+      "default": "Guiding Knowbody with science, expertise, and a commitment to foundational health."
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "t:settings.button_label",
+      "default": "Start Your Journey"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "t:settings.video_external_url"
+    },
+    {
+      "type": "header",
+      "content": "t:content.size"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        { "value": "page-width", "label": "t:options.page" },
+        { "value": "full-width", "label": "t:options.full" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "select",
+      "id": "section_height",
+      "label": "t:settings.height",
+      "options": [
+        { "value": "", "label": "t:options.auto" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "background_media",
+      "label": "t:settings.background_media",
+      "options": [
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "t:settings.borders",
+      "options": [
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "t:settings.border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "select",
+      "id": "padding_scale",
+      "label": "t:settings.1_padding_scale",
+      "options": [
+        { "value": "1", "label": "1x" },
+        { "value": "2", "label": "2x" },
+        { "value": "3", "label": "3x" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "1 Timeline",
+      "category": "t:categories.storytelling",
+      "blocks": {
+        "phase_1": {
+          "type": "_1-client-timeline-phase",
+          "settings": { "period": "Weeks 1-2", "title": "Initial Adaptation", "pill_color": "#DBBDFF", "detail_1": "Initial digestive adaptation and energy changes", "detail_2": "When gut comfort improvements typically begin" }
+        },
+        "phase_2": {
+          "type": "_1-client-timeline-phase",
+          "settings": { "period": "Weeks 3-4", "title": "Building Foundation", "pill_color": "#FFFB56", "detail_1": "Consistent energy levels throughout the day", "detail_2": "Noticeable gut comfort improvements" }
+        },
+        "phase_3": {
+          "type": "_1-client-timeline-phase",
+          "settings": { "period": "Weeks 5-8", "title": "Strengthening Support", "pill_color": "#DBBDFF", "detail_1": "Immune system building stronger foundations", "detail_2": "Sustained digestive wellness" }
+        },
+        "phase_4": {
+          "type": "_1-client-timeline-phase",
+          "settings": { "period": "Weeks 8+", "title": "Sustained Wellness", "pill_color": "#FFFB56", "detail_1": "Long-term immune resilience", "detail_2": "Optimal gut health maintained" }
+        }
+      },
+      "block_order": ["phase_1", "phase_2", "phase_3", "phase_4"],
+      "settings": {
+        "section_width": "page-width",
+        "padding_scale": "2",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
+    }
+  ]
+}
+{% endschema %}

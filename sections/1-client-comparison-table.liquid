@@ -1,0 +1,395 @@
+{% capture children %}
+  <div class="1-client-comparison-table">
+    <div class="1-client-comparison-table__header">
+      <h2 class="1-client-comparison-table__heading">{{ section.settings.heading }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="1-client-comparison-table__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="1-client-comparison-table__grid">
+      {%- comment -%} Header row {%- endcomment -%}
+      <div class="1-client-comparison-table__col-header 1-client-comparison-table__col-header--criteria">
+        Criteria
+      </div>
+      <div class="1-client-comparison-table__col-header 1-client-comparison-table__col-header--knowbody">
+        <span class="1-client-comparison-table__knowbody-logo">K N O W B O D Y</span>
+      </div>
+      <div class="1-client-comparison-table__col-header 1-client-comparison-table__col-header--comp">
+        {{ section.settings.competitor_1_name }}
+      </div>
+      <div class="1-client-comparison-table__col-header 1-client-comparison-table__col-header--comp 1-client-comparison-table__col-header--last">
+        {{ section.settings.competitor_2_name }}
+      </div>
+
+      {%- comment -%} Data rows {%- endcomment -%}
+      {%- content_for 'blocks' -%}
+    </div>
+
+    {%- if section.settings.cta_text != blank -%}
+      <a href="{{ section.settings.cta_url }}" class="1-client-comparison-table__cta button">
+        {{ section.settings.cta_text }}
+      </a>
+    {%- endif -%}
+  </div>
+{% endcapture %}
+
+{% render '1-section', section: section, children: children %}
+
+{% stylesheet %}
+  .\31-client-comparison-table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    width: 100%;
+  }
+
+  .\31-client-comparison-table__header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .\31-client-comparison-table__heading {
+    font-size: 3rem;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground-heading);
+    margin: 0;
+  }
+
+  .\31-client-comparison-table__subheading {
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground);
+    margin: 0;
+    max-width: 700px;
+  }
+
+  .\31-client-comparison-table__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    width: 100%;
+    row-gap: 0;
+  }
+
+  .\31-client-comparison-table__col-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    color: var(--color-foreground-heading);
+  }
+
+  .\31-client-comparison-table__col-header--criteria {
+    justify-content: flex-start;
+    padding-left: 32px;
+    border-left: 1px dashed var(--color-border);
+    border-top: 1px dashed var(--color-border);
+    border-top-left-radius: 16px;
+  }
+
+  .\31-client-comparison-table__col-header--knowbody {
+    background: #FFFB56;
+    border-radius: 8px 8px 0 0;
+    padding: 32px 16px;
+    box-shadow:
+      inset 0px -1px 3px 0px rgba(0, 0, 0, 0.25),
+      inset 0px 1px 3px 0px white;
+  }
+
+  .\31-client-comparison-table__knowbody-logo {
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    color: #362408;
+  }
+
+  .\31-client-comparison-table__col-header--comp {
+    text-align: center;
+    border-top: 1px dashed var(--color-border);
+    border-bottom: 1px dashed var(--color-border);
+  }
+
+  .\31-client-comparison-table__col-header--last {
+    border-right: 1px dashed var(--color-border);
+    border-top-right-radius: 16px;
+  }
+
+  /* Row borders — applied via the comparison-row block's cells */
+  .\31-client-comparison-table__grid > .\31-client-comparison-row__criteria {
+    border-left: 1px dashed var(--color-border);
+    border-bottom: 1px dashed var(--color-border);
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .\31-client-comparison-table__grid > .\31-client-comparison-row__cell--knowbody {
+    background: #FFFB56;
+    border-bottom: 1px solid rgba(54, 36, 8, 0.1);
+  }
+
+  .\31-client-comparison-table__grid > .\31-client-comparison-row__cell--competitor {
+    border-bottom: 1px dashed var(--color-border);
+  }
+
+  .\31-client-comparison-table__grid > .\31-client-comparison-row__cell--competitor:last-child {
+    border-right: 1px dashed var(--color-border);
+  }
+
+  /* Last row bottom radius */
+  .\31-client-comparison-table__grid > .\31-client-comparison-row:last-of-type .\31-client-comparison-row__criteria {
+    border-bottom-left-radius: 16px;
+  }
+
+  .\31-client-comparison-table__grid > :nth-last-child(1) {
+    border-bottom-right-radius: 16px;
+  }
+
+  .\31-client-comparison-table__cta {
+    align-self: center;
+  }
+
+  @media screen and (max-width: 749px) {
+    .\31-client-comparison-table {
+      gap: 32px;
+    }
+
+    .\31-client-comparison-table__heading {
+      font-size: 2rem;
+    }
+
+    .\31-client-comparison-table__col-header {
+      font-size: 12px;
+      padding: 12px 8px;
+    }
+
+    .\31-client-comparison-table__col-header--criteria {
+      padding-left: 8px;
+    }
+
+    .\31-client-comparison-table__col-header--knowbody {
+      padding: 16px 10px;
+    }
+
+    .\31-client-comparison-table__knowbody-logo {
+      font-size: 8px;
+    }
+
+    .\31-client-comparison-table__grid > .\31-client-comparison-row__criteria {
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    .\31-client-comparison-table__cta {
+      width: 100%;
+      text-align: center;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "1 Comparison Table",
+  "class": "section-wrapper",
+  "blocks": [
+    { "type": "_1-client-comparison-row" }
+  ],
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "How We Stack Up Against Competitors"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:settings.subheading",
+      "default": "Why enhanced colostrum delivers more than single-ingredient alternatives"
+    },
+    {
+      "type": "text",
+      "id": "competitor_1_name",
+      "label": "t:settings.title",
+      "default": "Basic Colostrum",
+      "info": "Competitor 1 column header"
+    },
+    {
+      "type": "text",
+      "id": "competitor_2_name",
+      "label": "t:settings.title",
+      "default": "Green Powder Blend",
+      "info": "Competitor 2 column header"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "t:settings.button_label",
+      "default": "Start Your Journey"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "t:settings.video_external_url"
+    },
+    {
+      "type": "header",
+      "content": "t:content.size"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        { "value": "page-width", "label": "t:options.page" },
+        { "value": "full-width", "label": "t:options.full" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "select",
+      "id": "section_height",
+      "label": "t:settings.height",
+      "options": [
+        { "value": "", "label": "t:options.auto" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "background_media",
+      "label": "t:settings.background_media",
+      "options": [
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "t:settings.borders",
+      "options": [
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "t:settings.border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "select",
+      "id": "padding_scale",
+      "label": "t:settings.1_padding_scale",
+      "options": [
+        { "value": "1", "label": "1x" },
+        { "value": "2", "label": "2x" },
+        { "value": "3", "label": "3x" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "1 Comparison Table",
+      "category": "t:categories.storytelling",
+      "blocks": {
+        "row_1": {
+          "type": "_1-client-comparison-row",
+          "settings": {
+            "criteria": "Colostrum Content",
+            "knowbody_icon": "check", "knowbody_value": "3g pure bovine colostrum",
+            "comp1_icon": "check", "comp1_value": "1-3g bovine colostrum",
+            "comp2_icon": "x", "comp2_value": "No colostrum"
+          }
+        },
+        "row_2": {
+          "type": "_1-client-comparison-row",
+          "settings": {
+            "criteria": "Digestive Support",
+            "knowbody_icon": "check", "knowbody_value": "Prebiotic fiber + digestive enzymes",
+            "comp1_icon": "x", "comp1_value": "Colostrum only",
+            "comp2_icon": "question", "comp2_value": "Basic fiber blend"
+          }
+        },
+        "row_3": {
+          "type": "_1-client-comparison-row",
+          "settings": {
+            "criteria": "Immune Enhancement",
+            "knowbody_icon": "check", "knowbody_value": "Wellmune β-glucan + zinc + vitamin C",
+            "comp1_icon": "question", "comp1_value": "Colostrum benefits only",
+            "comp2_icon": "question", "comp2_value": "General antioxidants"
+          }
+        },
+        "row_4": {
+          "type": "_1-client-comparison-row",
+          "settings": {
+            "criteria": "Price per serving",
+            "knowbody_icon": "text", "knowbody_value": "$2.43 (subscribe & save)",
+            "comp1_icon": "text", "comp1_value": "$3.50+ typical",
+            "comp2_icon": "text", "comp2_value": "$1.50-3.00 range"
+          }
+        }
+      },
+      "block_order": ["row_1", "row_2", "row_3", "row_4"],
+      "settings": {
+        "section_width": "page-width",
+        "padding_scale": "2",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,114 @@
+<div class="1-client-cta-badge 1-client-cta-badge--{{ block.settings.position }}" {{ block.shopify_attributes }}
+  style="--badge-bg: {{ block.settings.bg_color }}; --badge-text: {{ block.settings.text_color }};"
+>
+  <svg class="1-client-cta-badge__icon" width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M1 3.5L3.5 6L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span class="1-client-cta-badge__text">{{ block.settings.text }}</span>
+</div>
+
+{% stylesheet %}
+  .\31-client-cta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 128px;
+    background: var(--badge-bg, #DBBDFF);
+    color: var(--badge-text, var(--color-foreground));
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+    position: absolute;
+    box-shadow:
+      inset 0px -1px 1px 0px rgba(0, 0, 0, 0.25),
+      inset 0px 1px 2px 0px white;
+  }
+
+  .\31-client-cta-badge__icon {
+    flex-shrink: 0;
+  }
+
+  .\31-client-cta-badge--top-left {
+    top: 20%;
+    left: -35%;
+  }
+
+  .\31-client-cta-badge--top-right {
+    top: 50%;
+    right: -40%;
+  }
+
+  .\31-client-cta-badge--bottom-left {
+    bottom: 30%;
+    left: -35%;
+  }
+
+  .\31-client-cta-badge--bottom-right {
+    bottom: 20%;
+    right: -35%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .\31-client-cta-badge {
+      font-size: 10px;
+      padding: 6px 12px;
+    }
+
+    .\31-client-cta-badge--top-left {
+      left: -10%;
+      top: 15%;
+    }
+
+    .\31-client-cta-badge--top-right {
+      right: -10%;
+    }
+
+    .\31-client-cta-badge--bottom-left {
+      left: -5%;
+    }
+
+    .\31-client-cta-badge--bottom-right {
+      right: -10%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "CTA Badge",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:settings.text",
+      "default": "30-day money-back guarantee"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "t:settings.background_color",
+      "default": "#DBBDFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:settings.1_link_color",
+      "default": "#362408"
+    },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "t:settings.position",
+      "options": [
+        { "value": "top-left", "label": "t:options.top_left" },
+        { "value": "top-right", "label": "t:options.top_right" },
+        { "value": "bottom-left", "label": "t:options.bottom_left" },
+        { "value": "bottom-right", "label": "t:options.bottom_right" }
+      ],
+      "default": "top-left"
+    }
+  ]
+}
+{% endschema %}

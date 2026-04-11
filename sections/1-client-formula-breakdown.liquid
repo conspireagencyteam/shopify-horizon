@@ -1,0 +1,399 @@
+{%- liquid
+  assign product = product | default: collection.products.first
+  assign accent_color = product.metafields.product_details.accent_color.value | default: section.settings.accent_color
+  assign ingredients_metafield = product.metafields.product_details.ingredients.value
+  assign has_metafield_data = false
+  if ingredients_metafield != blank and ingredients_metafield.size > 0
+    assign has_metafield_data = true
+  endif
+-%}
+
+{% capture children %}
+  <div class="1-client-formula-breakdown" style="--1-formula-accent: {{ accent_color }};">
+    <div class="1-client-formula-breakdown__header">
+      <h2 class="1-client-formula-breakdown__heading">{{ section.settings.heading }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="1-client-formula-breakdown__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="1-client-formula-breakdown__grid">
+      {%- if has_metafield_data -%}
+        {%- for ingredient in ingredients_metafield -%}
+          <div class="1-client-formula-breakdown__card">
+            <div class="1-client-formula-breakdown__card-image-wrapper">
+              {%- if ingredient.image.value != blank -%}
+                <img
+                  class="1-client-formula-breakdown__card-image"
+                  src="{{ ingredient.image.value | image_url: width: 800 }}"
+                  alt="{{ ingredient.name.value | escape }}"
+                  loading="lazy"
+                >
+              {%- endif -%}
+
+              {%- if ingredient.detail_items.value != blank and ingredient.detail_items.value.size > 0 -%}
+                <button class="1-client-formula-breakdown__info-btn" aria-label="View details" data-ingredient-toggle>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M10 9V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="6.5" r="0.75" fill="currentColor"/></svg>
+                </button>
+
+                <div class="1-client-formula-breakdown__overlay" data-ingredient-overlay>
+                  <div class="1-client-formula-breakdown__overlay-content">
+                    {%- for detail in ingredient.detail_items.value -%}
+                      <div class="1-client-formula-breakdown__detail-item">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span>{{ detail }}</span>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+
+            <div class="1-client-formula-breakdown__pill">
+              <span>{{ ingredient.name.value }}{%- if ingredient.dosage.value != blank %} ({{ ingredient.dosage.value }}){%- endif -%}</span>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- comment -%} Fallback: render from blocks {%- endcomment -%}
+        {%- content_for 'blocks' -%}
+      {%- endif -%}
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-ingredient-toggle]');
+      if (btn) {
+        var overlay = btn.parentElement.querySelector('[data-ingredient-overlay]');
+        if (overlay) overlay.classList.toggle('is-active');
+      }
+      var overlay = e.target.closest('[data-ingredient-overlay]');
+      if (overlay && overlay.classList.contains('is-active')) {
+        overlay.classList.remove('is-active');
+      }
+    });
+  </script>
+{% endcapture %}
+
+{% render '1-section', section: section, children: children %}
+
+{% stylesheet %}
+  .\31-client-formula-breakdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    width: 100%;
+  }
+
+  .\31-client-formula-breakdown__header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    max-width: 1072px;
+  }
+
+  .\31-client-formula-breakdown__heading {
+    font-size: 3rem;
+    line-height: 1.17;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground-heading);
+    margin: 0;
+  }
+
+  .\31-client-formula-breakdown__subheading {
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: -0.03em;
+    color: var(--color-foreground);
+    margin: 0;
+  }
+
+  .\31-client-formula-breakdown__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px 24px;
+    width: 100%;
+  }
+
+  .\31-client-formula-breakdown__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .\31-client-formula-breakdown__card-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .\31-client-formula-breakdown__card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .\31-client-formula-breakdown__info-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--1-formula-accent, #DBBDFF);
+    border: none;
+    cursor: pointer;
+    color: var(--color-foreground);
+    box-shadow:
+      0px 2px 2px rgba(0, 0, 0, 0.25),
+      inset 0px -2px 2px rgba(0, 0, 0, 0.25),
+      inset 0px 2px 2px rgba(255, 255, 255, 0.5);
+  }
+
+  .\31-client-formula-breakdown__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(7.5px);
+    -webkit-backdrop-filter: blur(7.5px);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+
+  .\31-client-formula-breakdown__overlay.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .\31-client-formula-breakdown__overlay-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .\31-client-formula-breakdown__detail-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-foreground);
+  }
+
+  .\31-client-formula-breakdown__detail-item svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .\31-client-formula-breakdown__pill {
+    position: absolute;
+    top: -17px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 128px;
+    background: var(--1-formula-accent, #DBBDFF);
+    font-size: 13px;
+    line-height: 1.2;
+    color: var(--color-foreground);
+    white-space: nowrap;
+    box-shadow:
+      inset 0px -1px 1px rgba(0, 0, 0, 0.25),
+      inset 0px 1px 2px white;
+  }
+
+  @media screen and (min-width: 750px) {
+    .\31-client-formula-breakdown__card-image-wrapper:hover .\31-client-formula-breakdown__overlay {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .\31-client-formula-breakdown {
+      gap: 32px;
+    }
+
+    .\31-client-formula-breakdown__heading {
+      font-size: 2rem;
+    }
+
+    .\31-client-formula-breakdown__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px 8px;
+    }
+
+    .\31-client-formula-breakdown__card-image-wrapper {
+      height: 162px;
+      border-radius: 12px;
+    }
+
+    .\31-client-formula-breakdown__info-btn {
+      display: flex;
+    }
+
+    .\31-client-formula-breakdown__pill {
+      top: -11px;
+      font-size: 11px;
+      padding: 6px 8px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "1 Formula Breakdown",
+  "class": "section-wrapper",
+  "blocks": [
+    { "type": "_1-client-ingredient-card" }
+  ],
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "Support your immune system at its foundation"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:settings.subheading",
+      "default": "Every scoop starts with gut health and builds comprehensive immune support"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "t:settings.color",
+      "default": "#DBBDFF",
+      "info": "Overridden by product metafield product_details.accent_color"
+    },
+    {
+      "type": "header",
+      "content": "t:content.size"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        { "value": "page-width", "label": "t:options.page" },
+        { "value": "full-width", "label": "t:options.full" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "select",
+      "id": "section_height",
+      "label": "t:settings.height",
+      "options": [
+        { "value": "", "label": "t:options.auto" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "background_media",
+      "label": "t:settings.background_media",
+      "options": [
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "t:settings.borders",
+      "options": [
+        { "value": "none", "label": "t:options.none" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "t:settings.border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "select",
+      "id": "padding_scale",
+      "label": "t:settings.1_padding_scale",
+      "options": [
+        { "value": "1", "label": "1x" },
+        { "value": "2", "label": "2x" },
+        { "value": "3", "label": "3x" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "1 Formula Breakdown",
+      "category": "t:categories.storytelling",
+      "settings": {
+        "section_width": "page-width",
+        "padding_scale": "2",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
+    }
+  ]
+}
+{% endschema %}
